@@ -5,11 +5,11 @@ int n;  //width of chess board
 int m;  //height of chess board
 
 #define MAX_INPUT_SIZE 100
-
 //move patterns in the x and y coordinates
 #define KNIGHT_MOVES 8
-static int mpx[KNIGHT_MOVES] = [1, 1, 2, 2, -1, -1, -2, -2];
-static int mpy[KNIGHT_MOVES] = [2, -2, 1, -1, 2, -2, 1, -1];
+
+static int mpx[KNIGHT_MOVES] = {1, 1, 2, 2, -1, -1, -2, -2};
+static int mpy[KNIGHT_MOVES] = {2, -2, 1, -1, 2, -2, 1, -1};
 
 
 
@@ -31,7 +31,7 @@ int is_jump_valid(int a[], int x, int y) {
     if(boarder_check(x, y) == 1) {
 
         //boarder check failed
-        printf("boarder check failed.... \n")
+        printf("boarder check failed.... \n");
         return  1;
     }
     else if(a[y*m+x] > 0) {
@@ -54,12 +54,20 @@ int get_weight(int a[], int x, int y)
     int count = 0;
     for (int i = 0; i < KNIGHT_MOVES; i++)
     {
-        if (is_jump_valid(a[], x + mpx[i], y + mpy[i]) == 0)
+        if (is_jump_valid(a, x + mpx[i], y + mpy[i]) == 0)
         {
             count++;
         }
     }
 }
+
+
+// int get_next_move(){
+
+
+// }
+
+
 
 int main() {
 
@@ -78,7 +86,7 @@ int main() {
     m = atoi(input);
 
     // generate empty chess board (empty => -1)
-    cb[n*m];
+    int cb[n*m];
     for(int i = 0; i < n*m; i++) {
         cb[i] = -1;
     }

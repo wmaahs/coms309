@@ -4,15 +4,15 @@
 int n;  //width of chess board
 int m;  //height of chess board
 
-#define MAX_INPUT_SIZE 100
+#define MAX_INPUT_SIZE 100  //max amount of characters the user is allowed to input
+
 //move patterns in the x and y coordinates
 #define KNIGHT_MOVES 8
-
 static int mpx[KNIGHT_MOVES] = {1, 1, 2, 2, -1, -1, -2, -2};
 static int mpy[KNIGHT_MOVES] = {2, -2, 1, -1, 2, -2, 1, -1};
 
 
-
+// check if (x,y) is on the board
 int boarder_check(int x, int y) {
     if((x >= 0 && y >= 0) && (x <= n && y <= m)) {
 
@@ -26,6 +26,8 @@ int boarder_check(int x, int y) {
     }
 }
 
+// function to check if the location (x,y)
+// has been visited
 int is_jump_valid(int a[], int x, int y) {
     
     if(boarder_check(x, y) == 1) {
@@ -52,20 +54,40 @@ int get_weight(int a[], int x, int y)
 {
 
     int count = 0;
-    for (int i = 0; i < KNIGHT_MOVES; i++)
+    for(int i = 0; i < KNIGHT_MOVES; i++)
     {
         if (is_jump_valid(a, x + mpx[i], y + mpy[i]) == 0)
         {
             count++;
         }
     }
+
+    return count;
 }
 
+// get the next move based off of the lowest amount of
+// future potential jumps (Warnsdorff's heuristic)
+int get_next_move(int a[], int *x, int *y){
 
-// int get_next_move(){
+    int next_sqr_ind = -1;      //holder for best jump ind
+    int next_sqr_weight = 10000;    //holder for best jump weight
 
+    // May want to add random starting neighbor
+    for(int i = 0; i < KNIGHT_MOVES; i++) {
 
-// }
+        int adj_x = *x + mpx[i];
+        int adj_y = *y + mpy[i];
+
+        if(is_jump_valid(a, adj_x, adj_y) == 0) {
+
+            if(get_weight(a, adj_x, adj_y) < next_sqr_weight) {
+                next_sqr_ind = adj_y * m + adj_x;
+            }
+        }
+    }
+
+    return next_sqr_ind;
+}
 
 
 

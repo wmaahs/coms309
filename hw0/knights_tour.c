@@ -108,6 +108,7 @@ int main() {
     m = atoi(input);
 
     // generate empty chess board (empty => -1)
+    // make 2d array
     int cb[n*m];
     for(int i = 0; i < n*m; i++) {
         cb[i] = -1;

@@ -4,6 +4,8 @@
 int n;  //width of chess board
 int m;  //height of chess board
 
+
+
 #define MAX_INPUT_SIZE 100  //max amount of characters the user is allowed to input
 
 //move patterns in the x and y coordinates
@@ -74,6 +76,8 @@ int knights_tour_recursion(int x, int y, int move_ind, int chess_board[n][m]) {
             //success
             chess_board[next_x][next_y] = move_ind;
             if(knights_tour_recursion(next_x, next_y, move_ind + 1, chess_board) == 1){
+                //need to add a check here
+
                 //backtrack
                 return 1;
             }
@@ -81,9 +85,8 @@ int knights_tour_recursion(int x, int y, int move_ind, int chess_board[n][m]) {
                 chess_board[next_x][next_y] = -1;
             }
         }
-
+        //no path found from that next move
     }
-
     return 0;
 }
 

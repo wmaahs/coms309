@@ -30,7 +30,6 @@ int is_jump_valid(int a[n][m], int x, int y) {
     
     if(boarder_check(x, y) == 1) {
         //boarder check failed
-        printf("boarder check failed.... \n");
         return  1;
     }
     else if(a[x][y] > 0) {
@@ -44,29 +43,30 @@ int is_jump_valid(int a[n][m], int x, int y) {
 }
 
 void format_output(int chess_board[n][m]){
-
-
-
+    for (int x = 0; x < n; x++){
+        for(int y = 0; y < m; y++){
+            printf("%2d,", chess_board[x][y]);
+        }
+    }
+    printf("\n");
 
 }
 
 int knights_tour_recursion(int x, int y, int move_ind, int chess_board[n][m]) {
 
-    int k;
+    int move;
     int next_x;     //the next x in the array
     int next_y;     //the next y in the array
-
-    //test
-    printf("move index: %d", move_ind);
     
     //have completed the chessboard
     if(move_ind == n*m + 1){
-        format_output(chess_board);
         //go back to finding more solutions
+        format_output(chess_board);
+        move_ind = 1;
         return 0;
     }
 
-    for(int move = 0; move < KNIGHT_MOVES; move++){
+    for(move = 0; move < KNIGHT_MOVES; move++){
         next_x = x + mpx[move];
         next_y = y + mpy[move];
         
@@ -87,48 +87,58 @@ int knights_tour_recursion(int x, int y, int move_ind, int chess_board[n][m]) {
     return 0;
 }
 
-int main() {
-
-    char input[MAX_INPUT_SIZE] = {'\0'};
-
-    //prompt user for size of chess board
-    printf("Enter width (n): \n");
-    fgets(input, MAX_INPUT_SIZE, stdin);
-    //write input to n
-    n = atoi(input);
-
-    //do the same for height
-    printf("Enter height (m): \n");
-    fgets(input, MAX_INPUT_SIZE, stdin);
-    //write input to m
-    m = atoi(input);
+int knights_tour_solver(){
 
     // generate empty chess board (empty => -1)
-    int chess_board[n][m];     //chess_board => chess board
+    int chess_board[n][m];
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < m; j++) {
             chess_board[i][j] = -1;
         }
     }
 
-    for(int x = 0; x < n; x++) {
-        for(int y = 0; y < m; y++) {
+    for(int x = 0; x < n; x++){
+        for(int y = 0; y < m; y++){
+            chess_board[x][y] = 0;
 
-            //reset the chess_board after every run
-            for(int i = 0; i < n; i++) {
-                for(int j = 0; j < m; j++) {
-                    chess_board[i][j]= -1;
+            if(knights_tour_recursion(0, 0, 1, chess_board) == 1) {
+                printf("solution does not exits");
+                return 1;
+            }
+            else{
+                //solution found and printed
+                //reset the chess board and check the next spot
+                for(int i = 0; i < n; i++) {
+                    for(int j = 0; j < m; j++) {
+                        chess_board[i][j] = -1;
+                    }
                 }
             }
 
-            //try to find a path from chess_board[x][y]
-            if(knights_tour_recursion(x, y, 2, chess_board) == 0){
-                //failed to find path from that starting
-                continue;
-            }
         }
     }
+    
+    return 0;
+}
 
+int main() {
 
+    char input[MAX_INPUT_SIZE] = {'\0'};
 
+    //prompt user for size of chess board
+    // printf("Enter width (n): \n");
+    // fgets(input, MAX_INPUT_SIZE, stdin);
+    //write input to n
+    // n = atoi(input);
+    n = 4;
+
+    //do the same for height
+    // printf("Enter height (m): \n");
+    // fgets(input, MAX_INPUT_SIZE, stdin);
+    //write input to m
+    // m = atoi(input);
+    m = 4;
+
+    knights_tour_solver();
+    return 0;
 }

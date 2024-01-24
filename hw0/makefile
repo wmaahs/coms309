@@ -1,8 +1,9 @@
-target: list of dependencies
-<a literal tab>commmand to build target from dependencies
 
 knights_tour: knights_tour.c
 	gcc knights_tour.c -o knights_tour
+
+knights_tour_r: knights_tour_r.c
+	gcc knights_tour_r.c -o knights_tour_r
 
 clean:
 	rm knights_tour

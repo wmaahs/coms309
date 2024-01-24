@@ -6,7 +6,7 @@ knights_tour_r: knights_tour_r.c
 	gcc knights_tour_r.c -o knights_tour_r
 
 clean:
-	rm knights_tour
+	rm knights_tour knights_tour_r
 
 
 

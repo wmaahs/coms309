@@ -4,7 +4,10 @@
 int n;  //width of chess board
 int m;  //height of chess board
 
+#define MAX_INPUT_SIZE 100  //max amount of characters the user is allowed to input
+
 //move patterns in the x and y coordinates
+
 #define KNIGHT_MOVES 8
 static int mpx[KNIGHT_MOVES] = {1, 1, 2, 2, -1, -1, -2, -2};
 static int mpy[KNIGHT_MOVES] = {2, -2, 1, -1, 2, -2, 1, -1};
@@ -54,7 +57,7 @@ int knights_tour_recursion(int x, int y, int move_ind, int chess_board[n][m]) {
     int next_y;     //the next y in the array
 
     //test
-    printf("move index: %d", move_ind)
+    printf("move index: %d", move_ind);
     
     //have completed the chessboard
     if(move_ind == n*m + 1){
@@ -63,11 +66,11 @@ int knights_tour_recursion(int x, int y, int move_ind, int chess_board[n][m]) {
         return 0;
     }
 
-    for(int move = 0; int move < KNIGHT_MOVES; move++){
+    for(int move = 0; move < KNIGHT_MOVES; move++){
         next_x = x + mpx[move];
         next_y = y + mpy[move];
         
-        if(is_jump_valid(next_y, next_x, chess_board) == 0){
+        if(is_jump_valid(chess_board, next_y, next_x) == 0){
             //success
             chess_board[next_x][next_y] = move_ind;
             if(knights_tour_recursion(next_x, next_y, move_ind + 1, chess_board) == 1){
@@ -112,8 +115,8 @@ int main() {
         for(int y = 0; y < m; y++) {
 
             //reset the chess_board after every run
-            for(int i = 0; int i < n; i++) {
-                for(int j = 0; int j < m; j++) {
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < m; j++) {
                     chess_board[i][j]= -1;
                 }
             }

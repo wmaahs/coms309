@@ -1,119 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int n;  //width of chess board
-int m;  //height of chess board
-
 #define MAX_INPUT_SIZE 100  //max amount of characters the user is allowed to input
 
+#define WIDTH 5   // width of chess board
+#define HEIGHT 5  // height of chess board
+#define CHESSPACE 25
 //move patterns in the x and y coordinates
 #define KNIGHT_MOVES 8
 static int mpx[KNIGHT_MOVES] = {1, 1, 2, 2, -1, -1, -2, -2};
 static int mpy[KNIGHT_MOVES] = {2, -2, 1, -1, 2, -2, 1, -1};
 
+int boarder_check(int x, int y);
+int is_jump_valid(int x, int y);
+void format_output(int curr_path[WIDTH*HEIGHT]);
+void knights_tour_recursion(int x, int y, int curr_path[WIDTH*HEIGHT], int count);
 
-// check if (x,y) is on the board
-int boarder_check(int x, int y) {
-    if((x >= 0 && y >= 0) && (x <= n && y <= m)) {
-
-        //success
-        return 0;
-    }
-    else {
-
-        //failure
-        return 1;
-    }
-}
-
-// function to check if the location (x,y)
-// has been visited
-int is_jump_valid(int a[], int x, int y) {
-    
-    if(boarder_check(x, y) == 1) {
-
-        //boarder check failed
-        printf("boarder check failed.... \n");
-        return  1;
-    }
-    else if(a[y*m+x] > 0) {
-
-        //square has already been reached
-        return 1;
-    }
-    else {
-
-        //success
-        return 0;
-    }
-}
-
-// gets the number of adjacent squares to (x,y) that
-// are available to be jumped to next
-int get_weight(int a[], int x, int y)
-{
-
-    int count = 0;
-    for(int i = 0; i < KNIGHT_MOVES; i++)
-    {
-        if (is_jump_valid(a, x + mpx[i], y + mpy[i]) == 0)
-        {
-            count++;
-        }
-    }
-
-    return count;
-}
-
-// get the next move based off of the lowest amount of
-// future potential jumps (Warnsdorff's heuristic)
-int get_next_move(int a[], int *x, int *y){
-
-    int next_sqr_ind = -1;      //holder for best jump ind
-    int next_sqr_weight = 10000;    //holder for best jump weight
-
-    // May want to add random starting neighbor
-    for(int i = 0; i < KNIGHT_MOVES; i++) {
-
-        int adj_x = *x + mpx[i];
-        int adj_y = *y + mpy[i];
-
-        if(is_jump_valid(a, adj_x, adj_y) == 0) {
-
-            if(get_weight(a, adj_x, adj_y) < next_sqr_weight) {
-                next_sqr_ind = adj_y * m + adj_x;
-            }
-        }
-    }
-
-    return next_sqr_ind;
-}
-
-
+// arrray to check if space has been visited
+int chess_board_tracker[5][5] = {-1};
+//array to hold the values of each square
+int chess_board[5][5];
 
 int main() {
+  
+  //fill the chess_board with their respective values
+  int count = 1;
+  for(int y = 0; y < HEIGHT; y++){
+    for(int x = 0; x < WIDTH; x++){
+      chess_board[y][x] = count++;
+    }
+  }
 
-    char input[MAX_INPUT_SIZE] = {'\0'};
+  //reset the count to be used to track how many spaces the knight has been
+  count = 0;
+  
+  //array to hold the curr_path path
+  int curr_path[CHESSPACE];
 
-    //prompt user for size of chess board
-    printf("Enter width (n): \n");
-    fgets(input, MAX_INPUT_SIZE, stdin);
-    //write input to n
-    n = atoi(input);
+  //loop through the chess_board and call the knights_tour_recursion function for each space
+  for(int y = 0; y < HEIGHT; y++){
+    for(int x = 0; x < WIDTH; x++){
+      knights_tour_recursion(x, y, curr_path, count);
+    }
+  }
 
-    //do the same for height
-    printf("Enter height (m): \n");
-    fgets(input, MAX_INPUT_SIZE, stdin);
-    //write input to m
-    m = atoi(input);
+  return 0;
+}
 
-    // generate empty chess board (empty => -1)
-    // make 2d array
-    int cb[n*m];
-    for(int i = 0; i < n*m; i++) {
-        cb[i] = -1;
+void knights_tour_recursion(int x, int y, int curr_path[WIDTH*HEIGHT], int count) {
+
+    // add the current
+    curr_path[count] = chess_board[y][x];
+    chess_board_tracker[y][x] = 1;
+
+    //have completed the chessboard
+    if(count == CHESSPACE -1){
+        //go back to finding more solutions
+        format_output(curr_path);
+    }
+    else{
+        for(int move = 0; move < KNIGHT_MOVES; move++){
+            int next_x = x + mpx[move];
+            int next_y = y + mpy[move];
+
+            if(next_x >= 0 && next_x < WIDTH && next_y < HEIGHT && next_y >= 0 && chess_board_tracker[next_y][next_x] != 1) {
+                knights_tour_recursion(next_x, next_y, curr_path, count + 1);
+            }
+        }
+        
     }
 
+    chess_board_tracker[y][x] = -1;
+    return;
+}
 
-
+// function to print the tours once they're found
+void format_output(int curr_path[WIDTH*HEIGHT]){
+  for(int i = 0; i < CHESSPACE - 1; i++) {
+    printf("%d,", curr_path[i]);
+  }
+  printf("%d\n", curr_path[CHESSPACE - 1]);
+  return;
 }

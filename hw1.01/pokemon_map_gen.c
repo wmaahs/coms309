@@ -18,11 +18,19 @@
 #define MIN_FOREST_WIDTH 5
 #define MAX_FOREST_HEIGHT 10
 #define MIN_FOREST_HEIGHT 4
+#define MAX_FIELD_WIDTH 15
+#define MIN_FIELD_WIDTH 8
+#define MAX_FIELD_HEIGHT 9
+#define MIN_FIELD_HEIGHT 6
 
 
 void gen_map_boarder(char map[MAP_WIDTH][MAP_HEIGHT]);  // function to generate mountains
 void gen_short_grass(char map[MAP_WIDTH][MAP_HEIGHT]);   // function to fill whole map with short grass
 void gen_mountains(char map[MAP_WIDTH][MAP_HEIGHT]);    // function to plop in mountains
+void gen_forest(char map[MAP_WIDTH][MAP_HEIGHT]);   // function to plop in forests
+void gen_tall_grass(char map[MAP_WIDTH][MAP_HEIGHT]);
+void draw_roads(char map[MAP_WIDTH][MAP_HEIGHT]);   // draw the roads between the gates
+void gen_buildings(char map[MAP_WIDTH][MAP_HEIGHT]); //function to add the buildings on the roads
 void generate_the_map(char map[MAP_WIDTH][MAP_HEIGHT]);    // final function to print the map to the terminal
 
 struct point{
@@ -34,7 +42,6 @@ struct terrain {
     struct point origin;    //the top left corner of the object
     int width;      //th width of the terrain
     int height;     //the height of the terrain
-    char symbol;    //symbol for that terrain
 };
 
 struct building {
@@ -58,6 +65,10 @@ int main(int argc, char *argv[]){
     gen_map_boarder(map);
     gen_short_grass(map);
     gen_mountains(map);
+    gen_forest(map);
+    gen_tall_grass(map);
+    draw_roads(map);
+    gen_buildings(map);
     //print the map to the terminal
     generate_the_map(map);
 }
@@ -75,17 +86,17 @@ void gen_map_boarder(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
             //top boarder
             if(i == 0) {
-                map[j][i] = '^';
+                map[j][i] = '%';
             }
             //bottom boarder
             else if(i == MAP_HEIGHT -1) {
-                map[j][i] = '^';
+                map[j][i] = '%';
             }
             else if(j == 0) {
-                map[j][i] = '^';
+                map[j][i] = '%';
             }
             else if(j == MAP_WIDTH -1) {
-                map[j][i] = '^';
+                map[j][i] = '%';
             }
         }
     }
@@ -116,32 +127,34 @@ void gen_short_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
  */
 void gen_mountains(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
-    int num_mountains = rand() %4 + 1;
+    int num_mountains = rand() %5 + 1;
     int i;
     struct terrain mountains[num_mountains];
 
     for(i = 0; i < num_mountains; i++) {
-        mountains[i].symbol = '^';
         mountains[i].origin.x = rand() % MAP_WIDTH + 1;
         mountains[i].origin.y = rand() % MAP_HEIGHT + 1;
         mountains[i].width = rand() % MAX_MOUNTAIN_WIDTH + MIN_MOUNTAIN_WIDTH;
         mountains[i].height = rand() % MAX_MOUNTAIN_HEIGHT + MIN_MOUNTAIN_HEIGHT;
     }
-
-    char mountain0[10][10];
-    int y, z;
-    for(y = 0; y < 10; y++) {
-        for(z = 0; z < 10; z++) {
-            mountain0[z][y] = '^';
+    int k, y, z;
+    // draw each mountain on the map
+    for(k = 0; k < num_mountains; k++) {
+        for(y = 0; y < mountains[k].height; y++) {
+            for(z = 0; z < mountains[k].width; z++) {
+                //boundary check
+                if(z + mountains[k].origin.x >= MAP_WIDTH -1|| y + mountains[k].origin.y >= MAP_HEIGHT -1) {
+                    continue;
+                }
+                //if something is there, don't replace it
+                if(map[z + mountains[k].origin.x][y + mountains[k].origin.y] != '.') {
+                    continue;
+                }
+                map[z + mountains[k].origin.x][y + mountains[k].origin.y] = '%';
+            }
         }
     }
-    strcpy(&map[mountains[0].origin.x][mountains[0].origin.y], *mountain0);
-    //for testing
-    printf("number of mountains %d\n", num_mountains);
-    int j;
-    for(j = 0; j < num_mountains; j++) {
-        printf("mountain %d: width=%d, height=%d\n", j, mountains[j].width, mountains[j].height);
-    }
+
 }
 
 /**
@@ -158,6 +171,202 @@ void generate_the_map(char map[MAP_WIDTH][MAP_HEIGHT]) {
             if(j == MAP_WIDTH -1) {
                 printf("\n");
             }
+        }
+    }
+}
+
+void gen_forest(char map[MAP_WIDTH][MAP_HEIGHT]) {
+
+    int num_forests = rand() %4 +1;
+    int i;
+    struct terrain forests[num_forests];
+    for(i = 0; i < num_forests; i++) {
+        forests[i].origin.x = rand() % MAP_WIDTH + 1;
+        forests[i].origin.y = rand() % MAP_HEIGHT + 1;
+        forests[i].width = rand() % MAX_FOREST_WIDTH + MIN_FOREST_WIDTH;
+        forests[i].height = rand() % MAX_FOREST_HEIGHT + MIN_FOREST_HEIGHT;
+    }
+    int k, y, z;
+    // draw each mountain on the map
+    for(k = 0; k < num_forests; k++) {
+        for(y = 0; y < forests[k].height; y++) {
+            for(z = 0; z < forests[k].width; z++) {
+                if(z + forests[k].origin.x >= MAP_WIDTH-1 || y + forests[k].origin.y >= MAP_HEIGHT-1) {
+                    continue;
+                }
+                map[z + forests[k].origin.x][y + forests[k].origin.y] = '^';
+            }
+        }
+    }
+}
+
+void gen_tall_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
+    int num_fields = rand() %6 + 1;
+    int i;
+    struct terrain fields[num_fields];
+
+    for(i = 0; i < num_fields; i++) {
+        fields[i].origin.x = rand() % MAP_WIDTH + 1;
+        fields[i].origin.y = rand() % MAP_HEIGHT + 1;
+        fields[i].width = rand() % MAX_FIELD_WIDTH + MIN_FIELD_WIDTH;
+        fields[i].height = rand() % MAX_FIELD_HEIGHT + MIN_FIELD_HEIGHT;
+    }
+    int k, y, z;
+// draw each mountain on the map
+    for(k = 0; k < num_fields; k++) {
+        for(y = 0; y < fields[k].height; y++) {
+            for(z = 0; z < fields[k].width; z++) {
+                if(z + fields[k].origin.x >= MAP_WIDTH -1 || y + fields[k].origin.y >= MAP_HEIGHT -1) {
+                    continue;
+                }
+                map[z + fields[k].origin.x][y + fields[k].origin.y] = ':';
+            }
+        }
+    }
+}
+
+void draw_roads(char map[MAP_WIDTH][MAP_HEIGHT]) {
+    int north_gate = rand() % (MAP_WIDTH -2) + 3;
+    int south_gate = rand() % (MAP_WIDTH -2) + 3;
+    int east_gate = rand() % (MAP_HEIGHT -1) + 2;
+    int west_gate = rand() % (MAP_HEIGHT -1) +2;
+
+    map[0][west_gate] = '#';
+    map[MAP_WIDTH -1][east_gate] = '#';
+    map[north_gate][0] = '#';
+    map[south_gate][MAP_HEIGHT -1] = '#';
+
+    int y_intersect = rand() % (MAP_WIDTH -2) + 4;
+    int x_intersect = rand() % (MAP_HEIGHT -2) + 4;
+
+    //move the intersects closer to the middle
+    if(x_intersect < 2) {
+        x_intersect += 2;
+    }
+    if(x_intersect > MAP_WIDTH -2){
+        x_intersect -= 2;
+    }
+    if(y_intersect < 2) {
+        y_intersect += 2;
+    }
+    if(y_intersect > MAP_HEIGHT -2){
+        y_intersect -= 2;
+    }
+
+    int i;
+    //draw the road from west -> middle
+    for(i = 0; i < y_intersect; i++){
+        map[i][west_gate] = '#';
+    }
+
+    //draw the road from east -> middle
+    for(i = y_intersect; i < MAP_WIDTH -1; i++) {
+        map[i][east_gate] = '#';
+    }
+
+    //draw the road from north -> middle
+    for(i = 0; i < x_intersect; i++) {
+        map[north_gate][i] = '#';
+    }
+
+    //draw the road from south -> middle
+    for(i = x_intersect; i < MAP_HEIGHT -1; i++) {
+        map[south_gate][i] = '#';
+    }
+
+    // connect the east-west roads in the middle
+    if(east_gate < west_gate) {
+        //east gate is lower than west gate
+        for(i = east_gate; i <= west_gate; i++){
+            map[y_intersect][i] = '#';
+        }
+    }
+    else {
+        //west gate is lower than east gate
+        for(i = west_gate; i <= east_gate; i++) {
+
+            map[y_intersect][i] = '#';
+        }
+    }
+    //connect the roads in the middle
+    if(south_gate < north_gate) {
+        //south gate is left of north gate
+        for(i = south_gate; i <= north_gate; i++){
+            map[i][x_intersect] = '#';
+        }
+    }
+    else {
+        //north gate is left of south gate
+        for(i = north_gate; i <= south_gate; i++) {
+
+            map[i][x_intersect] = '#';
+        }
+    }
+
+}
+
+void gen_buildings(char map[MAP_WIDTH][MAP_HEIGHT]) {
+
+    int poke_flag = 0;
+    int mart_flag = 0;
+    int i, j;
+    //generate the pokecenter next to a road with 10 < x < 70
+    // 4 < y < 10
+    for(i = 0; i < MAP_HEIGHT; i++) {
+        for(j = 0; j < MAP_WIDTH; j++) {
+            if((j > 10) && (j < 70) && (map[j][i] == '#') && (i > 4) && (i < 10)) {
+                // if the road is moving east-west, then go below
+                if (map[j + 1][i] == '#') {
+                    map[j][i - 1] = 'P';
+                    map[j][i - 2] = 'P';
+                    map[j + 1][i - 1] = 'P';
+                    map[j + 1][i - 2] = 'P';
+                    poke_flag = 1;
+                    break;
+                }
+                    //if the road is moving north-south, then go to the right
+                else {
+                    map[j + 1][i] = 'P';
+                    map[j + 2][i] = 'P';
+                    map[j + 1][i + 1] = 'P';
+                    map[j + 2][i + 1] = 'P';
+                    poke_flag = 1;
+                    break;
+                }
+            }
+        }
+        if(poke_flag) {
+            break;
+        }
+    }
+    //generate the pokemart next to road with 15 < x < 65
+    // 11 < y < 19
+    for(i = 0; i < MAP_HEIGHT; i++) {
+        for(j = 0; j < MAP_WIDTH; j++) {
+            if((j > 15) && (j < 65) && (map[j][i] == '#') && (i > 11) && (i < 19)){
+                // if the road is moving east-west, then go below
+                if(map[j+1][i] == '#') {
+                    map[j][i-1] = 'M';
+                    map[j][i-2] = 'M';
+                    map[j+1][i-1] = 'M';
+                    map[j+1][i-2] = 'M';
+                    mart_flag = 1;  //flag to break out of loops once drawn
+                    break;
+                }
+                //if the road is moving north-south, then go to the right
+                else {
+                    map[j+1][i] = 'M';
+                    map[j+2][i] = 'M';
+                    map[j+1][i+1] = 'M';
+                    map[j+2][i+1] = 'M';
+                    mart_flag = 1;  //flag to break out of loops once drawn
+                    break;
+                }
+
+            }
+        }
+        if(mart_flag) {
+            break;
         }
     }
 }

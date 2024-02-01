@@ -31,6 +31,7 @@ void gen_forest(char map[MAP_WIDTH][MAP_HEIGHT]);   // function to plop in fores
 void gen_tall_grass(char map[MAP_WIDTH][MAP_HEIGHT]);
 void draw_roads(char map[MAP_WIDTH][MAP_HEIGHT]);   // draw the roads between the gates
 void gen_buildings(char map[MAP_WIDTH][MAP_HEIGHT]); //function to add the buildings on the roads
+void extra_things(char map[MAP_WIDTH][MAP_HEIGHT]);   //function to throw in extra tress and rocks
 void generate_the_map(char map[MAP_WIDTH][MAP_HEIGHT]);    // final function to print the map to the terminal
 
 struct point{
@@ -69,13 +70,14 @@ int main(int argc, char *argv[]){
     gen_tall_grass(map);
     draw_roads(map);
     gen_buildings(map);
+    extra_things(map);
     //print the map to the terminal
     generate_the_map(map);
 }
 
 /**
  *
- * @param map
+ * @param map the 2d array containg the chars for the map
  */
 void gen_map_boarder(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
@@ -103,8 +105,9 @@ void gen_map_boarder(char map[MAP_WIDTH][MAP_HEIGHT]) {
 }
 
 /**
+ * Fill the entire map with short grass, inside of the boarder
  *
- * @param map
+ * @param map the 2d array containg the chars for the map
  */
 void gen_short_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
     int i, j;
@@ -123,14 +126,16 @@ void gen_short_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
  * initialize the mountains, each with a random width (1-20)
  * each with random height (1-9)
  *
- * @param map
+ * @param map the 2d array containg the chars for the map
  */
 void gen_mountains(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
+    //define a random number of mountains (1-5)
     int num_mountains = rand() %5 + 1;
     int i;
     struct terrain mountains[num_mountains];
 
+    //define random widths, heights, and locations for the tall grass
     for(i = 0; i < num_mountains; i++) {
         mountains[i].origin.x = rand() % MAP_WIDTH + 1;
         mountains[i].origin.y = rand() % MAP_HEIGHT + 1;
@@ -159,7 +164,7 @@ void gen_mountains(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
 /**
  *
- * @param map
+ * @param map the 2d array containg the chars for the map
  */
 void generate_the_map(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
@@ -175,11 +180,18 @@ void generate_the_map(char map[MAP_WIDTH][MAP_HEIGHT]) {
     }
 }
 
+/**
+ *
+ *
+ * @param map the 2d array containg the chars for the map
+ */
 void gen_forest(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
-    int num_forests = rand() %4 +1;
+    //define a random number of forests (1-6)
+    int num_forests = rand() %6 +1;
     int i;
     struct terrain forests[num_forests];
+    //define random widths, heights, and locations for the tall grass
     for(i = 0; i < num_forests; i++) {
         forests[i].origin.x = rand() % MAP_WIDTH + 1;
         forests[i].origin.y = rand() % MAP_HEIGHT + 1;
@@ -200,11 +212,19 @@ void gen_forest(char map[MAP_WIDTH][MAP_HEIGHT]) {
     }
 }
 
+/**
+ *
+ *
+ * @param map the 2d array containg the chars for the map
+ */
 void gen_tall_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
+
+    //define a random number of fields (1-6)
     int num_fields = rand() %6 + 1;
     int i;
     struct terrain fields[num_fields];
 
+    //define random widths, heights, and locations for the tall grass
     for(i = 0; i < num_fields; i++) {
         fields[i].origin.x = rand() % MAP_WIDTH + 1;
         fields[i].origin.y = rand() % MAP_HEIGHT + 1;
@@ -212,7 +232,7 @@ void gen_tall_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
         fields[i].height = rand() % MAX_FIELD_HEIGHT + MIN_FIELD_HEIGHT;
     }
     int k, y, z;
-// draw each mountain on the map
+    // draw the grass on the map
     for(k = 0; k < num_fields; k++) {
         for(y = 0; y < fields[k].height; y++) {
             for(z = 0; z < fields[k].width; z++) {
@@ -225,12 +245,34 @@ void gen_tall_grass(char map[MAP_WIDTH][MAP_HEIGHT]) {
     }
 }
 
+/**
+ *
+ * @param map the 2d array containg the chars for the map
+ */
 void draw_roads(char map[MAP_WIDTH][MAP_HEIGHT]) {
+
+    //select random locations for the gates
     int north_gate = rand() % (MAP_WIDTH -2) + 3;
     int south_gate = rand() % (MAP_WIDTH -2) + 3;
     int east_gate = rand() % (MAP_HEIGHT -1) + 2;
     int west_gate = rand() % (MAP_HEIGHT -1) +2;
 
+    //move the gates closer to the center of the map
+    //improved appearance
+    if(west_gate < 2 || west_gate > MAP_HEIGHT -3) {
+        west_gate = 6;
+    }
+    if(east_gate < 2 || east_gate > MAP_HEIGHT -3) {
+        east_gate = 9;
+    }
+    if(north_gate < 2 || north_gate > MAP_WIDTH -3) {
+        north_gate = 29;
+    }
+    if(south_gate < 2 || south_gate > MAP_WIDTH -3) {
+        south_gate = 34;
+    }
+
+    //set the gates
     map[0][west_gate] = '#';
     map[MAP_WIDTH -1][east_gate] = '#';
     map[north_gate][0] = '#';
@@ -241,16 +283,16 @@ void draw_roads(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
     //move the intersects closer to the middle
     if(x_intersect < 2) {
-        x_intersect += 2;
+        x_intersect += 5;
     }
     if(x_intersect > MAP_WIDTH -2){
-        x_intersect -= 2;
+        x_intersect -= 5;
     }
     if(y_intersect < 2) {
-        y_intersect += 2;
+        y_intersect += 5;
     }
     if(y_intersect > MAP_HEIGHT -2){
-        y_intersect -= 2;
+        y_intersect -= 5;
     }
 
     int i;
@@ -305,13 +347,18 @@ void draw_roads(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
 }
 
+/**
+ *
+ * @param map the 2d array containg the chars for the map
+ */
 void gen_buildings(char map[MAP_WIDTH][MAP_HEIGHT]) {
 
-    int poke_flag = 0;
-    int mart_flag = 0;
+    int poke_flag = 0;  //flag to exit loops
+    int mart_flag = 0;  //flag to exit loops
     int i, j;
     //generate the pokecenter next to a road with 10 < x < 70
-    // 4 < y < 10
+    //find the road, put it below or to the right of the road.
+    // 4 < y < 10, so that it is closer to the center
     for(i = 0; i < MAP_HEIGHT; i++) {
         for(j = 0; j < MAP_WIDTH; j++) {
             if((j > 10) && (j < 70) && (map[j][i] == '#') && (i > 4) && (i < 10)) {
@@ -340,6 +387,7 @@ void gen_buildings(char map[MAP_WIDTH][MAP_HEIGHT]) {
         }
     }
     //generate the pokemart next to road with 15 < x < 65
+    //find the road, put it below or to the right of the road.
     // 11 < y < 19
     for(i = 0; i < MAP_HEIGHT; i++) {
         for(j = 0; j < MAP_WIDTH; j++) {
@@ -369,4 +417,33 @@ void gen_buildings(char map[MAP_WIDTH][MAP_HEIGHT]) {
             break;
         }
     }
+}
+
+/**
+ * Function to throw a random number (10-30) of rocks and trees in at the end
+ * every other obejct placed is a rock or a tree.
+ * @param map the 2d array containg the chars for the map
+ */
+void extra_things(char map[MAP_WIDTH][MAP_HEIGHT]) {
+
+    //define random number of things
+    int num_things = rand() % 20 + 10;
+
+    int i;
+    for(i =0; i <= num_things; i++) {
+        int rand_x = rand() %77 + 1;
+        int rand_y = rand() %18 + 1;
+        if(map[rand_x][rand_y] != 'P' && map[rand_x][rand_y] != 'M' && map[rand_x][rand_y] != '#') {
+
+            if(i%2) {
+
+                map[rand_x][rand_y] = '^';
+            }
+            else{
+                map[rand_x][rand_y] = '%';
+            }
+        }
+
+    }
+
 }

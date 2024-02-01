@@ -1,0 +1,15 @@
+This program randomly generates a 80x21 map, with mountains around the boarder, and a random arrangement
+of roads ('#'), mountains('%'), tress('^'), long grass(':'), and two buildings('M', 'P') in the middle. To run this
+program there is a makefile that will compile the executable for you via "make pokemon_map_gen". This will generate the
+executable that will generate the map named "./pokemon_map_gen".
+
+This function randomly generates the amount of each object there will be, as well as a random width, height, and
+starting location for each object. Each of the different types of terrain have a different range of random values to
+offer more variety. After the 2D array of characters is generated for the map, it is printed out to the terminal. The
+pokecenter ('P) and the pokemart('M') are place on the road depending on the direction the road is going, if the road is
+moving east <-> west, it is placed below the road. If the road is moving (north <-> south) then the building is placed
+to the right of the road. There are lots of "magic numbers" in this program that were added at the end to make the map
+generations look "good" more consistently. Sometime the roads would be very close the boarder which would make the map
+ugly, etc.
+
+Will Maahs

@@ -14,7 +14,7 @@
  * @param argv
  * @return
  */
-int pokemon_map_gen(int argc, char *argv[]){
+map_t pokemon_map_gen(){
 
     //initialize the random number generator
     srand(time(NULL));
@@ -29,8 +29,19 @@ int pokemon_map_gen(int argc, char *argv[]){
     draw_roads(map);
     gen_buildings(map);
     extra_things(map);
+
+    map_t finished_map;
+    int i, j;
+    for(i = 0; i < MAP_HEIGHT; i++) {
+        for(j = 0; j < MAP_WIDTH; j++) {
+
+            finished_map.map[j][i] = map[j][i];
+        }
+    }
+
+    return finished_map;
     //print the map to the terminal
-    generate_the_map(map);
+    // generate_the_map(map);
 }
 
 /**

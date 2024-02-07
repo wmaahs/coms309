@@ -36,7 +36,13 @@ typedef struct building {
     char symbol;
 } building_t;
 
-int pokemon_map_gen(int argc, char *argv[]);    //main funciton
+typedef struct map {
+    char map[MAP_WIDTH][MAP_HEIGHT];
+    point_t loc;
+    int n, s, e, w;
+} map_t;
+
+map_t pokemon_map_gen(int argc, char *argv[]);    //main funciton   //might have to fix this later (argc, argv)
 void gen_map_boarder(char map[MAP_WIDTH][MAP_HEIGHT]);  // function to generate mountains
 void gen_short_grass(char map[MAP_WIDTH][MAP_HEIGHT]);   // function to fill whole map with short grass
 void gen_mountains(char map[MAP_WIDTH][MAP_HEIGHT]);    // function to plop in mountains

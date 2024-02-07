@@ -1,6 +1,7 @@
 #include "poke_world_gen.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct world {
     map_t *world[WORLD_HEIGHT][WORLD_WIDTH];
@@ -36,6 +37,15 @@ int main(int argc, char **argv){
     nav_pokeverse(first_map);
     //free the map after execution... just for now
     free(the_pokeverse.world[first_map.loc.x][first_map.loc.y]);
+
+
+    //exiting program, free the world
+    for(i = 0; i < WORLD_HEIGHT; i++) {
+        for(j = 0; j < WORLD_WIDTH; j++){
+
+            free(the_pokeverse.world[j][i]);
+        }
+    }
 }
 /**
  * 
@@ -56,12 +66,35 @@ void nav_pokeverse(map_t current_map) {
     input_buff = (char *) (malloc(sizeof(char) * 25));
     while(1) {
 
+        //wait for user input
         scanf("%s", input_buff);
-
-        //this works
         break;
     }
-    
+
+    //if user inputs 'n'
+    if(strcmp(input_buff, "n") == 0) {
+
+        printf("User typed 'n'");
+    }
+
+    //if user inputs 's'
+    if(strcmp(input_buff, "s") == 0) {
+
+        printf("User typed 's'");
+    }
+
+    //if user inputs 'w'
+    if(strcmp(input_buff, "w") == 0) {
+
+        printf("User typed 'w'");
+    }
+
+    //if user inputs 's'
+    if(strcmp(input_buff, "s") == 0) {
+
+        printf("User typed 's'");
+    }
+
     free(input_buff);
 
 }

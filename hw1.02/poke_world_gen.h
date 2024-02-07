@@ -8,5 +8,6 @@
 
 
 void draw_curr_map(map_t current_map);
+void nav_pokeverse(map_t current_map);
 
 #endif

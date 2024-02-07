@@ -60,13 +60,16 @@ void nav_pokeverse(world_t pokeverse) {
     char *input_buff;
     input_buff = (char *) (malloc(sizeof(char) * 25));  //buffer for user input
 
+    //array to hold gates, need to free!
+    int *n_s_e_w;
+
     //wait for user input
     while(1) {
         scanf("%s", input_buff);
         break;
     }
 
-    //if user inputs 'n'
+    // GOING NORTH
     if(strcmp(input_buff, "n") == 0) {
 
         //if the map is already there
@@ -75,44 +78,55 @@ void nav_pokeverse(world_t pokeverse) {
             nav_pokeverse(pokeverse);
         }
         //else generate new map with s gate in same spot as n gate
-        else{
-                //malloc the new map
-                pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y +1] = (void *)(malloc(sizeof(map_t)));
-                pokeverse.coordinates.y++;
-                
-                //check adj of new map
-                //if
+        else {
+        
+            //malloc the new map
+            pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y +1] = (void *)(malloc(sizeof(map_t)));
+            //go to the new map
+            pokeverse.coordinates.y++;
+            //check adj of new map
+            n_s_e_w = get_adj_map_gates(pokeverse);
+            //generate new map with gates in those locations
+            
         }
 
     }
 
-    //if user inputs 's'
+    // GOING SOUTH
     if(strcmp(input_buff, "s") == 0) {
 
         printf("User typed 's'\n");
     }
 
-    //if user inputs 'w'
+    // GOING WEST
     if(strcmp(input_buff, "w") == 0) {
 
         printf("User typed 'w'\n");
     }
 
-    //if user inputs 's'
+    // GOING EAST
     if(strcmp(input_buff, "e") == 0) {
 
         printf("User typed 'e'\n");
     }
 
-    //if user wants to quit
+    // FLYING
+    if(strcmp(input_buff, "f") == 0) {
+
+        printf("User typed 'f'\n");
+    }
+    
+    // QUITING
     if(strcmp(input_buff, "q") == 0) {
 
+        free(input_buff);
+        free(n_s_e_w);
         return;
-
     }
 
     free(input_buff);
-
+    free(n_s_e_w);
+    return;
 }
 
 /**
@@ -149,16 +163,106 @@ int check_north(world_t pokeverse) {
     }
 }
 
-// int *check_adj_maps(world_t pokeverse) {
+/**
+ * Function to check the map the south.
+ * If there already exists a map to the south, returns location of northern gate.
+ * If there is no map to the south, returns -1.
+ * 
+ * @param pokeverse the pokemon universe
+ * @returns -1, on no map to the south
+ * @returns souther_map.n, when there is already a map there.
+*/
+int check_south(world_t pokeverse) {
 
-//     map_t *current_map;
-//     current_map = pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y];
+    map_t souther_map;
+    souther_map = *pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y - 1];
+    //if the map is already there
+    if(&souther_map != NULL) {
+        //return the location of the southern gate
+        return souther_map.n;
+    }
+    // otherwise return -1
+    else {
+        return -1;
+    }
+}
 
-//     int n, s, e, w;
-//     if(pokeverse->world[pokeverse.coordinates.x][pokeverse.coordinates.y + 1]. == NULL) {
-//         //north has not been made yet
-//         n = -1;
-//     }
+/**
+ * Function to check the map the east.
+ * If there already exists a map to the east, returns location of western gate.
+ * If there is no map to the east, returns -1.
+ * 
+ * @param pokeverse the pokemon universe
+ * @returns -1, on no map to the east
+ * @returns eastern_map.s, when there is already a map there.
+*/
+int check_east(world_t pokeverse) {
 
-// }
+    map_t eastern_map;
+    eastern_map = *pokeverse.world[pokeverse.coordinates.x + 1][pokeverse.coordinates.y];
+    //if the map is already there
+    if(&eastern_map != NULL) {
+        //return the location of the southern gate
+        return eastern_map.w;
+    }
+    // otherwise return -1
+    else {
+        return -1;
+    }
+}
+
+/**
+ * Function to check the map the west.
+ * If there already exists a map to the west, returns location of eastern gate.
+ * If there is no map to the west, returns -1.
+ * 
+ * @param pokeverse the pokemon universe
+ * @returns -1, on no map to the west
+ * @returns western_map.s, when there is already a map there.
+*/
+int check_west(world_t pokeverse) {
+
+    map_t western_map;
+    western_map = *pokeverse.world[pokeverse.coordinates.x - 1][pokeverse.coordinates.y];
+    //if the map is already there
+    if(&western_map != NULL) {
+        //return the location of the southern gate
+        return western_map.e;
+    }
+    // otherwise return -1
+    else {
+        return -1;
+    }
+}
+
+/**
+ * 
+ * Function to get the locations of the gates for
+ * all of the adjacent maps. Always returns the locations
+ * in the order of North, South, East, then West.
+ * If any of the values is -1, that means there is not a map
+ * there yet.
+ * 
+ * @param pokeverse the current state of the pokeverse
+*/
+int *get_adj_map_gates(world_t pokeverse) {
+
+    map_t *current_map;
+    current_map = pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y];
+
+    //array to hold the values of n, s, e, w
+    int *n_s_e_w;
+    n_s_e_w = (int *) (malloc(sizeof(int) * 4));
+
+    // check north
+    n_s_e_w[0] = check_north(pokeverse);
+    // check south
+    n_s_e_w[1] = check_north(pokeverse);
+    // check east
+    n_s_e_w[2] = check_north(pokeverse);
+    // check west
+    n_s_e_w[3] = check_north(pokeverse);
+
+    return n_s_e_w;
+}
 

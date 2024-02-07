@@ -14,7 +14,7 @@ int main(int argc, char **argv){
     map_t first_map = pokemon_map_gen(0, 0);
     first_map.loc.x = 200;
     first_map.loc.y = 200;
-
+    
     // Initially, all maps in the world are NULL;
     int i, j;
     for(i = 0; i < WORLD_HEIGHT; i++) {

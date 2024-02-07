@@ -1,9 +1,6 @@
 #ifndef POKEMON_MAP_GEN_H
 #define POKEMON_MAP_GEN_H
 
-# ifdef __cplusplus
-extern "C" {
-# endif
 
 #define MAP_HEIGHT 21
 #define MAP_WIDTH 80

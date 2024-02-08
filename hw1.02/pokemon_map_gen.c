@@ -14,11 +14,10 @@
  * @param argv
  * @return
  */
-map_t pokemon_map_gen(){
+map_t pokemon_map_gen(map_t *map){
 
     //initialize the random number generator
     srand(time(NULL));
-    map_t map;
 
     //put mountains around the edge
     gen_map_boarder(map);
@@ -30,7 +29,7 @@ map_t pokemon_map_gen(){
     gen_buildings(map);
     extra_things(map);
 
-    return map;
+    return *map;
     //print the map to the terminal
     // generate_the_map(map);
 }
@@ -39,7 +38,7 @@ map_t pokemon_map_gen(){
  *
  * @param map the 2d array containg the chars for the map
  */
-void gen_map_boarder(map_t map) {
+void gen_map_boarder(map_t *map) {
 
     int i, j;
 
@@ -48,17 +47,17 @@ void gen_map_boarder(map_t map) {
 
             //top boarder
             if(i == 0) {
-                map.map[j][i] = '%';
+                map->map[j][i] = '%';
             }
             //bottom boarder
             else if(i == MAP_HEIGHT -1) {
-                map.map[j][i] = '%';
+                map->map[j][i] = '%';
             }
             else if(j == 0) {
-                map.map[j][i] = '%';
+                map->map[j][i] = '%';
             }
             else if(j == MAP_WIDTH -1) {
-                map.map[j][i] = '%';
+                map->map[j][i] = '%';
             }
         }
     }
@@ -69,13 +68,13 @@ void gen_map_boarder(map_t map) {
  *
  * @param map the 2d array containg the chars for the map
  */
-void gen_short_grass(map_t map) {
+void gen_short_grass(map_t *map) {
     int i, j;
 
     for(i = 0; i < MAP_HEIGHT; i++){
         for(j = 0; j < MAP_WIDTH; j++) {
             if((j > 0 && j < MAP_WIDTH -1) && (i > 0 && i < MAP_HEIGHT -1)) {
-                map.map[j][i] = '.';
+                map->map[j][i] = '.';
             }
         }
     }
@@ -88,7 +87,7 @@ void gen_short_grass(map_t map) {
  *
  * @param map the 2d array containg the chars for the map
  */
-void gen_mountains(map_t map) {
+void gen_mountains(map_t *map) {
 
     //define a random number of mountains (1-5)
     int num_mountains = rand() %5 + 1;
@@ -112,10 +111,10 @@ void gen_mountains(map_t map) {
                     continue;
                 }
                 //if something is there, don't replace it
-                if(map.map[z + mountains[k].origin.x][y + mountains[k].origin.y] != '.') {
+                if(map->map[z + mountains[k].origin.x][y + mountains[k].origin.y] != '.') {
                     continue;
                 }
-                map.map[z + mountains[k].origin.x][y + mountains[k].origin.y] = '%';
+                map->map[z + mountains[k].origin.x][y + mountains[k].origin.y] = '%';
             }
         }
     }
@@ -123,15 +122,17 @@ void gen_mountains(map_t map) {
 }
 
 /**
- *
+ * 
+ * This is the function that actually prints the map the stdout.
+ * 
  * @param map the 2d array containg the chars for the map
  */
-void generate_the_map(map_t map) {
+void generate_the_map(map_t *map) {
 
     int i, j;
     for(i = 0; i < MAP_HEIGHT; i++) {
         for(j = 0; j < MAP_WIDTH; j++) {
-            printf("%c", map.map[j][i]);
+            printf("%c", map->map[j][i]);
             //return every 21 characters to make a box.
             if(j == MAP_WIDTH -1) {
                 printf("\n");
@@ -145,7 +146,7 @@ void generate_the_map(map_t map) {
  *
  * @param map the 2d array containg the chars for the map
  */
-void gen_forest(map_t map) {
+void gen_forest(map_t *map) {
 
     //define a random number of forests (1-6)
     int num_forests = rand() %6 +1;
@@ -166,7 +167,7 @@ void gen_forest(map_t map) {
                 if(z + forests[k].origin.x >= MAP_WIDTH-1 || y + forests[k].origin.y >= MAP_HEIGHT-1) {
                     continue;
                 }
-                map.map[z + forests[k].origin.x][y + forests[k].origin.y] = '^';
+                map->map[z + forests[k].origin.x][y + forests[k].origin.y] = '^';
             }
         }
     }
@@ -177,7 +178,7 @@ void gen_forest(map_t map) {
  *
  * @param map the 2d array containg the chars for the map
  */
-void gen_tall_grass(map_t map) {
+void gen_tall_grass(map_t *map) {
 
     //define a random number of fields (1-6)
     int num_fields = rand() %6 + 1;
@@ -199,50 +200,83 @@ void gen_tall_grass(map_t map) {
                 if(z + fields[k].origin.x >= MAP_WIDTH -1 || y + fields[k].origin.y >= MAP_HEIGHT -1) {
                     continue;
                 }
-                map.map[z + fields[k].origin.x][y + fields[k].origin.y] = ':';
+                map->map[z + fields[k].origin.x][y + fields[k].origin.y] = ':';
             }
         }
     }
 }
 
 /**
- *
+ * Draw the roads on the map. If we are drawing a map whose
+ * gate locations are predetermined, then use those locations.
+ * Otherwise uses a random location for the gate.
+ * 
  * @param map the 2d array containg the chars for the map
  */
-void draw_roads(map_t map) {
+void draw_roads(map_t *map) {
 
-    //select random locations for the gates
-    int north_gate = rand() % (MAP_WIDTH -2) + 3;
-    int south_gate = rand() % (MAP_WIDTH -2) + 3;
-    int east_gate = rand() % (MAP_HEIGHT -1) + 2;
-    int west_gate = rand() % (MAP_HEIGHT -1) +2;
+    int north_gate, south_gate, east_gate, west_gate;
 
-    //move the gates closer to the center of the map
-    //improved appearance
-    if(west_gate < 2 || west_gate > MAP_HEIGHT -3) {
-        west_gate = 6;
+    //SELECT NORTH GATE
+    if(map->n != -1) {
+        north_gate = map->n;
     }
-    if(east_gate < 2 || east_gate > MAP_HEIGHT -3) {
-        east_gate = 9;
+    else{
+        north_gate = rand() % (MAP_WIDTH -2) + 3;
+        //move the gates closer to the center of the map
+        //improved appearance
+        if(north_gate < 2 || north_gate > MAP_WIDTH -3) {
+            north_gate = 29;
+        }
     }
-    if(north_gate < 2 || north_gate > MAP_WIDTH -3) {
-        north_gate = 29;
+    //SELECT SOUTH GATE
+    if(map->s != -1) {
+        south_gate = map->s;
     }
-    if(south_gate < 2 || south_gate > MAP_WIDTH -3) {
-        south_gate = 34;
+    else {
+        south_gate = rand() % (MAP_WIDTH -2) + 3;
+        //move the gates closer to the center of the map
+        //improved appearance
+        if(south_gate < 2 || south_gate > MAP_WIDTH -3) {
+            south_gate = 34;
+        }
     }
-
-    //set the gates for map_t
-    map.e = east_gate;
-    map.w = west_gate;
-    map.n = north_gate;
-    map.s = north_gate;
+    //SELECT EAST GATE
+    if(map->e != -1) {
+        east_gate = map->e;
+    }
+    else {
+        east_gate = rand() % (MAP_HEIGHT -1) + 2;
+        //move the gates closer to the center of the map
+        //improved appearance
+        if(east_gate < 2 || east_gate > MAP_HEIGHT -3) {
+            east_gate = 9;
+        }
+    }
+    //SELECT WEST GATE
+    if(map->w != -1) {
+        west_gate = map->w;
+    }
+    else {
+        west_gate = rand() % (MAP_HEIGHT -1) +2;
+        //move the gates closer to the center of the map
+        //improved appearance
+        if(west_gate < 2 || west_gate > MAP_HEIGHT -3) {
+            west_gate = 6;
+        }
+    }
     
+    //set the gates for map_t
+    map->e = east_gate;
+    map->w = west_gate;
+    map->n = north_gate;
+    map->s = north_gate;
+
     //draw the gates
-    map.map[0][west_gate] = '#';
-    map.map[MAP_WIDTH -1][east_gate] = '#';
-    map.map[north_gate][0] = '#';
-    map.map[south_gate][MAP_HEIGHT -1] = '#';
+    map->map[0][west_gate] = '#';
+    map->map[MAP_WIDTH -1][east_gate] = '#';
+    map->map[north_gate][0] = '#';
+    map->map[south_gate][MAP_HEIGHT -1] = '#';
 
     int y_intersect = rand() % (MAP_WIDTH -2) + 4;
     int x_intersect = rand() % (MAP_HEIGHT -2) + 4;
@@ -264,50 +298,50 @@ void draw_roads(map_t map) {
     int i;
     //draw the road from west -> middle
     for(i = 0; i < y_intersect; i++){
-        map.map[i][west_gate] = '#';
+        map->map[i][west_gate] = '#';
     }
 
     //draw the road from east -> middle
     for(i = y_intersect; i < MAP_WIDTH -1; i++) {
-        map.map[i][east_gate] = '#';
+        map->map[i][east_gate] = '#';
     }
 
     //draw the road from north -> middle
     for(i = 0; i < x_intersect; i++) {
-        map.map[north_gate][i] = '#';
+        map->map[north_gate][i] = '#';
     }
 
     //draw the road from south -> middle
     for(i = x_intersect; i < MAP_HEIGHT -1; i++) {
-        map.map[south_gate][i] = '#';
+        map->map[south_gate][i] = '#';
     }
 
     // connect the east-west roads in the middle
     if(east_gate < west_gate) {
         //east gate is lower than west gate
         for(i = east_gate; i <= west_gate; i++){
-            map.map[y_intersect][i] = '#';
+            map->map[y_intersect][i] = '#';
         }
     }
     else {
         //west gate is lower than east gate
         for(i = west_gate; i <= east_gate; i++) {
 
-            map.map[y_intersect][i] = '#';
+            map->map[y_intersect][i] = '#';
         }
     }
     //connect the roads in the middle
     if(south_gate < north_gate) {
         //south gate is left of north gate
         for(i = south_gate; i <= north_gate; i++){
-            map.map[i][x_intersect] = '#';
+            map->map[i][x_intersect] = '#';
         }
     }
     else {
         //north gate is left of south gate
         for(i = north_gate; i <= south_gate; i++) {
 
-            map.map[i][x_intersect] = '#';
+            map->map[i][x_intersect] = '#';
         }
     }
 
@@ -317,7 +351,7 @@ void draw_roads(map_t map) {
  *
  * @param map the 2d array containg the chars for the map
  */
-void gen_buildings(map_t map) {
+void gen_buildings(map_t *map) {
 
     int poke_flag = 0;  //flag to exit loops
     int mart_flag = 0;  //flag to exit loops
@@ -327,22 +361,22 @@ void gen_buildings(map_t map) {
     // 4 < y < 10, so that it is closer to the center
     for(i = 0; i < MAP_HEIGHT; i++) {
         for(j = 0; j < MAP_WIDTH; j++) {
-            if((j > 10) && (j < 70) && (map.map[j][i] == '#') && (i > 4) && (i < 10)) {
+            if((j > 10) && (j < 70) && (map->map[j][i] == '#') && (i > 4) && (i < 10)) {
                 // if the road is moving east-west, then go below
-                if (map.map[j + 1][i] == '#') {
-                    map.map[j][i - 1] = 'P';
-                    map.map[j][i - 2] = 'P';
-                    map.map[j + 1][i - 1] = 'P';
-                    map.map[j + 1][i - 2] = 'P';
+                if (map->map[j + 1][i] == '#') {
+                    map->map[j][i - 1] = 'P';
+                    map->map[j][i - 2] = 'P';
+                    map->map[j + 1][i - 1] = 'P';
+                    map->map[j + 1][i - 2] = 'P';
                     poke_flag = 1;
                     break;
                 }
                     //if the road is moving north-south, then go to the right
                 else {
-                    map.map[j + 1][i] = 'P';
-                    map.map[j + 2][i] = 'P';
-                    map.map[j + 1][i + 1] = 'P';
-                    map.map[j + 2][i + 1] = 'P';
+                    map->map[j + 1][i] = 'P';
+                    map->map[j + 2][i] = 'P';
+                    map->map[j + 1][i + 1] = 'P';
+                    map->map[j + 2][i + 1] = 'P';
                     poke_flag = 1;
                     break;
                 }
@@ -357,22 +391,22 @@ void gen_buildings(map_t map) {
     // 11 < y < 19
     for(i = 0; i < MAP_HEIGHT; i++) {
         for(j = 0; j < MAP_WIDTH; j++) {
-            if((j > 15) && (j < 65) && (map.map[j][i] == '#') && (i > 11) && (i < 19)){
+            if((j > 15) && (j < 65) && (map->map[j][i] == '#') && (i > 11) && (i < 19)){
                 // if the road is moving east-west, then go below
-                if(map.map[j+1][i] == '#') {
-                    map.map[j][i-1] = 'M';
-                    map.map[j][i-2] = 'M';
-                    map.map[j+1][i-1] = 'M';
-                    map.map[j+1][i-2] = 'M';
+                if(map->map[j+1][i] == '#') {
+                    map->map[j][i-1] = 'M';
+                    map->map[j][i-2] = 'M';
+                    map->map[j+1][i-1] = 'M';
+                    map->map[j+1][i-2] = 'M';
                     mart_flag = 1;  //flag to break out of loops once drawn
                     break;
                 }
                 //if the road is moving north-south, then go to the right
                 else {
-                    map.map[j+1][i] = 'M';
-                    map.map[j+2][i] = 'M';
-                    map.map[j+1][i+1] = 'M';
-                    map.map[j+2][i+1] = 'M';
+                    map->map[j+1][i] = 'M';
+                    map->map[j+2][i] = 'M';
+                    map->map[j+1][i+1] = 'M';
+                    map->map[j+2][i+1] = 'M';
                     mart_flag = 1;  //flag to break out of loops once drawn
                     break;
                 }
@@ -390,7 +424,7 @@ void gen_buildings(map_t map) {
  * every other obejct placed is a rock or a tree.
  * @param map the 2d array containg the chars for the map
  */
-void extra_things(map_t map) {
+void extra_things(map_t *map) {
 
     //define random number of things
     int num_things = rand() % 20 + 10;
@@ -399,14 +433,14 @@ void extra_things(map_t map) {
     for(i =0; i <= num_things; i++) {
         int rand_x = rand() %77 + 1;
         int rand_y = rand() %18 + 1;
-        if(map.map[rand_x][rand_y] != 'P' && map.map[rand_x][rand_y] != 'M' && map.map[rand_x][rand_y] != '#') {
+        if(map->map[rand_x][rand_y] != 'P' && map->map[rand_x][rand_y] != 'M' && map->map[rand_x][rand_y] != '#') {
 
             if(i%2) {
 
-                map.map[rand_x][rand_y] = '^';
+                map->map[rand_x][rand_y] = '^';
             }
             else{
-                map.map[rand_x][rand_y] = '%';
+                map->map[rand_x][rand_y] = '%';
             }
         }
 

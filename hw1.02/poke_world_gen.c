@@ -11,13 +11,11 @@
 */
 int main(int argc, char **argv){
 
+    //Hello Pokeverse
     world_t the_pokeverse;
 
-    map_t first_map = pokemon_map_gen();    //should remove paramters for pokemon_map_gen
-    first_map.loc.x = 200;
-    first_map.loc.y = 200;
-    
-    // Initially, all maps in the world are NULL;
+
+    // Initially, all pointers to maps in the world are NULL;
     int i, j;
     for(i = 0; i < WORLD_HEIGHT; i++) {
         for(j = 0; j < WORLD_WIDTH; j++){
@@ -25,6 +23,15 @@ int main(int argc, char **argv){
             the_pokeverse.world[j][i] = NULL;
         }
     }
+
+    map_t first_map;
+    first_map.n = - 1;
+    first_map.s = - 1;
+    first_map.e = - 1;
+    first_map.w = - 1;
+    first_map = pokemon_map_gen(&first_map);    //should remove paramters for pokemon_map_gen
+    first_map.loc.x = 200;
+    first_map.loc.y = 200;
 
     //malloc the first map
     the_pokeverse.world[first_map.loc.x][first_map.loc.y] = (void *)(malloc(sizeof(first_map)));
@@ -50,8 +57,9 @@ int main(int argc, char **argv){
 
 void nav_pokeverse(world_t pokeverse) {
 
-    map_t *current_map = pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y];
-    draw_curr_map(*current_map);
+    map_t current_map = *pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y];
+
+    draw_curr_map(current_map);
 
     //display location
     printf("\n");
@@ -87,7 +95,18 @@ void nav_pokeverse(world_t pokeverse) {
             //check adj of new map
             n_s_e_w = get_adj_map_gates(pokeverse);
             //generate new map with gates in those locations
-            
+            map_t new_map;
+            new_map.n = n_s_e_w[0];
+            new_map.s = n_s_e_w[1];
+            new_map.e = n_s_e_w[2];
+            new_map.w = n_s_e_w[3];
+
+            new_map = pokemon_map_gen(new_map);
+            nav_pokeverse(pokeverse);
+
+            free(input_buff);
+            free(n_s_e_w);
+            return;
         }
 
     }
@@ -135,7 +154,7 @@ void nav_pokeverse(world_t pokeverse) {
 */
 void draw_curr_map(map_t current_map) {
 
-    generate_the_map(current_map);
+    generate_the_map(&current_map);
 
 }
 
@@ -150,15 +169,19 @@ void draw_curr_map(map_t current_map) {
 */
 int check_north(world_t pokeverse) {
 
-    map_t northern_map;
-    northern_map = *pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y + 1];
+    map_t *northern_map;
+    northern_map = pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y + 1];
     //if the map is already there
-    if(&northern_map != NULL) {
+    if(northern_map != NULL) {
+        //for testing
+        printf("North check : %d\n", northern_map->s);
         //return the location of the southern gate
-        return northern_map.s;
+        return northern_map->s;
     }
     // otherwise return -1
     else {
+        //for testing
+        printf("North check : %d\n", -1);
         return -1;
     }
 }
@@ -174,12 +197,12 @@ int check_north(world_t pokeverse) {
 */
 int check_south(world_t pokeverse) {
 
-    map_t souther_map;
-    souther_map = *pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y - 1];
+    map_t *souther_map;
+    souther_map = pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y - 1];
     //if the map is already there
-    if(&souther_map != NULL) {
+    if(souther_map != NULL) {
         //return the location of the southern gate
-        return souther_map.n;
+        return souther_map->n;
     }
     // otherwise return -1
     else {
@@ -198,12 +221,12 @@ int check_south(world_t pokeverse) {
 */
 int check_east(world_t pokeverse) {
 
-    map_t eastern_map;
-    eastern_map = *pokeverse.world[pokeverse.coordinates.x + 1][pokeverse.coordinates.y];
+    map_t *eastern_map;
+    eastern_map = pokeverse.world[pokeverse.coordinates.x + 1][pokeverse.coordinates.y];
     //if the map is already there
-    if(&eastern_map != NULL) {
+    if(eastern_map != NULL) {
         //return the location of the southern gate
-        return eastern_map.w;
+        return eastern_map->w;
     }
     // otherwise return -1
     else {
@@ -222,12 +245,12 @@ int check_east(world_t pokeverse) {
 */
 int check_west(world_t pokeverse) {
 
-    map_t western_map;
-    western_map = *pokeverse.world[pokeverse.coordinates.x - 1][pokeverse.coordinates.y];
+    map_t *western_map;
+    western_map = pokeverse.world[pokeverse.coordinates.x - 1][pokeverse.coordinates.y];
     //if the map is already there
-    if(&western_map != NULL) {
+    if(western_map != NULL) {
         //return the location of the southern gate
-        return western_map.e;
+        return western_map->e;
     }
     // otherwise return -1
     else {
@@ -257,11 +280,11 @@ int *get_adj_map_gates(world_t pokeverse) {
     // check north
     n_s_e_w[0] = check_north(pokeverse);
     // check south
-    n_s_e_w[1] = check_north(pokeverse);
+    n_s_e_w[1] = check_south(pokeverse);
     // check east
-    n_s_e_w[2] = check_north(pokeverse);
+    n_s_e_w[2] = check_east(pokeverse);
     // check west
-    n_s_e_w[3] = check_north(pokeverse);
+    n_s_e_w[3] = check_west(pokeverse);
 
     return n_s_e_w;
 }

@@ -34,9 +34,10 @@ int main(int argc, char **argv){
     first_map.s = - 1;
     first_map.e = - 1;
     first_map.w = - 1;
-    first_map = pokemon_map_gen(&first_map);    //should remove paramters for pokemon_map_gen
     first_map.loc.x = 200;
     first_map.loc.y = 200;
+    first_map = pokemon_map_gen(&first_map);
+    
 
     //malloc the first map
     the_pokeverse.world[first_map.loc.x][first_map.loc.y] = (map_t *)(malloc(sizeof(first_map)));
@@ -45,7 +46,7 @@ int main(int argc, char **argv){
     *the_pokeverse.world[first_map.loc.x][first_map.loc.y] = first_map;
     nav_pokeverse(&the_pokeverse);
     //free the map after execution... just for now
-    free(the_pokeverse.world[first_map.loc.x][first_map.loc.y]);
+    // free(the_pokeverse.world[first_map.loc.x][first_map.loc.y]);
 
     /** UNCOMMENT WHEN DONE */
     //exiting program, free the world
@@ -67,6 +68,7 @@ int main(int argc, char **argv){
 void nav_pokeverse(world_t *pokeverse) {
 
     map_t current_map = *pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y];
+
 
     draw_curr_map(current_map);
 
@@ -93,8 +95,8 @@ void nav_pokeverse(world_t *pokeverse) {
 
             // GOING NORTH
             case 'n':
-
-            //border check
+                printf("testing\n");
+                //border check
                 if(pokeverse->coordinates.y-1 < 0) {
                     printf("You have reach the edge of the world. You should probably turn around now\n");
                     nav_pokeverse(pokeverse);
@@ -122,6 +124,8 @@ void nav_pokeverse(world_t *pokeverse) {
                     new_map.s = n_s_e_w.nsew[1];
                     new_map.e = n_s_e_w.nsew[2];
                     new_map.w = n_s_e_w.nsew[3];
+                    new_map.loc.x = pokeverse->coordinates.x;
+                    new_map.loc.y = pokeverse->coordinates.y;
 
                     //create the new map
                     new_map = pokemon_map_gen(&new_map);
@@ -133,6 +137,7 @@ void nav_pokeverse(world_t *pokeverse) {
 
             // GOING SOUTH
             case 's':
+                printf("testing\n");
                 //border check
                 if(pokeverse->coordinates.y+1 >= WORLD_HEIGHT) {
                     printf("You have reach the edge of the world. You should probably turn around now\n");
@@ -156,15 +161,12 @@ void nav_pokeverse(world_t *pokeverse) {
                     n_s_e_w = get_adj_map_gates(pokeverse);
                     //generate new map with gates in those locations
                     map_t new_map;
-                    printf("N: %d ", n_s_e_w.nsew[0]);
-                    printf("S: %d ", n_s_e_w.nsew[1]);
-                    printf("E: %d ", n_s_e_w.nsew[2]);
-                    printf("W: %d\n", n_s_e_w.nsew[3]);
                     new_map.n = n_s_e_w.nsew[0];
                     new_map.s = n_s_e_w.nsew[1];
                     new_map.e = n_s_e_w.nsew[2];
                     new_map.w = n_s_e_w.nsew[3];
-
+                    new_map.loc.x = pokeverse->coordinates.x;
+                    new_map.loc.y = pokeverse->coordinates.y;
 
                     //create the new map
                     new_map = pokemon_map_gen(&new_map);
@@ -179,7 +181,8 @@ void nav_pokeverse(world_t *pokeverse) {
             // GOING EAST
             case 'e':
                 //border check
-                if(pokeverse->coordinates.x+1 >= WORLD_WIDTH) {
+                if(pokeverse->coordinates.x+2 >= WORLD_WIDTH) { // <- BUG
+                    printf("testing\n");
                     printf("You have reach the edge of the world. You should probably turn around now\n");
                     nav_pokeverse(pokeverse);
                     return;
@@ -205,11 +208,12 @@ void nav_pokeverse(world_t *pokeverse) {
                     new_map.s = n_s_e_w.nsew[1];
                     new_map.e = n_s_e_w.nsew[2];
                     new_map.w = n_s_e_w.nsew[3];
+                    new_map.loc.x = pokeverse->coordinates.x;
+                    new_map.loc.y = pokeverse->coordinates.y;
 
                     //create the new map
                     new_map = pokemon_map_gen(&new_map);
                     *pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y] = new_map;
-
 
                     nav_pokeverse(pokeverse);
                 }
@@ -218,12 +222,10 @@ void nav_pokeverse(world_t *pokeverse) {
 
             // GOING WEST
             case 'w':
-                //border check
-                printf("testing");
-
-                if(pokeverse->coordinates.x- 1 < 0) {
+                //border check, done the exact same as north and south
+                if(pokeverse->coordinates.x-2 < 0) {    //<- BUG
+                    printf("testing\n");
                     printf("You have reach the edge of the world. You should probably turn around now\n");
-
                     nav_pokeverse(pokeverse);
                     return;
                 }
@@ -248,6 +250,8 @@ void nav_pokeverse(world_t *pokeverse) {
                     new_map.s = n_s_e_w.nsew[1];
                     new_map.e = n_s_e_w.nsew[2];
                     new_map.w = n_s_e_w.nsew[3];
+                    new_map.loc.x = pokeverse->coordinates.x;
+                    new_map.loc.y = pokeverse->coordinates.y;
 
                     //create the new map
                     new_map = pokemon_map_gen(&new_map);
@@ -295,6 +299,9 @@ void nav_pokeverse(world_t *pokeverse) {
                         destination.s = n_s_e_w.nsew[1];
                         destination.e = n_s_e_w.nsew[2];
                         destination.w = n_s_e_w.nsew[3];
+                        destination.loc.x = pokeverse->coordinates.x;
+                        destination.loc.y = pokeverse->coordinates.y;
+
                         //create the new map
                         destination = pokemon_map_gen(&destination);
                         *pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y] = destination;
@@ -309,6 +316,10 @@ void nav_pokeverse(world_t *pokeverse) {
                 return;
             break;
 
+            case 'q':
+
+                return;
+            break;
             default:
                 printf("Invalid command: Valid commands are n, s, e, w, fxy, q\n");
                 nav_pokeverse(pokeverse);

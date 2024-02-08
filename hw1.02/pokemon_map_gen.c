@@ -356,6 +356,34 @@ void gen_buildings(map_t *map) {
     int poke_flag = 0;  //flag to exit loops
     int mart_flag = 0;  //flag to exit loops
     int i, j;
+
+    //logic to skip placing the buildings
+    int manhatten;
+    double freq;
+    double mult;
+    manhatten = abs(map->loc.x - 200) + abs(map->loc.y - 200);
+    if(manhatten < 200) {
+        mult = manhatten * -45;
+        mult = mult / 200;
+        freq = (mult + 50) / 100;
+    }
+    else {
+        freq = .05;
+    }
+    int freq_int;
+    freq_int = 1/freq;
+
+    //pick a random number between 1 and freq
+    int rand_skip = rand() % freq_int + 1;
+
+    //if the random number doesnt match then skip
+    //if 0,0 always do the buildings
+    if((map->loc.x == 200) && (map->loc.y == 200)) {
+        rand_skip = 1;
+    }
+    else if(rand_skip != 1) {
+        return;
+    }
     //generate the pokecenter next to a road with 10 < x < 70
     //find the road, put it below or to the right of the road.
     // 4 < y < 10, so that it is closer to the center
@@ -363,7 +391,7 @@ void gen_buildings(map_t *map) {
         for(j = 0; j < MAP_WIDTH; j++) {
             if((j > 10) && (j < 70) && (map->map[j][i] == '#') && (i > 4) && (i < 10)) {
                 // if the road is moving east-west, then go below
-                if (map->map[j + 1][i] == '#') {
+                if ((map->map[j + 1][i] == '#') || (map->map[j - 1][i] == '#')) {
                     map->map[j][i - 1] = 'P';
                     map->map[j][i - 2] = 'P';
                     map->map[j + 1][i - 1] = 'P';
@@ -393,7 +421,7 @@ void gen_buildings(map_t *map) {
         for(j = 0; j < MAP_WIDTH; j++) {
             if((j > 15) && (j < 65) && (map->map[j][i] == '#') && (i > 11) && (i < 19)){
                 // if the road is moving east-west, then go below
-                if(map->map[j+1][i] == '#') {
+                if((map->map[j+1][i] == '#') || (map->map[j-1][i] == '#')) {
                     map->map[j][i-1] = 'M';
                     map->map[j][i-2] = 'M';
                     map->map[j+1][i-1] = 'M';

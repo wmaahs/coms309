@@ -270,7 +270,7 @@ void draw_roads(map_t *map) {
     map->e = east_gate;
     map->w = west_gate;
     map->n = north_gate;
-    map->s = north_gate;
+    map->s = south_gate;
 
     //draw the gates
     map->map[0][west_gate] = '#';

@@ -6,6 +6,10 @@
 #define WORLD_HEIGHT 401
 #define WORLD_WIDTH 401
 
+typedef struct n_s_e_w {
+    int nsew[4];
+} nsew_t;
+
 typedef struct world {
     map_t *world[WORLD_HEIGHT][WORLD_WIDTH];
     point_t coordinates;
@@ -20,7 +24,7 @@ int check_north(world_t pokeverse);
 int check_south(world_t pokeverse);
 int check_east(world_t pokeverse);
 int check_west(world_t pokeverse);
-int *get_adj_map_gates(world_t pokeverse);
+nsew_t get_adj_map_gates(world_t pokeverse);
 
 
 #endif

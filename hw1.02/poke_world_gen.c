@@ -4,8 +4,13 @@
 #include <string.h>
 
 /**
- * Main Function for poke_world_gen.c
- * 
+ * Main Function for poke_world_gen.c.
+ * This function initializes the universe by generating
+ * the first map. The first map is located at the center
+ * of the world (the middle of the array). The world is a 
+ * 401x401 array of pointers to maps. The main function
+ * then calls the nav_pokeverse function to navigate around
+ * the world.
  * @param argc
  * @param argv
 */
@@ -67,7 +72,7 @@ void nav_pokeverse(world_t *pokeverse) {
 
     //display location
     printf("\n");
-    printf("L[%d][%d]   \n", abs(pokeverse->coordinates.x) - 200, abs(pokeverse->coordinates.y) -200);
+    printf("L[%d][%d]       ", abs(pokeverse->coordinates.x) - 200, 200 - pokeverse->coordinates.y);
 
     char *input_buff;
     input_buff = (char *) (malloc(sizeof(char) * 25));  //buffer for user input
@@ -84,9 +89,17 @@ void nav_pokeverse(world_t *pokeverse) {
     // GOING NORTH
     if(strcmp(input_buff, "n") == 0) {
 
+        //border check
+        if(pokeverse->coordinates.y-1 < 0) {
+            printf("You have reach the edge of the world. You should probably turn around now\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
+
         //if the map is already there, go to it.
         if(check_north(pokeverse) >= 0) {
-            pokeverse->coordinates.y++;
+            pokeverse->coordinates.y--;
             free(input_buff);
             nav_pokeverse(pokeverse);
         }
@@ -94,14 +107,11 @@ void nav_pokeverse(world_t *pokeverse) {
         else {
 
             //malloc the new map
-            pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y +1] = (map_t *)(malloc(sizeof(map_t)));
+            pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y -1] = (map_t *)(malloc(sizeof(map_t)));
             //go to the new map
-            pokeverse->coordinates.y++;
-            
-            //IT MAKES IT HERE
+            pokeverse->coordinates.y--;
 
             //check adj of new map
-            printf("I MADE IT HERE 1!\n");
             n_s_e_w = get_adj_map_gates(pokeverse);
             //generate new map with gates in those locations
             map_t new_map;
@@ -124,11 +134,19 @@ void nav_pokeverse(world_t *pokeverse) {
     }
 
     // GOING SOUTH
-    if(strcmp(input_buff, "s") == 0) {
+    else if(strcmp(input_buff, "s") == 0) {
+
+        //border check
+        if(pokeverse->coordinates.y+1 > WORLD_HEIGHT) {
+            printf("You have reach the edge of the world. You should probably turn around now\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
 
         //if the map is already there, go to it.
         if(check_south(pokeverse) >= 0) {
-            pokeverse->coordinates.y--;
+            pokeverse->coordinates.y++;
             free(input_buff);
             nav_pokeverse(pokeverse);
         }
@@ -136,9 +154,9 @@ void nav_pokeverse(world_t *pokeverse) {
         else {
 
             //malloc the new map
-            pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y -1] = (map_t *)(malloc(sizeof(map_t)));
+            pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y +1] = (map_t *)(malloc(sizeof(map_t)));
             //go to the new map
-            pokeverse->coordinates.y--;
+            pokeverse->coordinates.y++;
             //check adj of new map
             n_s_e_w = get_adj_map_gates(pokeverse);
             //generate new map with gates in those locations
@@ -165,7 +183,15 @@ void nav_pokeverse(world_t *pokeverse) {
     }
 
     // GOING EAST
-    if(strcmp(input_buff, "e") == 0) {
+    else if(strcmp(input_buff, "e") == 0) {
+
+        //border check
+        if(pokeverse->coordinates.x+1 > WORLD_WIDTH) {
+            printf("You have reach the edge of the world. You should probably turn around now\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
 
         //if the map is already there, go to it.
         if(check_east(pokeverse) >= 0) {
@@ -180,7 +206,7 @@ void nav_pokeverse(world_t *pokeverse) {
             pokeverse->world[pokeverse->coordinates.x +1][pokeverse->coordinates.y] = (map_t *)(malloc(sizeof(map_t)));
             //go to the new map
             pokeverse->coordinates.x++;
-            //check adj of new map
+            //check adj maps of new map
             n_s_e_w = get_adj_map_gates(pokeverse);
             //generate new map with gates in those locations
             map_t new_map;
@@ -200,13 +226,22 @@ void nav_pokeverse(world_t *pokeverse) {
     }
 
     // GOING WEST
-    if(strcmp(input_buff, "w") == 0) {
+    else if(strcmp(input_buff, "w") == 0) {
+
+        //border check
+        if(pokeverse->coordinates.x- 1 < 0) {
+            printf("You have reach the edge of the world. You should probably turn around now\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
 
         //if the map is already there, go to it.
         if(check_west(pokeverse) >= 0) {
             pokeverse->coordinates.x--;
             free(input_buff);
             nav_pokeverse(pokeverse);
+            return;
         }
         //else generate new map with n gate in same spot as current s gate
         else {
@@ -230,24 +265,97 @@ void nav_pokeverse(world_t *pokeverse) {
 
             free(input_buff);
             nav_pokeverse(pokeverse);
+            return;
         }
         return;
     }
 
     // FLYING
-    if(strcmp(input_buff, "f") == 0) {
+    else if(strcmp(input_buff, "f") == 0) {
 
-        printf("User typed 'f'\n");
+        char *x_y;
+        char *split = strchr(input_buff, ' ');     //variable for location of space
+        if (split != NULL) {
+            int spaceLocation = (int)(split - input_buff);
+
+            //string that holds x and y
+            x_y = split + 1;
+        }
+        //incorrect format
+        else {
+            printf("Try to fly again with the format 'f x y'\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
+
+        char *split_2 = strchr(x_y, ' ');
+        char *x_char;
+        char *y_char;
+        //Correct Format
+        if(split_2 != NULL) {
+            int spaceLocation_2 = (int)(split_2 - x_y);
+
+            x_y[spaceLocation_2] = '\0';
+            x_char = x_y;
+
+            y_char = split + 1;
+        }
+        //incorrect format
+        else {
+            printf("Try to fly again with the format 'f x y'\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
+
+        int x_int = atoi(x_char);
+        int y_int = atoi(y_char);
+
+        //border check
+        if((y_int < WORLD_HEIGHT) && (y_int < WORLD_HEIGHT) && (y_int < WORLD_HEIGHT) && (y_int < WORLD_HEIGHT)) {
+            
+            //now we actually are gonna start flying
+
+            
+            //is the map already there?
+            if(pokeverse->world[x_int][y_int] != NULL) {
+
+                map_t destination = *pokeverse->world[x_int][y_int];
+                
+            }
+            //malloc the new map
+            pokeverse->world[pokeverse->coordinates.x -1][pokeverse->coordinates.y] = (map_t *)(malloc(sizeof(map_t)));
+            pokeverse->coordinates.x = x_int;
+            pokeverse->coordinates.y = y_int;
+        }
+        //failed border check
+        else{
+            printf("If I let you fly of the edge of the world, you would die!\n");
+            free(input_buff);
+            nav_pokeverse(pokeverse);
+            return;
+        }
+
     }
     
     // QUITING
-    if(strcmp(input_buff, "q") == 0) {
+    else if(strcmp(input_buff, "q") == 0) {
 
         free(input_buff);
         return;
     }
 
-    free(input_buff);
+    //TRY AGAIN
+    else {
+
+        printf("Invalid command: Valid commands are n, s, e, w, fxy, q\n");
+        free(input_buff);
+        nav_pokeverse(pokeverse);
+        return;
+    }
+
+    // free(input_buff);
     return;
 }
 
@@ -273,7 +381,7 @@ void draw_curr_map(map_t current_map) {
 int check_north(world_t *pokeverse) {
 
     map_t *northern_map;
-    northern_map = pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y + 1];
+    northern_map = pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y - 1];
     //if the map is already there
     if(northern_map != NULL) {
         return northern_map->s;
@@ -296,7 +404,7 @@ int check_north(world_t *pokeverse) {
 int check_south(world_t *pokeverse) {
 
     map_t *souther_map;
-    souther_map = pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y - 1];
+    souther_map = pokeverse->world[pokeverse->coordinates.x][pokeverse->coordinates.y + 1];
     //if the map is already there
     if(souther_map != NULL) {
         //return the location of the southern gate

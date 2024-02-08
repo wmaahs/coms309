@@ -80,14 +80,14 @@ void nav_pokeverse(world_t pokeverse) {
     // GOING NORTH
     if(strcmp(input_buff, "n") == 0) {
 
-        //if the map is already there
+        //if the map is already there, go to it.
         if(check_north(pokeverse) >= 0) {
             pokeverse.coordinates.y++;
             nav_pokeverse(pokeverse);
         }
         //else generate new map with s gate in same spot as n gate
         else {
-        
+
             //malloc the new map
             pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y +1] = (void *)(malloc(sizeof(map_t)));
             //go to the new map
@@ -101,7 +101,11 @@ void nav_pokeverse(world_t pokeverse) {
             new_map.e = n_s_e_w[2];
             new_map.w = n_s_e_w[3];
 
-            new_map = pokemon_map_gen(new_map);
+
+            //create the new map
+            new_map = pokemon_map_gen(&new_map);
+            *pokeverse.world[pokeverse.coordinates.x][pokeverse.coordinates.y] = new_map;
+
             nav_pokeverse(pokeverse);
 
             free(input_buff);

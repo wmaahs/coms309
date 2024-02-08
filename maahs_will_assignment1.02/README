@@ -1,0 +1,25 @@
+The poke_world_gen.c along with the pokemon_map_gen.c programs generate a 
+401x401 array of pointers to maps called the pokeverse. The main function 
+initializes the pokeverse, with all of the pointers initially pointing ot NULL.
+The first map is created at the center of the array, where a function called
+nav_pokeverse allows users to input commands to navigate around the map.
+
+There is currently a bug in this program where for some reason the western edge is at -199,
+and when you try to approach that edge you get a segmentation fault. The same thing occurs on the 
+eastern edge but the northern and southern boarders behave exactly as expected. I was trying to debug
+this but I couldn't even locate how the segmentation fault was happening because it seemed like the
+segmentation fault was happening before I could even do my regular border check.
+
+When I am flying to -200 0, I get a segmentation fault, but if I fly to -201 0, I hit the bounds
+checker as expected.
+
+When I am flying to -199 199, and then I try to walk west, I get a segmentation fault.
+
+When I am flying to -199 199, and then I try to walk north, I hit the boarder check, and get
+no segmentation fault.
+
+I can't really comprehend how this is happening. I have checked everything that I can think of. I have left comments in my code "BUG" where I think the error is happening but idk.
+
+Everything else works perfectly.
+
+I have bandaided the problem so that the Map is still 401 x 401, but there are 199 maps the west and 201 maps to the east, from the center of the world.

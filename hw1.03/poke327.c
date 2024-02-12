@@ -74,9 +74,25 @@ typedef struct world {
   map_t *cur_map;
 } world_t;
 
+typedef struct player_character {
+
+  pair_t coordinates;
+
+} pc_t;
+
 /* Even unallocated, a WORLD_SIZE x WORLD_SIZE array of pointers is a very *
  * large thing to put on the stack.  To avoid that, world is a global.     */
 world_t world;
+
+static pc_t place_pc(map_t *map, int x, int y)
+{
+  pc_t pc;
+  pc.coordinates[dim_y] = y;
+  pc.coordinates[dim_x] = x;
+  map->map[y][x] = '@';
+
+  return pc;
+}
 
 static int32_t path_cmp(const void *key, const void *with) {
   return ((path_t *) key)->cost - ((path_t *) with)->cost;
@@ -910,7 +926,7 @@ int main(int argc, char *argv[])
 {
   struct timeval tv;
   uint32_t seed;
-  char c;
+  // char c;
   int x, y;
 
   if (argc == 2) {
@@ -925,71 +941,19 @@ int main(int argc, char *argv[])
 
   init_world();
 
-  do {
-    print_map();  
-    printf("Current position is %d%cx%d%c (%d,%d).  "
-           "Enter command: ",
-           abs(world.cur_idx[dim_x] - (WORLD_SIZE / 2)),
-           world.cur_idx[dim_x] - (WORLD_SIZE / 2) >= 0 ? 'E' : 'W',
-           abs(world.cur_idx[dim_y] - (WORLD_SIZE / 2)),
-           world.cur_idx[dim_y] - (WORLD_SIZE / 2) <= 0 ? 'N' : 'S',
-           world.cur_idx[dim_x] - (WORLD_SIZE / 2),
-           world.cur_idx[dim_y] - (WORLD_SIZE / 2));
-    if (scanf(" %c", &c) != 1) {
-      /* To handle EOF */
-      putchar('\n');
-      break;
-    }
-    switch (c) {
-    case 'n':
-      if (world.cur_idx[dim_y]) {
-        world.cur_idx[dim_y]--;
-        new_map();
-      }
-      break;
-    case 's':
-      if (world.cur_idx[dim_y] < WORLD_SIZE - 1) {
-        world.cur_idx[dim_y]++;
-        new_map();
-      }
-      break;
-    case 'e':
-      if (world.cur_idx[dim_x] < WORLD_SIZE - 1) {
-        world.cur_idx[dim_x]++;
-        new_map();
-      }
-      break;
-    case 'w':
-      if (world.cur_idx[dim_x]) {
-        world.cur_idx[dim_x]--;
-        new_map();
-      }
-      break;
-    case 'q':
-      break;
-    case 'f':
-      scanf(" %d %d", &x, &y);
-      if (x >= -(WORLD_SIZE / 2) && x <= WORLD_SIZE / 2 &&
-          y >= -(WORLD_SIZE / 2) && y <= WORLD_SIZE / 2) {
-        world.cur_idx[dim_x] = x + (WORLD_SIZE / 2);
-        world.cur_idx[dim_y] = y + (WORLD_SIZE / 2);
-        new_map();
-      }
-      break;
-    case '?':
-    case 'h':
-      printf("Move with 'e'ast, 'w'est, 'n'orth, 's'outh or 'f'ly x y.\n"
-             "Quit with 'q'.  '?' and 'h' print this help message.\n");
-      break;
-    default:
-      fprintf(stderr, "%c: Invalid input.  Enter '?' for help.\n", c);
-      break;
-    }
-  } while (c != 'q');
+  pc_t pc;
+  x = 0;
+  y = 0;
+  pc = place_pc(world.cur_map, x, y);
 
-  delete_world();
+  
+  print_map();
 
-  printf("But how are you going to be the very best if you quit?\n");
+  printf("x: %d, y: %d\n", pc.coordinates[dim_x], pc.coordinates[dim_y]);
+  
+ 
+
+  // printf("But how are you going to be the very best if you quit?\n");
   
   return 0;
 }

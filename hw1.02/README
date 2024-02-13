@@ -22,4 +22,4 @@ I can't really comprehend how this is happening. I have checked everything that 
 
 Everything else works perfectly.
 
-I have bandaided the problem so that the Map is still 401 x 401, but there are 199 maps the west and 201 maps to the east, from the center of the world.
+I have bandaided the problem so that the World is still 401 x 401, but there are 199 maps the west and 201 maps to the east, from the center of the world.

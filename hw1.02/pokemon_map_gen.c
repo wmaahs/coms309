@@ -29,6 +29,7 @@ map_t pokemon_map_gen(map_t *map){
     gen_buildings(map);
     extra_things(map);
 
+    
     return *map;
     //print the map to the terminal
     // generate_the_map(map);

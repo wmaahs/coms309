@@ -888,6 +888,9 @@ static void print_map()
       case ter_water:
         putchar('~');
         break;
+      case '@':
+        putchar('@');
+        break;
       default:
         default_reached = 1;
         break;

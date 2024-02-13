@@ -72,10 +72,15 @@ typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_pc
 } terrain_type_t;
 
+
+/*TODO fix the travel_cost_pair and xy
+so that they work in the dijkstras algorithm
+*/
 typedef struct map {
   terrain_type_t map[MAP_Y][MAP_X];
   uint8_t height[MAP_Y][MAP_X];
-  uint8_t travel_cost[MAP_Y][MAP_X];
+  uint8_t hiker_travel_cost[MAP_Y][MAP_X];
+  uint8_t rival_travel_cost[MAP_Y][MAP_X];
   int8_t n, s, e, w;
 } map_t;
 
@@ -96,6 +101,7 @@ typedef struct player_character {
 
 } pc_t;
 
+
 /* Even unallocated, a WORLD_SIZE x WORLD_SIZE array of pointers is a very *
  * large thing to put on the stack.  To avoid that, world is a global.     */
 world_t world;
@@ -113,6 +119,15 @@ static int32_t trainer_path_cmp(const void *key, const void *with) {
   return ((trainer_path_t *) key)->cost - ((trainer_path_t *) with)->cost;
 }
 
+/*
+TODO
+Create two dijkstras functions, one for the rival
+and one for the hiker.
+After that we can have one function to call them both in a loop from every location
+
+in main if we really wanted to we could put the pc in ever spot and 
+run shortest path from ever possible combo.
+*/
 static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
 {
 
@@ -969,6 +984,8 @@ static void print_map()
     for (x = 0; x < MAP_X; x++) {
       switch (world.cur_map->map[y][x]) {
       case ter_boulder:
+        putchar('%');
+
       case ter_mountain:
         putchar('%');
         break;

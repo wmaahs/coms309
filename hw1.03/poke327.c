@@ -53,8 +53,11 @@ typedef struct trainer_path {
 #define heightpair(pair) (m->height[pair[dim_y]][pair[dim_x]])
 #define heightxy(x, y) (m->height[y][x])
 
-#define travel_cost_pair(pair) (map->travel_cost[pair[dim_y]][pair[dim_x]])
-#define travel_cost_xy(x, y) (map->travel_cost[x][y])
+#define hiker_travel_cost_pair(pair) (map->hiker_travel_cost[pair[dim_y]][pair[dim_x]])
+#define hiker_travel_cost_xy(x, y) (map->hiker_travel_cost[x][y])
+
+#define rival_travel_cost_pair(pair) (map->hiker_travel_cost[pair[dim_y]][pair[dim_x]])
+#define rival_travel_cost_xy(x, y) (map->hiker_travel_cost[x][y])
 
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
@@ -115,6 +118,8 @@ static pc_t place_pc(map_t *map, int x, int y)
 
   return pc;
 }
+
+//check this comparotor
 static int32_t trainer_path_cmp(const void *key, const void *with) {
   return ((trainer_path_t *) key)->cost - ((trainer_path_t *) with)->cost;
 }
@@ -128,14 +133,14 @@ After that we can have one function to call them both in a loop from every locat
 in main if we really wanted to we could put the pc in ever spot and 
 run shortest path from ever possible combo.
 */
-static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
+static void dijkstra_hiker_path(map_t *map, pair_t from, pair_t to)
 {
 
   //pair_t to can be thought of as the PC's location
-  //pair_t from can be thought of as Trainer's location
+  //pair_t from can be thought of as hiker's location
 
   //set of all the nodes
-  static trainer_path_t trainer_path[MAP_Y][MAP_X], *tp;    //might want to consider change from static
+  static trainer_path_t hiker_path[MAP_Y][MAP_X], *hp;    //might want to consider change from static
   heap_t heap;
   static int init = 0;    //might want to change from a static
   int x, y;
@@ -143,8 +148,8 @@ static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
   if(!init) {
     for (y = 0; y < MAP_Y; y++) {
       for (x = 0; x < MAP_X; x++) {
-        trainer_path[y][x].from[dim_y] = y;
-        trainer_path[y][x].from[dim_x] = x;
+        hiker_path[y][x].from[dim_y] = y;
+        hiker_path[y][x].from[dim_x] = x;
       }
     }
     init = 1;
@@ -153,29 +158,29 @@ static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
   //Step 2. set all the nodes cost as infinity
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
-      trainer_path[y][x].cost = INT_MAX;
-      trainer_path[y][x].cost = INT_MAX;
+      hiker_path[y][x].cost = INT_MAX;
+      hiker_path[y][x].cost = INT_MAX;
     }
   }
 
   //Step 2. Assign tenative distance of 0 to initial node
-  trainer_path[from[dim_y]][from[dim_x]].cost = 0;
+  hiker_path[from[dim_y]][from[dim_x]].cost = 0;
 
   //Step 1. Create a set of unvisited nodes
   heap_init(&heap, trainer_path_cmp, NULL);
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
-      trainer_path[y][x].hn = heap_insert(&heap, &trainer_path[y][x]);
+      hiker_path[y][x].hn = heap_insert(&heap, &hiker_path[y][x]);
     }
   }
 
   //Step 3. For the current node, consider all of its unvisited neighbors
-  while ((tp = heap_remove_min(&heap)))
+  while ((hp = heap_remove_min(&heap)))
   {
-    tp->hn = NULL;
+    hp->hn = NULL;
 
     //if the current node is the PC's location
-    if((tp->from[dim_y] ==to[dim_y]) && tp->from[dim_x] == to[dim_x]) {
+    if((hp->from[dim_y] ==to[dim_y]) && hp->from[dim_x] == to[dim_x]) {
 
       //FIGURE OUT WHAT THIS LOOP DOES
       // for (x = to[dim_x], y = to[dim_y];
@@ -193,20 +198,141 @@ static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
       return;
     }
 
-    /* if the old cost is greater 
+    /*
+    NEIGHBOR ABOVE
+    if the old cost is greater and neighbor is unvisited
     than the new cost after visiting through neighbor,
     replace the cost
     then decrease the heap.
     */
-    if ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].hn) &&
-        ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost) > (tp->cost + travel_cost_pair(tp->from))))
+    if ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn) &&
+        ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost) > (hp->cost + hiker_travel_cost_pair(hp->from))))
     {
-      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost = tp->cost + travel_cost_pair(tp->from);
-      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].from[dim_y] = tp->from[dim_y];
-      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].from[dim_x] = tp->from[dim_x];
-      heap_decrease_key_no_replace(&heap, trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].hn);
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost = hp->cost + hiker_travel_cost_pair(hp->from);
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn);
+    }
+    /*
+    NEIGHBOR RIGHT
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+    */
+    if ((hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].hn) && 
+        (hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].cost > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      
+      hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].cost = (hp->cost + hiker_travel_cost_pair(hp->from));
+      hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].hn);
+    }
+    /*
+    NEIGHBOR X3
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+    */
+    if ((hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].hn) &&
+        (hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].cost > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].cost = (hp->cost + hiker_travel_cost_pair(hp->from));
+      hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].hn);
+    }
+    /*
+    NEIGHBOR BELOW
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+
+    delete the edge penalty
+    */
+    if ((hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].hn) &&
+        (hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].cost > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].cost = (hp->cost + hiker_travel_cost_pair(hp->from));
+      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].hn);
     }
 
+        /*
+    NEIGHBOR X5
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+
+    fix values
+    */
+    if ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn) &&
+        ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost) > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost = hp->cost + hiker_travel_cost_pair(hp->from);
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn);
+    }
+
+        /*
+    NEIGHBOR X6
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+
+    fix values
+    */
+    if ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn) &&
+        ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost) > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost = hp->cost + hiker_travel_cost_pair(hp->from);
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn);
+    }
+
+        /*
+    NEIGHBOR X7
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+
+    fix values
+    */
+    if ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn) &&
+        ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost) > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost = hp->cost + hiker_travel_cost_pair(hp->from);
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn);
+    }
+
+        /*
+    NEIGHBOR X8
+    if the old cost is greater and neighbor is unvisited
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+
+    fix values
+    */
+    if ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn) &&
+        ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost) > (hp->cost + hiker_travel_cost_pair(hp->from))))
+    {
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost = hp->cost + hiker_travel_cost_pair(hp->from);
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
+      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn);
+    }
 
 
   }
@@ -214,6 +340,7 @@ static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
   return;
 }
 
+//given comparator.
 static int32_t path_cmp(const void *key, const void *with) {
   return ((path_t *) key)->cost - ((path_t *) with)->cost;
 }

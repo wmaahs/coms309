@@ -53,8 +53,8 @@ typedef struct trainer_path {
 #define heightpair(pair) (m->height[pair[dim_y]][pair[dim_x]])
 #define heightxy(x, y) (m->height[y][x])
 
-#define travel_cost_pair(pair) (m->travel_cost[pair[dim_y]][pair[dim_x]])
-#define travel_cost_xy(x, y) (m->travel_cost[x][y])
+#define travel_cost_pair(pair) (map->travel_cost[pair[dim_y]][pair[dim_x]])
+#define travel_cost_xy(x, y) (map->travel_cost[x][y])
 
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
@@ -184,9 +184,9 @@ static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
     then decrease the heap.
     */
     if ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].hn) &&
-        ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost) > (tp->cost + time_cost_pair(tp->from))))
+        ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost) > (tp->cost + travel_cost_pair(tp->from))))
     {
-      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost = tp->cost + time_cost_pair(tp->from);
+      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost = tp->cost + travel_cost_pair(tp->from);
       trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].from[dim_y] = tp->from[dim_y];
       trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].from[dim_x] = tp->from[dim_x];
       heap_decrease_key_no_replace(&heap, trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].hn);

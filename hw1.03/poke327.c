@@ -90,7 +90,7 @@ static pc_t place_pc(map_t *map, int x, int y)
   pc_t pc;
   pc.coordinates[dim_y] = y;
   pc.coordinates[dim_x] = x;
-  map->map[y][x] = '@';
+  map->map[y][x] = ter_pc;
 
   return pc;
 }

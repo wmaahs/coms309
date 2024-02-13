@@ -14,6 +14,14 @@
   _tmp;                          \
 })
 
+typedef enum dim {
+  dim_x,
+  dim_y,
+  num_dims
+} dim_t;
+
+typedef int16_t pair_t[num_dims];
+
 typedef struct path {
   heap_node_t *hn;
   uint8_t pos[2];
@@ -30,13 +38,7 @@ typedef struct trainer_path {
 
 } trainer_path_t;
 
-typedef enum dim {
-  dim_x,
-  dim_y,
-  num_dims
-} dim_t;
 
-typedef int16_t pair_t[num_dims];
 
 #define MAP_X              80
 #define MAP_Y              21

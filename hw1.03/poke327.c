@@ -54,7 +54,8 @@ typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_mountain,
   ter_forest,
   ter_water,
-  ter_gate
+  ter_gate,
+  ter_pc
 } terrain_type_t;
 
 typedef struct map {
@@ -888,7 +889,7 @@ static void print_map()
       case ter_water:
         putchar('~');
         break;
-      case '@':
+      case ter_pc:
         putchar('@');
         break;
       default:

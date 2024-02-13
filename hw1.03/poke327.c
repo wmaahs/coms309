@@ -21,6 +21,15 @@ typedef struct path {
   int32_t cost;
 } path_t;
 
+typedef struct trainer_path {
+
+  heap_node_t *hn;
+  pair_t from;
+  pair_t to;
+  int32_t cost;
+
+} trainer_path_t;
+
 typedef enum dim {
   dim_x,
   dim_y,
@@ -42,6 +51,9 @@ typedef int16_t pair_t[num_dims];
 #define heightpair(pair) (m->height[pair[dim_y]][pair[dim_x]])
 #define heightxy(x, y) (m->height[y][x])
 
+#define travel_cost_pair(pair) (m->travel_cost[pair[dim_y]][pair[dim_x]])
+#define travel_cost_xy(x, y) (m->travel_cost[x][y])
+
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
   ter_boulder,
@@ -61,6 +73,7 @@ typedef enum __attribute__ ((__packed__)) terrain_type {
 typedef struct map {
   terrain_type_t map[MAP_Y][MAP_X];
   uint8_t height[MAP_Y][MAP_X];
+  uint8_t travel_cost[MAP_Y][MAP_X];
   int8_t n, s, e, w;
 } map_t;
 
@@ -93,6 +106,95 @@ static pc_t place_pc(map_t *map, int x, int y)
   map->map[y][x] = ter_pc;
 
   return pc;
+}
+static int32_t trainer_path_cmp(const void *key, const void *with) {
+  return ((trainer_path_t *) key)->cost - ((trainer_path_t *) with)->cost;
+}
+
+static void dijkstra_trainer_path(map_t *map, pair_t from, pair_t to)
+{
+
+  //pair_t to can be thought of as the PC's location
+  //pair_t from can be thought of as Trainer's location
+
+  //set of all the nodes
+  static trainer_path_t trainer_path[MAP_Y][MAP_X], *tp;    //might want to consider change from static
+  heap_t heap;
+  static int init = 0;    //might want to change from a static
+  int x, y;
+  //label each node
+  if(!init) {
+    for (y = 0; y < MAP_Y; y++) {
+      for (x = 0; x < MAP_X; x++) {
+        trainer_path[y][x].from[dim_y] = y;
+        trainer_path[y][x].from[dim_x] = x;
+      }
+    }
+    init = 1;
+  }
+
+  //Step 2. set all the nodes cost as infinity
+  for (y = 0; y < MAP_Y; y++) {
+    for (x = 0; x < MAP_X; x++) {
+      trainer_path[y][x].cost = INT_MAX;
+      trainer_path[y][x].cost = INT_MAX;
+    }
+  }
+
+  //Step 2. Assign tenative distance of 0 to initial node
+  trainer_path[from[dim_y]][from[dim_x]].cost = 0;
+
+  //Step 1. Create a set of unvisited nodes
+  heap_init(&heap, trainer_path_cmp, NULL);
+  for (y = 0; y < MAP_Y; y++) {
+    for (x = 0; x < MAP_X; x++) {
+      trainer_path[y][x].hn = heap_insert(&heap, &trainer_path[y][x]);
+    }
+  }
+
+  //Step 3. For the current node, consider all of its unvisited neighbors
+  while ((tp = heap_remove_min(&heap)))
+  {
+    tp->hn = NULL;
+
+    //if the current node is the PC's location
+    if((tp->from[dim_y] ==to[dim_y]) && tp->from[dim_x] == to[dim_x]) {
+
+      //FIGURE OUT WHAT THIS LOOP DOES
+      // for (x = to[dim_x], y = to[dim_y];
+      //      (x != from[dim_x]) || (y != from[dim_y]);
+      //      p = &path[y][x], x = p->from[dim_x], y = p->from[dim_y]) {
+      //   // Don't overwrite the gate
+      //   if (x != to[dim_x] || y != to[dim_y]) {
+      //     mapxy(x, y) = ter_path;
+      //     heightxy(x, y) = 0;
+      //   }
+      // }
+
+      //delete the heap and exit
+      heap_delete(&heap);
+      return;
+    }
+
+    /* if the old cost is greater 
+    than the new cost after visiting through neighbor,
+    replace the cost
+    then decrease the heap.
+    */
+    if ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].hn) &&
+        ((trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost) > (tp->cost + time_cost_pair(tp->from))))
+    {
+      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].cost = tp->cost + time_cost_pair(tp->from);
+      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].from[dim_y] = tp->from[dim_y];
+      trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].from[dim_x] = tp->from[dim_x];
+      heap_decrease_key_no_replace(&heap, trainer_path[tp->from[dim_y] - 1][tp->from[dim_x]].hn);
+    }
+
+
+
+  }
+
+  return;
 }
 
 static int32_t path_cmp(const void *key, const void *with) {
@@ -154,17 +256,19 @@ static void dijkstra_path(map_t *m, pair_t from, pair_t to)
       return;
     }
 
-    if ((path[p->pos[dim_y] - 1][p->pos[dim_x]    ].hn) &&
-        (path[p->pos[dim_y] - 1][p->pos[dim_x]    ].cost >
+    if ((path[p->pos[dim_y] - 1][p->pos[dim_x]].hn) &&
+        (path[p->pos[dim_y] - 1][p->pos[dim_x]].cost >
          ((p->cost + heightpair(p->pos)) *
-          edge_penalty(p->pos[dim_x], p->pos[dim_y] - 1)))) {
-      path[p->pos[dim_y] - 1][p->pos[dim_x]    ].cost =
-        ((p->cost + heightpair(p->pos)) *
-         edge_penalty(p->pos[dim_x], p->pos[dim_y] - 1));
-      path[p->pos[dim_y] - 1][p->pos[dim_x]    ].from[dim_y] = p->pos[dim_y];
-      path[p->pos[dim_y] - 1][p->pos[dim_x]    ].from[dim_x] = p->pos[dim_x];
+          edge_penalty(p->pos[dim_x], p->pos[dim_y] - 1))))
+    {
+      path[p->pos[dim_y] - 1][p->pos[dim_x]].cost =
+          ((p->cost + heightpair(p->pos)) *
+           edge_penalty(p->pos[dim_x], p->pos[dim_y] - 1));
+      path[p->pos[dim_y] - 1][p->pos[dim_x]].from[dim_y] = p->pos[dim_y];
+      path[p->pos[dim_y] - 1][p->pos[dim_x]].from[dim_x] = p->pos[dim_x];
       heap_decrease_key_no_replace(&h, path[p->pos[dim_y] - 1]
-                                           [p->pos[dim_x]    ].hn);
+                                           [p->pos[dim_x]]
+                                               .hn);
     }
     if ((path[p->pos[dim_y]    ][p->pos[dim_x] - 1].hn) &&
         (path[p->pos[dim_y]    ][p->pos[dim_x] - 1].cost >
@@ -309,7 +413,7 @@ static int smooth_height(map_t *m)
   int32_t i, x, y;
   int32_t s, t, p, q;
   queue_node_t *head, *tail, *tmp;
-  /*  FILE *out;*/
+  FILE *out;
   uint8_t height[MAP_Y][MAP_X];
 
   memset(&height, 0, sizeof (height));
@@ -446,7 +550,7 @@ static int smooth_height(map_t *m)
     }
   }
 
-  /*
+  
   out = fopen("diffused.pgm", "w");
   fprintf(out, "P5\n%u %u\n255\n", MAP_X, MAP_Y);
   fwrite(&height, sizeof (height), 1, out);
@@ -456,7 +560,7 @@ static int smooth_height(map_t *m)
   fprintf(out, "P5\n%u %u\n255\n", MAP_X, MAP_Y);
   fwrite(&m->height, sizeof (m->height), 1, out);
   fclose(out);
-  */
+  
 
   return 0;
 }
@@ -857,7 +961,7 @@ static void print_map()
   int x, y;
   int default_reached = 0;
 
-  printf("\n\n\n");
+  printf("\n\n\n\n");
 
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {

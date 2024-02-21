@@ -1,11 +1,10 @@
-#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <sys/time.h>
 #include <assert.h>
-
+#include <stdio.h>
 #include "heap.h"
 
 #define malloc(size) ({          \
@@ -89,8 +88,8 @@ so that they work in the dijkstras algorithm
 typedef struct map {
   terrain_type_t map[MAP_Y][MAP_X];
   uint8_t height[MAP_Y][MAP_X];
-  uint8_t hiker_distance[MAP_Y][MAP_X];
-  uint8_t rival_distance[MAP_Y][MAP_X];
+  int hiker_distance[MAP_Y][MAP_X];
+  int rival_distance[MAP_Y][MAP_X];
   int8_t n, s, e, w;
 } map_t;
 
@@ -1434,8 +1433,6 @@ int main(int argc, char *argv[])
   struct timeval tv;
   uint32_t seed;
 
-  int x, y;
-
   if (argc == 2) {
     seed = atoi(argv[1]);
   } else {
@@ -1456,7 +1453,7 @@ int main(int argc, char *argv[])
 
   printf("Rival Distance Map: \n");
   dijkstra_rival_path(world.cur_map, pc.coordinates);
-  dijkstra_rival_path(world.cur_map, pc.coordinates);
+  dijkstra_hiker_path(world.cur_map, pc.coordinates);
   
  
 

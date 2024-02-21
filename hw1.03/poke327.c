@@ -54,10 +54,10 @@ typedef struct trainer_path {
 #define heightxy(x, y) (m->height[y][x])
 
 #define hiker_distance_pair(pair) (map->hiker_distance[pair[dim_y]][pair[dim_x]])
-#define hiker_distance_xy(x, y) (map->hiker_distance[x][y])
+#define hiker_distance_xy(x, y) (map->hiker_distance[y][x])
 
 #define rival_distance_pair(pair) (map->rival_distance[pair[dim_y]][pair[dim_x]])
-#define rival_distance_xy(x, y) (map->rival_distance[x][y])
+#define rival_distance_xy(x, y) (map->rival_distance[y][x])
 
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
@@ -148,7 +148,7 @@ fix the way we adjust the cost. Should maybe call cost distance.
 in main if we really wanted to we could put the pc in ever spot and 
 run shortest path from ever possible combo.
 */
-static void dijkstra_rival_path(map_t *map, pair_t from, pair_t to)
+static void dijkstra_rival_path(map_t *map, pair_t to)
 {
 
   //pair_t to can be thought of as the PC's location
@@ -157,35 +157,54 @@ static void dijkstra_rival_path(map_t *map, pair_t from, pair_t to)
   //set of all the nodes
   static trainer_path_t rival_path[MAP_Y][MAP_X], *rp;    //might want to consider change from static
   heap_t heap;
-  static int init = 0;    //might want to change from a static
   int x, y;
-  //label each node
-  if(!init) {
-    for (y = 0; y < MAP_Y; y++) {
-      for (x = 0; x < MAP_X; x++) {
-        rival_path[y][x].from[dim_y] = y;
-        rival_path[y][x].from[dim_x] = x;
+
+  for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
+      switch(map->map[y][x]) {
+        case ter_grass:
+          rival_distance_xy(x, y)= 15;
+        break;
+        case ter_clearing:
+          rival_distance_xy(x, y) = 10;
+        break;
+        case ter_path:
+          rival_distance_xy(x, y) = 10;
+        break;
+        case ter_center:
+          rival_distance_xy(x, y) = 50;
+        break;
+        case ter_mart:
+          rival_distance_xy(x, y) = 50;
+        break;
+        default:
+          rival_distance_xy(x, y) = INT_MAX;
+        break;
       }
     }
-    init = 1;
   }
-
-  //Step 2. set all the nodes cost as infinity
+  // set all the nodes cost as infinity
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
-      rival_path[y][x].cost = INT_MAX;
+      rival_path[y][x].hn = NULL;
+      rival_path[y][x].from[dim_y] = y;
+      rival_path[y][x].from[dim_x] = x;
       rival_path[y][x].cost = INT_MAX;
     }
   }
 
-  //Step 2. Assign tenative distance of 0 to initial node
-  rival_path[from[dim_y]][from[dim_x]].cost = 0;
+  //Assign distance of pc to 
+  rival_path[to[dim_y]][to[dim_x]].cost = 0;
 
   //Step 1. Create a set of unvisited nodes
   heap_init(&heap, trainer_path_cmp, NULL);
-  for (y = 0; y < MAP_Y; y++) {
-    for (x = 0; x < MAP_X; x++) {
-      rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
+  //Don't go near edge
+  for (y = 0; y < MAP_Y -1; y++) {
+    for (x = 0; x < MAP_X -2; x++) {
+      //ignore if uncreachable
+      if(rival_distance_xy(x, y) != INT_MAX){
+        rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
+      }
     }
   }
 
@@ -198,11 +217,8 @@ static void dijkstra_rival_path(map_t *map, pair_t from, pair_t to)
     if((rp->from[dim_y] ==to[dim_y]) && rp->from[dim_x] == to[dim_x]) {
 
       //instead just add the distance to the distance map?
-      rival_distance_xy(rp->from[dim_x], rp->from[dim_y]) = rp->cost;
+      rival_path[rp->from[dim_y]][rp->from[dim_x]].cost = 0;
 
-      //delete the heap and exit
-      heap_delete(&heap);
-      return;
     }
 
     /*
@@ -334,12 +350,25 @@ static void dijkstra_rival_path(map_t *map, pair_t from, pair_t to)
     }
   }
 
+  //write the cost for each node in the distance map 
+  for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
+
+      //if node is unreachable, print a space
+      if(rival_path[y][x].cost == INT_MAX) {
+        printf("   ");
+      }
+      else {
+        printf("%02d ", rival_path[y][x].cost % 100);
+      }
+    }
+  }
   return;
 }
 /*
 * Hikers Dijkstra
 */
-static void dijkstra_hiker_path(map_t *map, pair_t from, pair_t to)
+static void dijkstra_hiker_path(map_t *map, pair_t to)
 {
 
   //pair_t "to" can be thought of as the PC's location
@@ -348,35 +377,61 @@ static void dijkstra_hiker_path(map_t *map, pair_t from, pair_t to)
   //set of all the nodes
   static trainer_path_t hiker_path[MAP_Y][MAP_X], *hp;    //might want to consider change from static
   heap_t heap;
-  static int init = 0;    //might want to change from a static
   int x, y;
-  //label each node
-  if(!init) {
-    for (y = 0; y < MAP_Y; y++) {
-      for (x = 0; x < MAP_X; x++) {
-        hiker_path[y][x].from[dim_y] = y;
-        hiker_path[y][x].from[dim_x] = x;
+
+  //Set the terrain costs
+  for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
+      switch(map->map[y][x]) {
+        case ter_grass:
+          hiker_distance_xy(x, y)= 15;
+        break;
+        case ter_clearing:
+          hiker_distance_xy(x, y) = 10;
+        break;
+        case ter_path:
+          hiker_distance_xy(x, y) = 10;
+        break;
+        case ter_center:
+          hiker_distance_xy(x, y) = 50;
+        break;
+        case ter_mart:
+          hiker_distance_xy(x, y) = 50;
+        break;
+        case ter_forest:
+          hiker_distance_xy(x, y) = 15;
+        break;
+        case ter_mountain:
+          hiker_distance_xy(x, y) = 15;
+        break;
+        default:
+          hiker_distance_xy(x, y) = INT_MAX;
+        break;
       }
     }
-    init = 1;
   }
-
-  //Step 2. set all the nodes cost as infinity
+  //label each node
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
+      hiker_path[y][x].hn = NULL;
+      hiker_path[y][x].from[dim_y] = y;
+      hiker_path[y][x].from[dim_x] = x;
       hiker_path[y][x].cost = INT_MAX;
-      hiker_path[y][x].cost = INT_MAX;
+
     }
   }
 
-  //Step 2. Assign tenative distance of 0 to initial node
-  hiker_path[from[dim_y]][from[dim_x]].cost = 0;
+
+  //Assing the PC's node to have a cost of 0
+  hiker_path[to[dim_y]][to[dim_x]].cost = 0;
 
   //Step 1. Create a set of unvisited nodes
   heap_init(&heap, trainer_path_cmp, NULL);
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
-      hiker_path[y][x].hn = heap_insert(&heap, &hiker_path[y][x]);
+      if(hiker_distance_xy(x, y) != INT_MAX) {
+        hiker_path[y][x].hn = heap_insert(&heap, &hiker_path[y][x]);
+      }
     }
   }
 
@@ -385,27 +440,11 @@ static void dijkstra_hiker_path(map_t *map, pair_t from, pair_t to)
   {
     hp->hn = NULL;
 
-    //might need to change this
     //if the current node is the PC's location
     if((hp->from[dim_y] ==to[dim_y]) && hp->from[dim_x] == to[dim_x]) {
-
       
-      //I think this loop draws the road and assigns hights of 0 for the whole road.
-      // for (x = to[dim_x], y = to[dim_y]; (x != from[dim_x]) || (y != from[dim_y]);
-      //      hp = &hiker_path[y][x], x = hp->from[dim_x], y = hp->from[dim_y]) {
-      //   // Don't overwrite the gate
-      //   if (x != to[dim_x] || y != to[dim_y]) {
-      //     mapxy(x, y) = ter_path;
-      //     heightxy(x, y) = 0;
-      //   }
-      // }
-      
-      //instead just add the distance to the distance map?
-      hiker_distance_xy(hp->from[dim_x], hp->from[dim_y]) = hp->cost;
+      hiker_path[hp->from[dim_y]][hp->from[dim_x]].cost = 0;
 
-      //delete the heap and exit
-      heap_delete(&heap);
-      return;
     }
 
     /*
@@ -536,6 +575,21 @@ static void dijkstra_hiker_path(map_t *map, pair_t from, pair_t to)
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] -1].hn);
     }
   }
+
+  //write the cost for each node in the distance map 
+  for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
+
+      //if node is unreachable, print a space
+      if(hiker_path[y][x].cost == INT_MAX) {
+        printf("   ");
+      }
+      else {
+        printf("%02d ", hiker_path[y][x].cost % 100);
+      }
+    }
+  }
+
   return;
 }
 
@@ -1379,7 +1433,7 @@ int main(int argc, char *argv[])
 {
   struct timeval tv;
   uint32_t seed;
-  // char c;
+
   int x, y;
 
   if (argc == 2) {
@@ -1400,8 +1454,9 @@ int main(int argc, char *argv[])
   
   print_map();
 
-  //for testing
-  printf("x: %d, y: %d\n", pc.coordinates[dim_x], pc.coordinates[dim_y]);
+  printf("Rival Distance Map: \n");
+  dijkstra_rival_path(world.cur_map, pc.coordinates);
+  dijkstra_rival_path(world.cur_map, pc.coordinates);
   
  
 

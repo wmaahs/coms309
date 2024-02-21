@@ -118,7 +118,6 @@ world_t world;
 static pc_t place_pc(map_t *map)
 {
   pc_t pc;
-
   int i, j;
   for(i = 0; i < MAP_Y; i++) {
     for(j = 0; j < MAP_X; j++) {
@@ -127,11 +126,16 @@ static pc_t place_pc(map_t *map)
         map->map[i][j] = ter_pc;
         pc.coordinates[dim_x] = j;
         pc.coordinates[dim_y] = i;
+	return pc;
       }
     }
   }
 
+  //this should never happen
+  pc.coordinates[dim_x] = -1;
+  pc.coordinates[dim_y] = -1;
   return pc;
+  
 }
 
 
@@ -182,6 +186,14 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
       }
     }
   }
+
+  //for testing
+  //  for(y = 0; y < MAP_Y; y++) {
+  //for(x = 0; x < MAP_X; x++) {
+  //  printf("(%d,%d) %d, ", x, y, map->rival_distance[y][x]);
+  //}
+  //}
+    
   // set all the nodes cost as infinity
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
@@ -192,18 +204,19 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
     }
   }
 
-  //Assign distance of pc to 
+  //Assign distance 0 of pc to 
   rival_path[to[dim_y]][to[dim_x]].cost = 0;
 
   //Step 1. Create a set of unvisited nodes
   heap_init(&heap, trainer_path_cmp, NULL);
-  //Don't go near edge
-  for (y = 0; y < MAP_Y -1; y++) {
-    for (x = 0; x < MAP_X -2; x++) {
+  
+  for (y = 0; y < MAP_Y; y++) {
+    for (x = 0; x < MAP_X; x++) {
       //ignore if uncreachable
-      if(rival_distance_xy(x, y) != INT_MAX){
-        rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
-      }
+      //if(rival_distance_xy(x, y) != INT_MAX){
+      //  rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
+      //}
+      rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
     }
   }
 
@@ -213,12 +226,12 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
     rp->hn = NULL;
 
     //if the current node is the PC's location
-    if((rp->from[dim_y] ==to[dim_y]) && rp->from[dim_x] == to[dim_x]) {
+    //    if((rp->from[dim_y] ==to[dim_y]) && rp->from[dim_x] == to[dim_x]) {
+    //
+    // //instead just add the distance to the distance map?
+    //  rival_path[rp->from[dim_y]][rp->from[dim_x]].cost = 0;
 
-      //instead just add the distance to the distance map?
-      rival_path[rp->from[dim_y]][rp->from[dim_x]].cost = 0;
-
-    }
+    //}
 
     /*
     NEIGHBOR BELOW
@@ -231,8 +244,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         ((rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].cost) > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].cost = rp->cost + rival_distance_pair(rp->from);
-      rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].hn);
     }
     /*
@@ -247,8 +258,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
     {
       
       rival_path[rp->from[dim_y]][rp->from[dim_x] - 1].cost = (rp->cost + rival_distance_pair(rp->from));
-      rival_path[rp->from[dim_y]][rp->from[dim_x] - 1].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y]][rp->from[dim_x] - 1].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y]][rp->from[dim_x] - 1].hn);
     }
     /*
@@ -262,8 +271,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         (rival_path[rp->from[dim_y]][rp->from[dim_x] + 1].cost > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y]][rp->from[dim_x] + 1].cost = (rp->cost + rival_distance_pair(rp->from));
-      rival_path[rp->from[dim_y]][rp->from[dim_x] + 1].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y]][rp->from[dim_x] + 1].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y]][rp->from[dim_x] + 1].hn);
     }
     /*
@@ -279,8 +286,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         (rival_path[rp->from[dim_y] + 1][rp->from[dim_x]].cost > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y] + 1][rp->from[dim_x]].cost = (rp->cost + rival_distance_pair(rp->from));
-      rival_path[rp->from[dim_y] + 1][rp->from[dim_x]].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y] + 1][rp->from[dim_x]].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] + 1][rp->from[dim_x]].hn);
     }
 
@@ -295,8 +300,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         ((rival_path[rp->from[dim_y] - 1][rp->from[dim_x] + 1].cost) > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y] - 1][rp->from[dim_x] + 1].cost = rp->cost + rival_distance_pair(rp->from);
-      rival_path[rp->from[dim_y] - 1][rp->from[dim_x] + 1].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y] - 1][rp->from[dim_x] + 1].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] - 1][rp->from[dim_x] + 1].hn);
     }
 
@@ -311,8 +314,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         ((rival_path[rp->from[dim_y] - 1][rp->from[dim_x] - 1].cost) > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y] - 1][rp->from[dim_x] - 1].cost = rp->cost + rival_distance_pair(rp->from);
-      rival_path[rp->from[dim_y] - 1][rp->from[dim_x] - 1].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y] - 1][rp->from[dim_x] - 1].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] - 1][rp->from[dim_x] - 1].hn);
     }
 
@@ -327,8 +328,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         ((rival_path[rp->from[dim_y] + 1][rp->from[dim_x] + 1].cost) > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y] + 1][rp->from[dim_x] + 1].cost = rp->cost + rival_distance_pair(rp->from);
-      rival_path[rp->from[dim_y] + 1][rp->from[dim_x] + 1].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y] + 1][rp->from[dim_x] + 1].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] + 1][rp->from[dim_x] + 1].hn);
     }
 
@@ -343,8 +342,6 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
         ((rival_path[rp->from[dim_y] + 1][rp->from[dim_x] - 1].cost) > (rp->cost + rival_distance_pair(rp->from))))
     {
       rival_path[rp->from[dim_y] + 1][rp->from[dim_x] - 1].cost = rp->cost + rival_distance_pair(rp->from);
-      rival_path[rp->from[dim_y] + 1][rp->from[dim_x] - 1].from[dim_y] = rp->from[dim_y];
-      rival_path[rp->from[dim_y] + 1][rp->from[dim_x] - 1].from[dim_x] = rp->from[dim_x];
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] + 1][rp->from[dim_x] -1].hn);
     }
   }
@@ -742,6 +739,7 @@ static int build_paths(map_t *m)
       to[dim_y] = MAP_Y - 2;
     }
 
+    
     dijkstra_path(m, from, to);
   }
 
@@ -1363,8 +1361,6 @@ static void print_map()
     for (x = 0; x < MAP_X; x++) {
       switch (world.cur_map->map[y][x]) {
       case ter_boulder:
-        putchar('%');
-
       case ter_mountain:
         putchar('%');
         break;
@@ -1448,16 +1444,23 @@ int main(int argc, char *argv[])
   pc_t pc;
   pc = place_pc(world.cur_map);
 
+  //error checking (not necissary but why not)
+  if((pc.coordinates[dim_y] == -1) || (pc.coordinates[dim_x] == -1)) {
+
+    fprintf(stderr, "Failed to place pc ?\n");
+    return -1;
+  }
   
   print_map();
 
   printf("Rival Distance Map: \n");
   dijkstra_rival_path(world.cur_map, pc.coordinates);
+  printf("Hiker Distance Map: \n");
   dijkstra_hiker_path(world.cur_map, pc.coordinates);
   
  
 
-  // printf("But how are you going to be the very best if you quit?\n");
+  //printf("But how are you going to be the very best if you quit?\n");
   
   return 0;
 }

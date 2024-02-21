@@ -123,27 +123,27 @@ typedef struct player_character 107,2140
 } pc_t;111,2198
 world_t world;116,2363
 static pc_t place_pc(118,2379
-static int32_t trainer_path_cmp(138,2795
-static void dijkstra_rival_path(150,3216
-static void dijkstra_hiker_path(370,11776
-static int32_t path_cmp(596,20411
-static int32_t edge_penalty(600,20534
-static void dijkstra_path(605,20660
-static int build_paths(708,24576
-static int gaussian[gaussian799,26248
-static int smooth_height(807,26411
-static void find_building_location(964,30436
-static int place_pokemart(995,31922
-static int place_center(1009,32214
-static terrain_type_t border_type(1024,32666
-static int map_terrain(1068,33596
-static int place_boulders(1251,38121
-static int place_trees(1269,38491
-static int new_map(1291,39053
-static void print_map(1355,40953
-void init_world(1411,42039
-void delete_world(1417,42139
-int main(1431,42369
+static int32_t trainer_path_cmp(142,2898
+static void dijkstra_rival_path(154,3319
+static void dijkstra_hiker_path(367,10702
+static int32_t path_cmp(593,19337
+static int32_t edge_penalty(597,19460
+static void dijkstra_path(602,19586
+static int build_paths(705,23502
+static int gaussian[gaussian797,25179
+static int smooth_height(805,25342
+static void find_building_location(962,29367
+static int place_pokemart(993,30853
+static int place_center(1007,31145
+static terrain_type_t border_type(1022,31597
+static int map_terrain(1066,32527
+static int place_boulders(1249,37052
+static int place_trees(1267,37422
+static int new_map(1289,37984
+static void print_map(1353,39884
+void init_world(1407,40947
+void delete_world(1413,41047
+int main(1427,41277
 
 visit_all.c,34
 #define SIDE 3,20

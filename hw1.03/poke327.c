@@ -157,45 +157,42 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
   //pair_t to can be thought of as the PC's location
   //pair_t from can be thought of as hiker's location
 
-  //set of all the nodes
-  static trainer_path_t rival_path[MAP_Y][MAP_X], *rp;    //might want to consider change from static
+  // create data local structures
+  static trainer_path_t rival_path[MAP_Y][MAP_X], *rp; // might want to consider change from static
   heap_t heap;
   int x, y;
 
-  for(y = 0; y < MAP_Y; y++) {
-    for(x = 0; x < MAP_X; x++) {
-      switch(map->map[y][x]) {
+  //create map of cost for each terrain_t
+  for (y = 0; y < MAP_Y; y++)
+  {
+    for (x = 0; x < MAP_X; x++)
+    {
+      switch (map->map[y][x])
+      {
       case ter_grass:
-	rival_distance_xy(x, y)= 15;
-	break;
+        rival_distance_xy(x, y) = 15;
+        break;
       case ter_clearing:
-	rival_distance_xy(x, y) = 10;
-	break;
+        rival_distance_xy(x, y) = 10;
+        break;
       case ter_path:
-	rival_distance_xy(x, y) = 10;
-	break;
+        rival_distance_xy(x, y) = 10;
+        break;
       case ter_center:
-	rival_distance_xy(x, y) = 50;
-	break;
+        rival_distance_xy(x, y) = 50;
+        break;
       case ter_mart:
         rival_distance_xy(x, y) = 50;
-	break;
+        break;
       case ter_pc:
-	rival_distance_xy(x, y) = 10;
-	break;
+        rival_distance_xy(x, y) = 10;
+        break;
       default:
-	rival_distance_xy(x, y) = INT_MAX;
+        rival_distance_xy(x, y) = INT_MAX;
         break;
       }
     }
   }
-
-  //for testing
-  //  for(y = 0; y < MAP_Y; y++) {
-  //for(x = 0; x < MAP_X; x++) {
-  //  printf("(%d,%d) %d, ", x, y, map->rival_distance[y][x]);
-  //}
-  //}
     
   // set all the nodes cost as infinity
   for (y = 0; y < MAP_Y; y++) {
@@ -354,30 +351,42 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
 
-      //if node is unreachable, print a space
-      if(rival_path[y][x].cost == INT_MAX) {
-	if(x != MAP_X -1) {
-	  printf("   ");
-	}
-        else {
-	  printf("   \n");
-	}
+      // if node is unreachable, print a space
+      if (rival_path[y][x].cost == INT_MAX)
+      {
+        //print new lines for prettiness
+        if (x != MAP_X - 1)
+        {
+          printf("   ");
+        }
+        else
+        {
+          printf("   \n");
+        }
       }
-      else if(rival_path[y][x].cost < 0) {
-	if(x != MAP_X -1) {
-	  printf("   ");
-	}
-        else {
-	  printf("   \n");
-	}
+      // also if node is unreachable, print a space
+      else if (rival_path[y][x].cost < 0)
+      {
+        if (x != MAP_X - 1)
+        {
+          printf("   ");
+        }
+        else
+        {
+          printf("   \n");
+        }
       }
-      else {
-        if(x != MAP_X -1) {
-	  printf("%02d ", rival_path[y][x].cost % 100);
-	}
-	else{
-	  printf("%02d \n", rival_path[y][x].cost % 100);
-	}
+      // the ones we care about
+      else
+      {
+        if (x != MAP_X - 1)
+        {
+          printf("%02d ", rival_path[y][x].cost % 100);
+        }
+        else
+        {
+          printf("%02d \n", rival_path[y][x].cost % 100);
+        }
       }
     }
   }
@@ -397,33 +406,39 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
   heap_t heap;
   int x, y;
 
-  //Set the terrain costs
-  for(y = 0; y < MAP_Y; y++) {
-    for(x = 0; x < MAP_X; x++) {
-      switch(map->map[y][x]) {
-        case ter_grass:
-          hiker_distance_xy(x, y)= 15;
+  //create map of cost for each terrain_t
+  for (y = 0; y < MAP_Y; y++)
+  {
+    for (x = 0; x < MAP_X; x++)
+    {
+      switch (map->map[y][x])
+      {
+      case ter_grass:
+        hiker_distance_xy(x, y) = 15;
         break;
-        case ter_clearing:
-          hiker_distance_xy(x, y) = 10;
+      case ter_clearing:
+        hiker_distance_xy(x, y) = 10;
         break;
-        case ter_path:
-          hiker_distance_xy(x, y) = 10;
+      case ter_path:
+        hiker_distance_xy(x, y) = 10;
         break;
-        case ter_center:
-          hiker_distance_xy(x, y) = 50;
+      case ter_center:
+        hiker_distance_xy(x, y) = 50;
         break;
-        case ter_mart:
-          hiker_distance_xy(x, y) = 50;
+      case ter_mart:
+        hiker_distance_xy(x, y) = 50;
         break;
-        case ter_forest:
-          hiker_distance_xy(x, y) = 15;
+      case ter_forest:
+        hiker_distance_xy(x, y) = 15;
         break;
-        case ter_mountain:
-          hiker_distance_xy(x, y) = 15;
+      case ter_mountain:
+        hiker_distance_xy(x, y) = 15;
         break;
-        default:
-          hiker_distance_xy(x, y) = INT_MAX;
+      case ter_pc:
+        rival_distance_xy(x, y) = 10;
+        break;
+      default:
+        hiker_distance_xy(x, y) = INT_MAX;
         break;
       }
     }
@@ -434,6 +449,8 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
       hiker_path[y][x].hn = NULL;
       hiker_path[y][x].from[dim_y] = y;
       hiker_path[y][x].from[dim_x] = x;
+      hiker_path[y][x].to[dim_y] = to[dim_y];
+      hiker_path[y][x].to[dim_x] = to[dim_x];
       hiker_path[y][x].cost = INT_MAX;
 
     }
@@ -458,26 +475,16 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
   {
     hp->hn = NULL;
 
-    //if the current node is the PC's location
-    if((hp->from[dim_y] ==to[dim_y]) && hp->from[dim_x] == to[dim_x]) {
-      
-      hiker_path[hp->from[dim_y]][hp->from[dim_x]].cost = 0;
-
-    }
-
     /*
-    NEIGHBOR BELOW
-    if the old cost is greater and neighbor is unvisited
-    than the new cost after visiting through neighbor,
-    replace the cost
-    then decrease the heap.
+    * NEIGHBOR BELOW
+    * if the cost of traveling through current node is 
+    * less than the previous cost and neighbor is unvisited and exits in the heap
+    * then decrease the heap.
     */
     if ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn) &&
         ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost) > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].cost = hp->cost + hiker_distance_pair(hp->from);
-      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x]].hn);
     }
     /*
@@ -492,8 +499,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
     {
       
       hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].cost = (hp->cost + hiker_distance_pair(hp->from));
-      hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y]][hp->from[dim_x] - 1].hn);
     }
     /*
@@ -507,8 +512,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
         (hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].cost > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].cost = (hp->cost + hiker_distance_pair(hp->from));
-      hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y]][hp->from[dim_x] + 1].hn);
     }
     /*
@@ -524,8 +527,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
         (hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].cost > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].cost = (hp->cost + hiker_distance_pair(hp->from));
-      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] + 1][hp->from[dim_x]].hn);
     }
 
@@ -540,8 +541,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
         ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] + 1].cost) > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] + 1].cost = hp->cost + hiker_distance_pair(hp->from);
-      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] + 1].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] + 1].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] + 1].hn);
     }
 
@@ -556,8 +555,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
         ((hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] - 1].cost) > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] - 1].cost = hp->cost + hiker_distance_pair(hp->from);
-      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] - 1].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] - 1].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] - 1][hp->from[dim_x] - 1].hn);
     }
 
@@ -572,8 +569,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
         ((hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] + 1].cost) > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] + 1].cost = hp->cost + hiker_distance_pair(hp->from);
-      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] + 1].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] + 1].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] + 1].hn);
     }
 
@@ -588,8 +583,6 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
         ((hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] - 1].cost) > (hp->cost + hiker_distance_pair(hp->from))))
     {
       hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] - 1].cost = hp->cost + hiker_distance_pair(hp->from);
-      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] - 1].from[dim_y] = hp->from[dim_y];
-      hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] - 1].from[dim_x] = hp->from[dim_x];
       heap_decrease_key_no_replace(&heap, hiker_path[hp->from[dim_y] + 1][hp->from[dim_x] -1].hn);
     }
   }
@@ -598,12 +591,42 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
 
-      //if node is unreachable, print a space
-      if(hiker_path[y][x].cost == INT_MAX) {
-        printf("   ");
+      // if node is unreachable, print a space
+      if (hiker_path[y][x].cost == INT_MAX)
+      {
+        //print new lines for prettiness
+        if (x != MAP_X - 1)
+        {
+          printf("   ");
+        }
+        else
+        {
+          printf("   \n");
+        }
       }
-      else {
-        printf("%02d ", hiker_path[y][x].cost % 100);
+      // also if node is unreachable, print a space
+      else if (hiker_path[y][x].cost < 0)
+      {
+        if (x != MAP_X - 1)
+        {
+          printf("   ");
+        }
+        else
+        {
+          printf("   \n");
+        }
+      }
+      // the real ones
+      else
+      {
+        if (x != MAP_X - 1)
+        {
+          printf("%02d ", hiker_path[y][x].cost % 100);
+        }
+        else
+        {
+          printf("%02d \n", hiker_path[y][x].cost % 100);
+        }
       }
     }
   }

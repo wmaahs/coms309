@@ -1,0 +1,96 @@
+commit 010d074ce11509e44fe65b3f3306cb7eff7a6bcf
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 21 20:49:37 2024 -0600
+
+    refactored in vscode. Ready to test hiker_distance_map.
+
+commit c0968f567526d6d39d6fbb12bc62cef8faddf5c9
+Author: wmaahs <wmaahs@pyrite-n3.cs.iastate.edu>
+Date:   Wed Feb 21 20:15:24 2024 -0600
+
+    working rival_distance_map! now just need to fix the hiker_distance_map
+
+commit 86477200988ac7002d1d21c84579164f74001307
+Author: wmaahs <wmaahs@pyrite-n4.cs.iastate.edu>
+Date:   Wed Feb 21 13:23:40 2024 -0600
+
+    getting closer, seg fault instead of a bunch of -34, -39, map prints correctly now.
+
+commit ba2851f415bdf3345bb396b641be890616a40a70
+Author: wmaahs <wmaahs@pyrite-n4.cs.iastate.edu>
+Date:   Wed Feb 21 02:17:49 2024 -0600
+
+    not quite working correctly. noticed a bug. PC getting written lots of time. add return (im going to bed)
+
+commit bacb97896a51b719267640096665f59f8b5e782c
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 21 01:56:03 2024 -0600
+
+    Finished dijkstras algorithms. Ready to test.
+
+commit dac371f55171d0bdb5232a6941ff599e427d5f2f
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sat Feb 17 20:52:07 2024 -0600
+
+    Added rival dijkstras. Still need to test both.
+
+commit 04f185b5f9f6ba9efe75c2f7d8422285a318bdca
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 13:58:10 2024 -0600
+
+    working on hikers_path dijkstras
+
+commit bc9a068796deed056345730a563d017c863bf3f0
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:47:52 2024 -0600
+
+    Working on hikers shortest path.
+
+commit 353ff8f92fcb524084dff5b58f2d7adb7ba53674
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:37:58 2024 -0600
+
+    fixing bugs..
+
+commit db7b907623b7f454c556846251b8451529c9834a
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:34:08 2024 -0600
+
+    fixed pair_t error
+
+commit 92e9405f8d0727b3e92744fc7fd83fae3449530e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:30:37 2024 -0600
+
+    saving work. Working on dijkstras_trainer_path.
+
+commit dea945833f430beff8c97a5d06506e6abca5ac07
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 21:40:37 2024 -0600
+
+    trying to place pc again.
+
+commit 8a2cede529b7a97b846cb5e599b82fb91acb3afb
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 21:37:20 2024 -0600
+
+    pushing to test.
+
+commit b7fc6234a2d5763f28ee45fa41d46f3e74f66e83
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 21:32:55 2024 -0600
+
+    Add player character
+
+commit d725cbc3c6723748c557c7c51fb7974549edacff
+Author: wmaahs <wmaahs@pyrite-n2.cs.iastate.edu>
+Date:   Mon Feb 12 12:45:57 2024 -0600
+
+    started modifying source code
+
+commit b5289b7521def7e67fed96b05e49ae0fc86aef0d
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 11:55:37 2024 -0600
+
+    Added assignment1.02 solution to CWD
+

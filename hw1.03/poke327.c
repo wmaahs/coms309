@@ -165,23 +165,26 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
       switch(map->map[y][x]) {
-        case ter_grass:
-          rival_distance_xy(x, y)= 15;
-        break;
-        case ter_clearing:
-          rival_distance_xy(x, y) = 10;
-        break;
-        case ter_path:
-          rival_distance_xy(x, y) = 10;
-        break;
-        case ter_center:
-          rival_distance_xy(x, y) = 50;
-        break;
-        case ter_mart:
-          rival_distance_xy(x, y) = 50;
-        break;
-        default:
-          rival_distance_xy(x, y) = INT_MAX;
+      case ter_grass:
+	rival_distance_xy(x, y)= 15;
+	break;
+      case ter_clearing:
+	rival_distance_xy(x, y) = 10;
+	break;
+      case ter_path:
+	rival_distance_xy(x, y) = 10;
+	break;
+      case ter_center:
+	rival_distance_xy(x, y) = 50;
+	break;
+      case ter_mart:
+        rival_distance_xy(x, y) = 50;
+	break;
+      case ter_pc:
+	rival_distance_xy(x, y) = 10;
+	break;
+      default:
+	rival_distance_xy(x, y) = INT_MAX;
         break;
       }
     }
@@ -200,6 +203,8 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
       rival_path[y][x].hn = NULL;
       rival_path[y][x].from[dim_y] = y;
       rival_path[y][x].from[dim_x] = x;
+      rival_path[y][x].to[dim_y] = to[dim_y];
+      rival_path[y][x].to[dim_x] = to[dim_x];
       rival_path[y][x].cost = INT_MAX;
     }
   }
@@ -210,13 +215,12 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
   //Step 1. Create a set of unvisited nodes
   heap_init(&heap, trainer_path_cmp, NULL);
   
-  for (y = 0; y < MAP_Y; y++) {
-    for (x = 0; x < MAP_X; x++) {
+  for (y = 1; y < MAP_Y -1; y++) {
+    for (x = 1; x < MAP_X -1; x++) {
       //ignore if uncreachable
-      //if(rival_distance_xy(x, y) != INT_MAX){
-      //  rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
-      //}
-      rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
+      if(rival_distance_xy(x, y) != INT_MAX){
+        rival_path[y][x].hn = heap_insert(&heap, &rival_path[y][x]);
+      }
     }
   }
 
@@ -242,7 +246,7 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
     */
     if ((rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].hn) &&
         ((rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].cost) > (rp->cost + rival_distance_pair(rp->from))))
-    {
+    { 
       rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].cost = rp->cost + rival_distance_pair(rp->from);
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].hn);
     }
@@ -352,10 +356,28 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
 
       //if node is unreachable, print a space
       if(rival_path[y][x].cost == INT_MAX) {
-        printf("   ");
+	if(x != MAP_X -1) {
+	  printf("   ");
+	}
+        else {
+	  printf("   \n");
+	}
+      }
+      else if(rival_path[y][x].cost < 0) {
+	if(x != MAP_X -1) {
+	  printf("   ");
+	}
+        else {
+	  printf("   \n");
+	}
       }
       else {
-        printf("%02d ", rival_path[y][x].cost % 100);
+        if(x != MAP_X -1) {
+	  printf("%02d ", rival_path[y][x].cost % 100);
+	}
+	else{
+	  printf("%02d \n", rival_path[y][x].cost % 100);
+	}
       }
     }
   }

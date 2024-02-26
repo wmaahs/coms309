@@ -52,11 +52,11 @@ typedef struct trainer_path {
 #define heightpair(pair) (m->height[pair[dim_y]][pair[dim_x]])
 #define heightxy(x, y) (m->height[y][x])
 
-#define hiker_distance_pair(pair) (map->hiker_distance[pair[dim_y]][pair[dim_x]])
-#define hiker_distance_xy(x, y) (map->hiker_distance[y][x])
+#define hiker_distance_pair(pair) (world->hiker_distance[pair[dim_y]][pair[dim_x]])
+#define hiker_distance_xy(x, y) (world->hiker_distance[y][x])
 
-#define rival_distance_pair(pair) (map->rival_distance[pair[dim_y]][pair[dim_x]])
-#define rival_distance_xy(x, y) (map->rival_distance[y][x])
+#define rival_distance_pair(pair) (world->rival_distance[pair[dim_y]][pair[dim_x]])
+#define rival_distance_xy(x, y) (world->rival_distance[y][x])
 
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
@@ -88,8 +88,6 @@ so that they work in the dijkstras algorithm
 typedef struct map {
   terrain_type_t map[MAP_Y][MAP_X];
   uint8_t height[MAP_Y][MAP_X];
-  int hiker_distance[MAP_Y][MAP_X];
-  int rival_distance[MAP_Y][MAP_X];
   int8_t n, s, e, w;
 } map_t;
 
@@ -102,6 +100,9 @@ typedef struct world {
   map_t *world[WORLD_SIZE][WORLD_SIZE];
   pair_t cur_idx;
   map_t *cur_map;
+  int hiker_distance[MAP_Y][MAP_X];
+  int rival_distance[MAP_Y][MAP_X];
+  pc_t player_character;
 } world_t;
 
 typedef struct player_character {
@@ -151,7 +152,7 @@ fix the way we adjust the cost. Should maybe call cost distance.
 in main if we really wanted to we could put the pc in ever spot and 
 run shortest path from ever possible combo.
 */
-static void dijkstra_rival_path(map_t *map, pair_t to)
+static void dijkstra_rival_path(world_t * world, pair_t to)
 {
 
   //pair_t to can be thought of as the PC's location
@@ -161,6 +162,7 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
   static trainer_path_t rival_path[MAP_Y][MAP_X], *rp; // might want to consider change from static
   heap_t heap;
   int x, y;
+  map_t * map = world->cur_map;
 
   //create map of cost for each terrain_t
   for (y = 0; y < MAP_Y; y++)
@@ -247,7 +249,7 @@ static void dijkstra_rival_path(map_t *map, pair_t to)
       rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].cost = rp->cost + rival_distance_pair(rp->from);
       heap_decrease_key_no_replace(&heap, rival_path[rp->from[dim_y] - 1][rp->from[dim_x]].hn);
     }
-    /*
+    /* 
     NEIGHBOR LEFT
     if the old cost is greater and neighbor is unvisited
     than the new cost after visiting through neighbor,
@@ -1499,9 +1501,9 @@ int main(int argc, char *argv[])
   print_map();
 
   printf("Rival Distance Map: \n");
-  dijkstra_rival_path(world.cur_map, pc.coordinates);
+  dijkstra_rival_path(&world, pc.coordinates);
   printf("Hiker Distance Map: \n");
-  dijkstra_hiker_path(world.cur_map, pc.coordinates);
+  dijkstra_hiker_path(world, pc.coordinates);
   
  
 

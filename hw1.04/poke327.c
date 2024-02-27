@@ -96,6 +96,13 @@ typedef struct queue_node {
   struct queue_node *next;
 } queue_node_t;
 
+typedef struct player_character {
+
+  pair_t coordinates;
+
+} pc_t;
+
+
 typedef struct world {
   map_t *world[WORLD_SIZE][WORLD_SIZE];
   pair_t cur_idx;
@@ -105,11 +112,7 @@ typedef struct world {
   pc_t player_character;
 } world_t;
 
-typedef struct player_character {
 
-  pair_t coordinates;
-
-} pc_t;
 
 
 /* Even unallocated, a WORLD_SIZE x WORLD_SIZE array of pointers is a very *
@@ -228,13 +231,6 @@ static void dijkstra_rival_path(world_t * world, pair_t to)
   {
     rp->hn = NULL;
 
-    //if the current node is the PC's location
-    //    if((rp->from[dim_y] ==to[dim_y]) && rp->from[dim_x] == to[dim_x]) {
-    //
-    // //instead just add the distance to the distance map?
-    //  rival_path[rp->from[dim_y]][rp->from[dim_x]].cost = 0;
-
-    //}
 
     /*
     NEIGHBOR BELOW
@@ -397,7 +393,7 @@ static void dijkstra_rival_path(world_t * world, pair_t to)
 /*
 * Hikers Dijkstra
 */
-static void dijkstra_hiker_path(map_t *map, pair_t to)
+static void dijkstra_hiker_path(world_t *world, pair_t to)
 {
 
   //pair_t "to" can be thought of as the PC's location
@@ -407,6 +403,7 @@ static void dijkstra_hiker_path(map_t *map, pair_t to)
   static trainer_path_t hiker_path[MAP_Y][MAP_X], *hp;    //might want to consider change from static
   heap_t heap;
   int x, y;
+  map_t *map = world->cur_map;
 
   //create map of cost for each terrain_t
   for (y = 0; y < MAP_Y; y++)
@@ -1503,7 +1500,7 @@ int main(int argc, char *argv[])
   printf("Rival Distance Map: \n");
   dijkstra_rival_path(&world, pc.coordinates);
   printf("Hiker Distance Map: \n");
-  dijkstra_hiker_path(world, pc.coordinates);
+  dijkstra_hiker_path(&world, pc.coordinates);
   
  
 

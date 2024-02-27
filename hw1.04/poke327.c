@@ -72,13 +72,19 @@ typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_water,
   ter_gate,
   ter_pc
+  // ter_hiker,
+  // ter_rival,
+  // ter_sentry,
+  // ter_wanderer
 } terrain_type_t;
 
 typedef enum trainer_type {
   trainer_pc,
   trainer_hiker,
   trainer_rival,
-  trainer_swimmer
+  trainer_sentry,
+  trainer_wanderer,
+  num_trainer_types
 } trainer_t;
 
 
@@ -99,8 +105,19 @@ typedef struct queue_node {
 typedef struct player_character {
 
   pair_t coordinates;
+  int next_turn;
+  int seq_num;
 
 } pc_t;
+
+typedef struct character {
+
+  trainer_t title;
+  pair_t position;
+  int next_turn;
+  int seq_num;
+
+} character_t;
 
 
 typedef struct world {
@@ -109,7 +126,9 @@ typedef struct world {
   map_t *cur_map;
   int hiker_distance[MAP_Y][MAP_X];
   int rival_distance[MAP_Y][MAP_X];
+  trainer_t *character_map[MAP_Y][MAP_X];
   pc_t player_character;
+  int seq_num;
 } world_t;
 
 
@@ -123,25 +142,94 @@ static pc_t place_pc(map_t *map)
 {
   pc_t pc;
   int i, j;
-  for(i = 0; i < MAP_Y; i++) {
-    for(j = 0; j < MAP_X; j++) {
-      //temporarily set a range for the pc to be in. Must be road.
-      if((map->map[i][j] == ter_path) && (i > 5) && (i < 19) && (j > 5) && (j < 75)) {
+  for (i = 0; i < MAP_Y; i++)
+  {
+    for (j = 0; j < MAP_X; j++)
+    {
+      // temporarily set a range for the pc to be in. Must be road.
+      if ((map->map[i][j] == ter_path) && (i > 5) && (i < 19) && (j > 5) && (j < 75))
+      {
         map->map[i][j] = ter_pc;
         pc.coordinates[dim_x] = j;
         pc.coordinates[dim_y] = i;
-	return pc;
+        return pc;
       }
     }
   }
 
-  //this should never happen
+  // this should never happen
   pc.coordinates[dim_x] = -1;
   pc.coordinates[dim_y] = -1;
   return pc;
-  
 }
 
+//This will also need to add characters to the queue and to the character map
+// if I pass the characters by address even if they are created in the loop,
+//will the addresses still point to the same data?
+int spawn_trainers(world_t *world, int num_trainers) {
+
+  int x;
+  map_t *map = world->cur_map;
+  if(num_trainers > 2) {
+    
+    for(x = 0; x < num_trainers; x++) {
+
+      //make sure you add at least one rival
+      if (x = 0) {
+        character_t first_rival;
+        first_rival.seq_num = world->seq_num;
+        world->seq_num++;
+        first_rival.title = trainer_rival;
+        first_rival.position[dim_x] = rand() % (MAP_X - 1) + 1;
+        first_rival.position[dim_x] = rand() % (MAP_Y - 1) + 1;
+      }
+      //and at least one hiker
+      if(x = 1) {
+        character_t first_hiker;
+        first_hiker.seq_num = world->seq_num;
+        world->seq_num++;
+        first_hiker.title = trainer_hiker;
+        first_hiker.position[dim_x] = rand() % (MAP_X - 1) + 1;
+        first_hiker.position[dim_y] = rand() % (MAP_Y - 1) + 1;
+      }
+      //after that pick randomly
+      if(x > 1) {
+        //pick a random character that isn't the PC
+        int character = rand() % (num_trainer_types-1) + 1;
+        character_t cur_character;
+        cur_character.seq_num = world->seq_num;
+        world->seq_num++;
+        cur_character.title = character;
+        if(cur_character.title == trainer_hiker) {
+          printf("curr_char type: hiker\n");
+        }
+        else if(cur_character.title == trainer_rival) {
+          printf("curr_char type: rival\n");
+        }
+        else if(cur_character.title == trainer_sentry) {
+          printf("curr_char type: sentry\n");
+        }
+        else if(cur_character.title == trainer_wanderer) {
+          printf("curr_char type: wander\n");
+        }
+        else {
+          printf("curr_char type: SOMETHING NOT RIGHT!!\n");
+        }
+      }
+    }
+    return num_trainers;
+  }
+  else if (num_trainers == 1) {
+    character_t solo_rival;
+    solo_rival.seq_num = 0;
+    return 1;
+  }
+  else {
+    return 0;
+  }
+  
+  return num_trainers;
+}
 
 static int32_t trainer_path_cmp(const void *key, const void *with) {
   return ((trainer_path_t *) key)->cost - ((trainer_path_t *) with)->cost;
@@ -1451,6 +1539,8 @@ static void print_map()
 void init_world()
 {
   world.cur_idx[dim_x] = world.cur_idx[dim_y] = WORLD_SIZE / 2;
+  //init seq num for player movement
+  world.seq_num = 0;
   new_map();
 }
 
@@ -1501,6 +1591,15 @@ int main(int argc, char *argv[])
   dijkstra_rival_path(&world, pc.coordinates);
   printf("Hiker Distance Map: \n");
   dijkstra_hiker_path(&world, pc.coordinates);
+
+  int num_trainers = 10;
+  if (spawn_trainers(&world, num_trainers) > 0) {
+    //it worked
+    printf("you have reached the end of spawing\n");
+  }
+  else {
+    printf("something is very wrong\n");
+  }
   
  
 

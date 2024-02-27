@@ -126,7 +126,7 @@ typedef struct world {
   map_t *cur_map;
   int hiker_distance[MAP_Y][MAP_X];
   int rival_distance[MAP_Y][MAP_X];
-  trainer_t *character_map[MAP_Y][MAP_X];
+  character_t *character_map[MAP_Y][MAP_X];
   pc_t player_character;
   int seq_num;
 } world_t;
@@ -169,28 +169,33 @@ static pc_t place_pc(map_t *map)
 int spawn_trainers(world_t *world, int num_trainers) {
 
   int x;
-  map_t *map = world->cur_map;
+  //  map_t *map = world->cur_map;
   if(num_trainers > 2) {
     
     for(x = 0; x < num_trainers; x++) {
 
       //make sure you add at least one rival
-      if (x = 0) {
+      if (x == 0) {
         character_t first_rival;
         first_rival.seq_num = world->seq_num;
         world->seq_num++;
         first_rival.title = trainer_rival;
         first_rival.position[dim_x] = rand() % (MAP_X - 1) + 1;
         first_rival.position[dim_x] = rand() % (MAP_Y - 1) + 1;
+
+	if(first_rival.position[dim_x] > 0) {
+	  printf("first_rival success\n");
+	}
       }
       //and at least one hiker
-      if(x = 1) {
+      if(x == 1) {
         character_t first_hiker;
         first_hiker.seq_num = world->seq_num;
         world->seq_num++;
         first_hiker.title = trainer_hiker;
         first_hiker.position[dim_x] = rand() % (MAP_X - 1) + 1;
         first_hiker.position[dim_y] = rand() % (MAP_Y - 1) + 1;
+	world->character_map[first_hiker.position[dim_x]][first_hiker.position[dim_y]] = &first_hiker;
       }
       //after that pick randomly
       if(x > 1) {
@@ -222,6 +227,10 @@ int spawn_trainers(world_t *world, int num_trainers) {
   else if (num_trainers == 1) {
     character_t solo_rival;
     solo_rival.seq_num = 0;
+    solo_rival.title = trainer_rival;
+    if(solo_rival.title == trainer_rival) {
+      printf("solo rival success\n");
+    }
     return 1;
   }
   else {

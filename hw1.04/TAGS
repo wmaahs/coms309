@@ -42,7 +42,7 @@ typedef struct heap 13,153
   void (*datum_delete)datum_delete17,269
 } heap_t;18,301
 
-poke327.c,2927
+poke327.c,3310
 #define malloc(10,160
 typedef enum dim 16,304
   dim_x,17,323
@@ -91,60 +91,73 @@ typedef enum __attribute__ ((__packed__)) terrain_type 61,1321
   ter_water,72,1515
   ter_gate,73,1528
   ter_pc74,1540
-} terrain_type_t;75,1549
-typedef enum trainer_type 77,1568
-  trainer_pc,78,1596
-  trainer_hiker,79,1610
-  trainer_rival,80,1627
-  trainer_swimmer81,1644
-} trainer_t;82,1662
-typedef struct map 88,1761
-  terrain_type_t map[map89,1782
-  uint8_t height[height90,1818
-  int8_t n,91,1850
-  int8_t n, s,91,1850
-  int8_t n, s, e,91,1850
-  int8_t n, s, e, w;91,1850
-} map_t;92,1871
-typedef struct queue_node 94,1881
-  int x,95,1909
-  int x, y;95,1909
-  struct queue_node *next;next96,1921
-} queue_node_t;97,1948
-typedef struct player_character 99,1965
-  pair_t coordinates;101,2000
-} pc_t;103,2023
-typedef struct world 106,2033
-  map_t *world[world107,2056
-  pair_t cur_idx;108,2096
-  map_t *cur_map;cur_map109,2114
-  int hiker_distance[hiker_distance110,2132
-  int rival_distance[rival_distance111,2168
-  pc_t player_character;112,2204
-} world_t;113,2229
-world_t world;120,2399
-static pc_t place_pc(122,2415
-static int32_t trainer_path_cmp(146,2934
-static void dijkstra_rival_path(158,3355
-static void dijkstra_hiker_path(396,11072
-static int32_t path_cmp(637,18884
-static int32_t edge_penalty(641,19007
-static void dijkstra_path(646,19133
-static int build_paths(749,23049
-static int gaussian[gaussian841,24726
-static int smooth_height(849,24889
-static void find_building_location(1006,28914
-static int place_pokemart(1037,30400
-static int place_center(1051,30692
-static terrain_type_t border_type(1066,31144
-static int map_terrain(1110,32074
-static int place_boulders(1293,36599
-static int place_trees(1311,36969
-static int new_map(1333,37531
-static void print_map(1397,39431
-void init_world(1451,40494
-void delete_world(1457,40594
-int main(1471,40824
+} terrain_type_t;79,1616
+typedef enum trainer_type 81,1635
+  trainer_pc,82,1663
+  trainer_hiker,83,1677
+  trainer_rival,84,1694
+  trainer_sentry,85,1711
+  trainer_wanderer,86,1729
+  num_trainer_types87,1749
+} trainer_t;88,1769
+typedef struct map 94,1868
+  terrain_type_t map[map95,1889
+  uint8_t height[height96,1925
+  int8_t n,97,1957
+  int8_t n, s,97,1957
+  int8_t n, s, e,97,1957
+  int8_t n, s, e, w;97,1957
+} map_t;98,1978
+typedef struct queue_node 100,1988
+  int x,101,2016
+  int x, y;101,2016
+  struct queue_node *next;next102,2028
+} queue_node_t;103,2055
+typedef struct player_character 105,2072
+  pair_t coordinates;107,2107
+  int next_turn;108,2129
+  int seq_num;109,2146
+} pc_t;111,2162
+typedef struct character 113,2171
+  trainer_t title;115,2199
+  pair_t position;116,2218
+  int next_turn;117,2237
+  int seq_num;118,2254
+} character_t;120,2270
+typedef struct world 123,2287
+  map_t *world[world124,2310
+  pair_t cur_idx;125,2350
+  map_t *cur_map;cur_map126,2368
+  int hiker_distance[hiker_distance127,2386
+  int rival_distance[rival_distance128,2422
+  character_t *character_map[character_map129,2458
+  pc_t player_character;130,2502
+  int seq_num;131,2527
+} world_t;132,2542
+world_t world;139,2712
+static pc_t place_pc(141,2728
+int spawn_trainers(169,3473
+static int32_t trainer_path_cmp(243,5677
+static void dijkstra_rival_path(255,6098
+static void dijkstra_hiker_path(493,13815
+static int32_t path_cmp(734,21627
+static int32_t edge_penalty(738,21750
+static void dijkstra_path(743,21876
+static int build_paths(846,25792
+static int gaussian[gaussian938,27469
+static int smooth_height(946,27632
+static void find_building_location(1103,31657
+static int place_pokemart(1134,33143
+static int place_center(1148,33435
+static terrain_type_t border_type(1163,33887
+static int map_terrain(1207,34817
+static int place_boulders(1390,39342
+static int place_trees(1408,39712
+static int new_map(1430,40274
+static void print_map(1494,42174
+void init_world(1548,43237
+void delete_world(1556,43395
+int main(1570,43625
 
 visit_all.c,34
 #define SIDE 3,20

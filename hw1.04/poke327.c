@@ -397,7 +397,7 @@ static void dijkstra_rival_path(world_t * world, pair_t to)
 /*
 * Hikers Dijkstra
 */
-static void dijkstra_hiker_path(world_t *world, pair_t to)
+static void dijkstra_hiker_path(map_t *map, pair_t to)
 {
 
   //pair_t "to" can be thought of as the PC's location
@@ -407,7 +407,6 @@ static void dijkstra_hiker_path(world_t *world, pair_t to)
   static trainer_path_t hiker_path[MAP_Y][MAP_X], *hp;    //might want to consider change from static
   heap_t heap;
   int x, y;
-  map_t *map = world->cur_map;
 
   //create map of cost for each terrain_t
   for (y = 0; y < MAP_Y; y++)
@@ -1504,7 +1503,7 @@ int main(int argc, char *argv[])
   printf("Rival Distance Map: \n");
   dijkstra_rival_path(&world, pc.coordinates);
   printf("Hiker Distance Map: \n");
-  dijkstra_hiker_path(&world, pc.coordinates);
+  dijkstra_hiker_path(world, pc.coordinates);
   
  
 

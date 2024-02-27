@@ -1,0 +1,9 @@
+This program has two functions, one to calculate the distance from every spot on the map for a rival trainer, and another to calculate the distance from every spot on the map for a hiker trainer.
+Both programs behave essentially the same way with the exception of the hiker having a few more terrain types that it is able to traverse. The functions use dijkstra's algorithm starting from the
+location of the PC, and then finds the distance cost for a trainer to travel to it from each of its neighboring locations.
+
+After using dijkstra's algorithm to find the cost of each path, on the map, the function prints the distance map to stdout. If the location on the map is "unreachable" the location is filled in
+with "   " on the map. The distance map displays every reachable location as the distance % 100. Each map is labeled for their respective trainers. I strated using emacs directly in pyrite for this
+assignment and it's kinda fun. :)
+
+Will Maahs

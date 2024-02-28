@@ -58,6 +58,9 @@ typedef struct trainer_path {
 #define rival_distance_pair(pair) (world->rival_distance[pair[dim_y]][pair[dim_x]])
 #define rival_distance_xy(x, y) (world->rival_distance[y][x])
 
+#define character_map_pair(pair) (world->character_map[pair[dim_y]][pair[dim_x]])
+#define character_map_xy(x, y) (world->character_map[y][x])
+
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
   ter_boulder,
@@ -163,6 +166,14 @@ static character_t place_pc(map_t *map)
   return pc;
 }
 
+// comparator for the discrete event simulator
+static int32_t character_nt_compare(const void *key, const void *with) {
+  return ((character_t *) key)->next_turn - ((character_t *) with)->next_turn;
+}
+
+static int32_t character_sn_compare(const void *key, const void *with) {
+  return ((character_t *) key)->seq_num - ((character_t *) with)->seq_num;
+}
 //This will also need to add characters to the queue and to the character map
 // May want this to return the character heap ?
 
@@ -175,11 +186,9 @@ int spawn_trainers(world_t *world, int num_trainers) {
   int x;
   heap_t character_heap;
 
-  heap_init(&character_heap, trainer_path_cmp, NULL); //gonnna wanna fix the comparator
-
   //first add the pc
   world->pc.hn = (&character_heap, &world->pc);
-  world->character_map[world->pc.position[dim_x]][world->pc.position[dim_y]] = &world->pc;
+  world->character_map[world->pc.position[dim_y]][world->pc.position[dim_x]] = &world->pc;
   if(num_trainers > 2) {
     
     for(x = 0; x < num_trainers; x++) {
@@ -194,9 +203,9 @@ int spawn_trainers(world_t *world, int num_trainers) {
         first_rival->next_turn = 0;
         //pick rand spot for the rival
         first_rival->position[dim_x] = rand() % (MAP_X - 1) + 1;
-        first_rival->position[dim_x] = rand() % (MAP_Y - 1) + 1;
+        first_rival->position[dim_y] = rand() % (MAP_Y - 1) + 1;
         //add rival to the character map
-        world->character_map[first_rival->position[dim_x]][first_rival->position[dim_y]] = first_rival;
+        world->character_map[first_rival->position[dim_y]][first_rival->position[dim_x]] = first_rival;
       }
       //and at least one hiker
       if(x == 1) {
@@ -210,7 +219,7 @@ int spawn_trainers(world_t *world, int num_trainers) {
         first_hiker->position[dim_x] = rand() % (MAP_X - 1) + 1;
         first_hiker->position[dim_y] = rand() % (MAP_Y - 1) + 1;
         //add the hiker to the map
-	      world->character_map[first_hiker->position[dim_x]][first_hiker->position[dim_y]] = first_hiker;
+	      world->character_map[first_hiker->position[dim_y]][first_hiker->position[dim_x]] = first_hiker;
       }
       //after that pick randomly
       if(x > 1) {
@@ -221,13 +230,12 @@ int spawn_trainers(world_t *world, int num_trainers) {
         world->seq_num++;
         cur_npc-> next_turn =0;
         cur_npc->title = character;
-
         //pick a random spot on the map for the current NPC
         cur_npc->position[dim_x] = rand() % (MAP_X - 1) + 1;
         cur_npc->position[dim_y] = rand() % (MAP_Y - 1) + 1;
 
         //add current character to the map
-	      world->character_map[cur_npc->position[dim_x]][cur_npc->position[dim_y]] = cur_npc;
+	      world->character_map[cur_npc->position[dim_y]][cur_npc->position[dim_x]] = cur_npc;
 
       }
     }
@@ -243,9 +251,11 @@ int spawn_trainers(world_t *world, int num_trainers) {
     solo_rival->position[dim_y] = rand() % (MAP_Y - 1) + 1;
     solo_rival->next_turn = 0;
 
+    //add the solo rival to the map
+    character_map_pair(solo_rival->position);
     return 1;
   }
-  
+
   else {
     printf("No enemies? Seems a little strange.\n");
     return 0;
@@ -259,12 +269,11 @@ static int32_t trainer_path_cmp(const void *key, const void *with) {
 }
 
 /*
-TODO
-After that we can have one function to call them both in a loop from every location
-
-fix the way we adjust the cost. Should maybe call cost distance.
-in main if we really wanted to we could put the pc in ever spot and 
-run shortest path from ever possible combo.
+* This method calculates the shortes path to the PC 
+* for a rival npc from anywhere on the map
+* 
+* @param world    the current state of the world
+* @param to   the location of the PC
 */
 static void dijkstra_rival_path(world_t * world, pair_t to)
 {
@@ -1567,6 +1576,45 @@ void init_world()
   new_map();
 }
 
+/*
+* Used for testing the character map
+* just prints out the current state of the character map;
+*/
+void print_character_map()
+{
+  int x, y;
+  for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
+
+      switch (world.character_map[y][x]->title)
+      {
+      case trainer_pc:
+        putchar('@');
+        break;
+      case trainer_hiker:
+        putchar('h');
+        break;
+      case trainer_rival:
+        putchar('r');
+        break;
+      case trainer_sentry:
+        putchar('s');
+        break;
+      case trainer_wanderer:
+        putchar('w');
+        break;
+      //add more cases here
+
+      //for now just print a space
+      default:
+        putchar(' ');
+        break;
+      }
+    }
+    putchar('\n');
+  }
+}
+
 void delete_world()
 {
   int x, y;
@@ -1593,14 +1641,21 @@ int main(int argc, char *argv[])
 {
   struct timeval tv;
   uint32_t seed;
+  int num_trainers;
+  char c;
 
+  //add switch for how many trainers
   if (argc == 2) {
-    seed = atoi(argv[1]);
-  } else {
-    gettimeofday(&tv, NULL);
-    seed = (tv.tv_usec ^ (tv.tv_sec << 20)) & 0xffffffff;
+    //remove the dashes
+    num_trainers = atoi(argv[1]);
+  }
+  else {
+    num_trainers = 10;
   }
 
+  gettimeofday(&tv, NULL);
+  seed = (tv.tv_usec ^ (tv.tv_sec << 20)) & 0xffffffff;
+  
   printf("Using seed: %u\n", seed);
   srand(seed);
 
@@ -1633,6 +1688,35 @@ int main(int argc, char *argv[])
   else {
     printf("something is very wrong\n");
   }
+
+  heap_t character_heap;
+  //init the heap
+  heap_init(&character_heap, character_nt_compare, NULL);
+
+  print_character_map();
+
+  //add all the characters to the heap
+  int x, y;
+  for(y = 0; y < MAP_Y; y++) {
+    for(y = 0; y < MAP_Y; y++) {
+      if(world.character_map[y][x]) {
+        world.character_map[y][x]->hn = heap_insert(&character_heap, world.character_map[y][x]);
+
+        //for testing
+        printf("character added @ (%d,%d)\t", x, y);
+        printf("character title: %d\n", world.character_map[y][x]->title);
+      }
+      else {
+        world.character_map[y][x]->hn = NULL;
+      }
+    }
+  }
+  // do {
+
+
+  //   usleep(125000);  //8fps
+  //   c = 'q';
+  // } while(c != 'q');
 
   delete_world();
  

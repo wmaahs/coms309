@@ -171,9 +171,11 @@ static int32_t character_nt_compare(const void *key, const void *with) {
   return ((character_t *) key)->next_turn - ((character_t *) with)->next_turn;
 }
 
-static int32_t character_sn_compare(const void *key, const void *with) {
-  return ((character_t *) key)->seq_num - ((character_t *) with)->seq_num;
-}
+//static int32_t character_sn_compare(const void *key, const void *with) {
+//  return ((character_t *) key)->seq_num - ((character_t *) with)->seq_num;
+//}
+
+
 //This will also need to add characters to the queue and to the character map
 // May want this to return the character heap ?
 
@@ -183,11 +185,18 @@ static int32_t character_sn_compare(const void *key, const void *with) {
 // character map?
 int spawn_trainers(world_t *world, int num_trainers) {
 
-  int x;
-  heap_t character_heap;
+  int x, y;
 
+  //malloc the whole character map, init them all as null;
+  for(y = 0; y < MAP_Y; y++){
+    for(x = 0; x < MAP_X; x++){
+
+      character_map_xy(x, y) = (character_t *) (malloc(sizeof(character_t)));
+      character_map_xy(x, y) = (character_t *) NULL;
+    }
+  }
+  
   //first add the pc
-  world->pc.hn = (&character_heap, &world->pc);
   world->character_map[world->pc.position[dim_y]][world->pc.position[dim_x]] = &world->pc;
   if(num_trainers > 2) {
     
@@ -226,6 +235,7 @@ int spawn_trainers(world_t *world, int num_trainers) {
         //pick a random character that isn't the PC
         int character = rand() % (num_trainer_types-1) + 1;
         character_t *cur_npc;
+	cur_npc = (character_t *) (malloc(sizeof(character_t)));
         cur_npc->seq_num = world->seq_num;
         world->seq_num++;
         cur_npc-> next_turn =0;
@@ -244,6 +254,7 @@ int spawn_trainers(world_t *world, int num_trainers) {
   //else just make one rival to fight the pc
   else if (num_trainers == 1) {
     character_t *solo_rival;
+    solo_rival = (character_t *) (malloc(sizeof(character_t)));
     solo_rival->seq_num = world->seq_num;
     world->seq_num++;
     solo_rival->title = trainer_rival;
@@ -252,7 +263,7 @@ int spawn_trainers(world_t *world, int num_trainers) {
     solo_rival->next_turn = 0;
 
     //add the solo rival to the map
-    character_map_pair(solo_rival->position);
+    character_map_pair(solo_rival->position) = solo_rival;
     return 1;
   }
 
@@ -1589,6 +1600,7 @@ void print_character_map()
       switch (world.character_map[y][x]->title)
       {
       case trainer_pc:
+	printf("Made it here! (%d, %d\n", x, y);
         putchar('@');
         break;
       case trainer_hiker:
@@ -1642,7 +1654,7 @@ int main(int argc, char *argv[])
   struct timeval tv;
   uint32_t seed;
   int num_trainers;
-  char c;
+  //  char c;
 
   //add switch for how many trainers
   if (argc == 2) {
@@ -1680,7 +1692,6 @@ int main(int argc, char *argv[])
   printf("Hiker Distance Map: \n");
   dijkstra_hiker_path(&world, world.pc.position);
 
-  int num_trainers = 10;
   if (spawn_trainers(&world, num_trainers) > 0) {
     //it worked
     printf("you have reached the end of spawing\n");
@@ -1688,7 +1699,7 @@ int main(int argc, char *argv[])
   else {
     printf("something is very wrong\n");
   }
-
+  
   heap_t character_heap;
   //init the heap
   heap_init(&character_heap, character_nt_compare, NULL);
@@ -1698,7 +1709,7 @@ int main(int argc, char *argv[])
   //add all the characters to the heap
   int x, y;
   for(y = 0; y < MAP_Y; y++) {
-    for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
       if(world.character_map[y][x]) {
         world.character_map[y][x]->hn = heap_insert(&character_heap, world.character_map[y][x]);
 

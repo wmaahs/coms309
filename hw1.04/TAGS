@@ -42,7 +42,7 @@ typedef struct heap 13,153
   void (*datum_delete)datum_delete17,269
 } heap_t;18,301
 
-poke327.c,3359
+poke327.c,3365
 #define malloc(10,160
 typedef enum dim 16,304
   dim_x,17,323
@@ -129,35 +129,35 @@ typedef struct world 126,2463
   int hiker_distance[hiker_distance130,2562
   int rival_distance[rival_distance131,2598
   character_t *character_map[character_map132,2634
-  character_t pc;133,2678
-  int seq_num;134,2696
-} world_t;135,2711
-world_t world;142,2881
-static character_t place_pc(144,2897
-static int32_t character_nt_compare(170,3485
-int spawn_trainers(186,4098
-static int32_t trainer_path_cmp(278,7292
-static void dijkstra_rival_path(289,7630
-static void dijkstra_hiker_path(527,15347
-static int32_t path_cmp(768,23159
-static int32_t edge_penalty(772,23282
-static void dijkstra_path(777,23408
-static int build_paths(880,27324
-static int gaussian[gaussian972,29001
-static int smooth_height(980,29164
-static void find_building_location(1137,33189
-static int place_pokemart(1168,34675
-static int place_center(1182,34967
-static terrain_type_t border_type(1197,35419
-static int map_terrain(1241,36349
-static int place_boulders(1424,40874
-static int place_trees(1442,41244
-static int new_map(1464,41806
-static void print_map(1528,43706
-void init_world(1582,44769
-void print_character_map(1594,45028
-void delete_world(1630,45704
-int main(1652,46150
+  character_t *pc;pc133,2678
+  int seq_num;134,2697
+} world_t;135,2712
+world_t world;142,2882
+static character_t * place_pc(144,2898
+static int32_t character_nt_compare(169,3491
+int spawn_trainers(185,4104
+static int32_t trainer_path_cmp(275,7165
+static void dijkstra_rival_path(286,7503
+static void dijkstra_hiker_path(524,15220
+static int32_t path_cmp(765,23032
+static int32_t edge_penalty(769,23155
+static void dijkstra_path(774,23281
+static int build_paths(877,27197
+static int gaussian[gaussian969,28874
+static int smooth_height(977,29037
+static void find_building_location(1134,33062
+static int place_pokemart(1165,34548
+static int place_center(1179,34840
+static terrain_type_t border_type(1194,35292
+static int map_terrain(1238,36222
+static int place_boulders(1421,40747
+static int place_trees(1439,41117
+static int new_map(1461,41679
+static void print_map(1525,43579
+void init_world(1579,44642
+void print_character_map(1591,44901
+void delete_world(1636,45755
+int main(1658,46201
 
 visit_all.c,34
 #define SIDE 3,20

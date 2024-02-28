@@ -1682,6 +1682,7 @@ int main(int argc, char *argv[])
   character_t *pc;
   pc = (character_t *) (malloc(sizeof(character_t)));
   world.pc = place_pc(world.cur_map, pc);
+  world.pc->title = trainer_pc;
   world.pc->seq_num = world.seq_num;
   world.seq_num++;
   world.pc->next_turn = 0;
@@ -1737,7 +1738,7 @@ int main(int argc, char *argv[])
   // } while(c != 'q');
 
   delete_world();
- 
+  free(pc);
 
   //printf("But how are you going to be the very best if you quit?\n");
   

@@ -191,8 +191,7 @@ int spawn_trainers(world_t *world, int num_trainers) {
   for(y = 0; y < MAP_Y; y++){
     for(x = 0; x < MAP_X; x++){
 
-      character_map_xy(x, y) = (character_t *) (malloc(sizeof(character_t)));
-      character_map_xy(x, y) = (character_t *) NULL;
+      character_map_xy(x, y) = NULL;
     }
   }
   
@@ -1594,33 +1593,42 @@ void init_world()
 void print_character_map()
 {
   int x, y;
-  for(y = 0; y < MAP_Y; y++) {
-    for(x = 0; x < MAP_X; x++) {
+  for (y = 0; y < MAP_Y; y++)
+  {
+    for (x = 0; x < MAP_X; x++)
+    {
 
-      switch (world.character_map[y][x]->title)
+      if (world.character_map[y][x] == NULL)
       {
-      case trainer_pc:
-	printf("Made it here! (%d, %d\n", x, y);
-        putchar('@');
-        break;
-      case trainer_hiker:
-        putchar('h');
-        break;
-      case trainer_rival:
-        putchar('r');
-        break;
-      case trainer_sentry:
-        putchar('s');
-        break;
-      case trainer_wanderer:
-        putchar('w');
-        break;
-      //add more cases here
-
-      //for now just print a space
-      default:
         putchar(' ');
-        break;
+      }
+      else
+      {
+        switch (world.character_map[y][x]->title)
+        {
+        case trainer_pc:
+          // printf("Made it here! (%d, %d\n", x, y);
+          putchar('@');
+          break;
+        case trainer_hiker:
+          putchar('h');
+          break;
+        case trainer_rival:
+          putchar('r');
+          break;
+        case trainer_sentry:
+          putchar('s');
+          break;
+        case trainer_wanderer:
+          putchar('w');
+          break;
+        // add more cases here
+
+        // for now just print a space
+        default:
+          putchar(' ');
+          break;
+        }
       }
     }
     putchar('\n');

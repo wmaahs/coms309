@@ -130,7 +130,7 @@ typedef struct world {
   int hiker_distance[MAP_Y][MAP_X];
   int rival_distance[MAP_Y][MAP_X];
   character_t *character_map[MAP_Y][MAP_X];
-  character_t pc;
+  character_t *pc;
   int seq_num;
 } world_t;
 
@@ -141,9 +141,8 @@ typedef struct world {
  * large thing to put on the stack.  To avoid that, world is a global.     */
 world_t world;
 
-static character_t place_pc(map_t *map)
+static character_t * place_pc(map_t *map, character_t *pc)
 {
-  character_t pc;
   int i, j;
   for (i = 0; i < MAP_Y; i++)
   {
@@ -153,16 +152,16 @@ static character_t place_pc(map_t *map)
       if ((map->map[i][j] == ter_path) && (i > 5) && (i < 19) && (j > 5) && (j < 75))
       {
         map->map[i][j] = ter_pc;
-        pc.position[dim_x] = j;
-        pc.position[dim_y] = i;
+        pc->position[dim_x] = j;
+        pc->position[dim_y] = i;
         return pc;
       }
     }
   }
 
   // this should never happen
-  pc.position[dim_x] = -1;
-  pc.position[dim_y] = -1;
+  pc->position[dim_x] = -1;
+  pc->position[dim_y] = -1;
   return pc;
 }
 
@@ -194,9 +193,8 @@ int spawn_trainers(world_t *world, int num_trainers) {
       character_map_xy(x, y) = NULL;
     }
   }
-  
   //first add the pc
-  world->character_map[world->pc.position[dim_y]][world->pc.position[dim_x]] = &world->pc;
+  character_map_pair(world->pc->position) = world->pc;
   if(num_trainers > 2) {
     
     for(x = 0; x < num_trainers; x++) {
@@ -1681,13 +1679,14 @@ int main(int argc, char *argv[])
 
   init_world();
 
-
-  world.pc = place_pc(world.cur_map);
-  world.pc.seq_num = world.seq_num;
+  character_t *pc;
+  pc = (character_t *) (malloc(sizeof(character_t)));
+  world.pc = place_pc(world.cur_map, pc);
+  world.pc->seq_num = world.seq_num;
   world.seq_num++;
-  world.pc.next_turn = 0;
+  world.pc->next_turn = 0;
   //error checking (not necissary but why not)
-  if((world.pc.position[dim_y] == -1) || (world.pc.position[dim_x] == -1)) {
+  if((world.pc->position[dim_y] == -1) || (world.pc->position[dim_x] == -1)) {
 
     fprintf(stderr, "Failed to place pc ?\n");
     return -1;
@@ -1696,9 +1695,9 @@ int main(int argc, char *argv[])
   print_map();
 
   printf("Rival Distance Map: \n");
-  dijkstra_rival_path(&world, world.pc.position);
+  dijkstra_rival_path(&world, world.pc->position);
   printf("Hiker Distance Map: \n");
-  dijkstra_hiker_path(&world, world.pc.position);
+  dijkstra_hiker_path(&world, world.pc->position);
 
   if (spawn_trainers(&world, num_trainers) > 0) {
     //it worked
@@ -1718,7 +1717,7 @@ int main(int argc, char *argv[])
   int x, y;
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
-      if(world.character_map[y][x]) {
+      if(world.character_map[y][x] != NULL) {
         world.character_map[y][x]->hn = heap_insert(&character_heap, world.character_map[y][x]);
 
         //for testing

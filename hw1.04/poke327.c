@@ -186,7 +186,7 @@ int spawn_trainers(world_t *world, int num_trainers) {
 
   int x, y;
 
-  //malloc the whole character map, init them all as null;
+  //init them all as null;
   for(y = 0; y < MAP_Y; y++){
     for(x = 0; x < MAP_X; x++){
 
@@ -474,48 +474,48 @@ static void dijkstra_rival_path(world_t * world, pair_t to)
   }
 
   //write the cost for each node in the distance map 
-  for(y = 0; y < MAP_Y; y++) {
-    for(x = 0; x < MAP_X; x++) {
+  //  for(y = 0; y < MAP_Y; y++) {
+  //    for(x = 0; x < MAP_X; x++) {
 
       // if node is unreachable, print a space
-      if (rival_path[y][x].cost == INT_MAX)
-      {
+  //      if (rival_path[y][x].cost == INT_MAX)
+  //      {
         //print new lines for prettiness
-        if (x != MAP_X - 1)
-        {
-          printf("   ");
-        }
-        else
-        {
-          printf("   \n");
-        }
-      }
+  //        if (x != MAP_X - 1)
+  //        {
+  //          printf("   ");
+  //        }
+  //        else
+	  //        {
+	  //          printf("   \n");
+	  //        }
+	  //      }
       // also if node is unreachable, print a space
-      else if (rival_path[y][x].cost < 0)
-      {
-        if (x != MAP_X - 1)
-        {
-          printf("   ");
-        }
-        else
-        {
-          printf("   \n");
-        }
-      }
+      //      else if (rival_path[y][x].cost < 0)
+	//      {
+	//        if (x != MAP_X - 1)
+	  //        {
+	  //          printf("   ");
+	  //        }
+	//        else
+	  //        {
+	  //          printf("   \n");
+	  //        }
+	//      }
       // the ones we care about
-      else
-      {
-        if (x != MAP_X - 1)
-        {
-          printf("%02d ", rival_path[y][x].cost % 100);
-        }
-        else
-        {
-          printf("%02d \n", rival_path[y][x].cost % 100);
-        }
-      }
-    }
-  }
+      //      else
+	//      {
+	//        if (x != MAP_X - 1)
+	  //        {
+	  //          printf("%02d ", rival_path[y][x].cost % 100);
+	  //        }
+	//        else
+	  //        {
+	  //          printf("%02d \n", rival_path[y][x].cost % 100);
+	  //        }
+	//      }
+      // }
+    //  }
   return;
 }
 /*
@@ -714,49 +714,6 @@ static void dijkstra_hiker_path(world_t *world, pair_t to)
     }
   }
 
-  //write the cost for each node in the distance map 
-  for(y = 0; y < MAP_Y; y++) {
-    for(x = 0; x < MAP_X; x++) {
-
-      // if node is unreachable, print a space
-      if (hiker_path[y][x].cost == INT_MAX)
-      {
-        //print new lines for prettiness
-        if (x != MAP_X - 1)
-        {
-          printf("   ");
-        }
-        else
-        {
-          printf("   \n");
-        }
-      }
-      // also if node is unreachable, print a space
-      else if (hiker_path[y][x].cost < 0)
-      {
-        if (x != MAP_X - 1)
-        {
-          printf("   ");
-        }
-        else
-        {
-          printf("   \n");
-        }
-      }
-      // the real ones
-      else
-      {
-        if (x != MAP_X - 1)
-        {
-          printf("%02d ", hiker_path[y][x].cost % 100);
-        }
-        else
-        {
-          printf("%02d \n", hiker_path[y][x].cost % 100);
-        }
-      }
-    }
-  }
 
   return;
 }
@@ -1645,8 +1602,8 @@ void delete_world()
       }
     }
   }
-  for (y = 0; y < WORLD_SIZE; y++) {
-    for (x = 0; x < WORLD_SIZE; x++) {
+  for (y = 0; y < MAP_Y; y++) {
+    for (x = 0; x < MAP_X; x++) {
       if (world.character_map[y][x]) {
         free(world.character_map[y][x]);
         world.character_map[y][x] = NULL;
@@ -1719,14 +1676,16 @@ int main(int argc, char *argv[])
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
       if(world.character_map[y][x] != NULL) {
+        //for testing
+	printf("made it here\n");
+
         world.character_map[y][x]->hn = heap_insert(&character_heap, world.character_map[y][x]);
 
-        //for testing
         printf("character added @ (%d,%d)\t", x, y);
-        printf("character title: %d\n", world.character_map[y][x]->title);
+        printf("character seq_num: %d\n", world.character_map[y][x]->seq_num);
       }
       else {
-        world.character_map[y][x]->hn = NULL;
+        continue;
       }
     }
   }
@@ -1738,7 +1697,6 @@ int main(int argc, char *argv[])
   // } while(c != 'q');
 
   delete_world();
-  free(pc);
 
   //printf("But how are you going to be the very best if you quit?\n");
   

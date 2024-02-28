@@ -102,13 +102,13 @@ typedef struct queue_node {
   struct queue_node *next;
 } queue_node_t;
 
-typedef struct player_character {
+// typedef struct player_character {
 
-  pair_t coordinates;
-  int next_turn;
-  int seq_num;
+//   pair_t coordinates;
+//   int next_turn;
+//   int seq_num;
 
-} pc_t;
+// } pc_t;
 
 typedef struct character {
 
@@ -116,7 +116,7 @@ typedef struct character {
   pair_t position;
   int next_turn;
   int seq_num;
-
+  heap_node_t *hn;
 } character_t;
 
 
@@ -127,7 +127,7 @@ typedef struct world {
   int hiker_distance[MAP_Y][MAP_X];
   int rival_distance[MAP_Y][MAP_X];
   character_t *character_map[MAP_Y][MAP_X];
-  pc_t player_character;
+  character_t pc;
   int seq_num;
 } world_t;
 
@@ -138,9 +138,9 @@ typedef struct world {
  * large thing to put on the stack.  To avoid that, world is a global.     */
 world_t world;
 
-static pc_t place_pc(map_t *map)
+static character_t place_pc(map_t *map)
 {
-  pc_t pc;
+  character_t pc;
   int i, j;
   for (i = 0; i < MAP_Y; i++)
   {
@@ -150,90 +150,104 @@ static pc_t place_pc(map_t *map)
       if ((map->map[i][j] == ter_path) && (i > 5) && (i < 19) && (j > 5) && (j < 75))
       {
         map->map[i][j] = ter_pc;
-        pc.coordinates[dim_x] = j;
-        pc.coordinates[dim_y] = i;
+        pc.position[dim_x] = j;
+        pc.position[dim_y] = i;
         return pc;
       }
     }
   }
 
   // this should never happen
-  pc.coordinates[dim_x] = -1;
-  pc.coordinates[dim_y] = -1;
+  pc.position[dim_x] = -1;
+  pc.position[dim_y] = -1;
   return pc;
 }
 
 //This will also need to add characters to the queue and to the character map
-// if I pass the characters by address even if they are created in the loop,
-//will the addresses still point to the same data?
+// May want this to return the character heap ?
+
+// or pass the heap in by address and make it in main (or calling function)
+
+// maybe this function should just initialize the structs and add them to the
+// character map?
 int spawn_trainers(world_t *world, int num_trainers) {
 
   int x;
-  //  map_t *map = world->cur_map;
+  heap_t character_heap;
+
+  heap_init(&character_heap, trainer_path_cmp, NULL); //gonnna wanna fix the comparator
+
+  //first add the pc
+  world->pc.hn = (&character_heap, &world->pc);
+  world->character_map[world->pc.position[dim_x]][world->pc.position[dim_y]] = &world->pc;
   if(num_trainers > 2) {
     
     for(x = 0; x < num_trainers; x++) {
 
       //make sure you add at least one rival
       if (x == 0) {
-        character_t first_rival;
-        first_rival.seq_num = world->seq_num;
+        character_t *first_rival;
+        first_rival = (character_t *) (malloc(sizeof(character_t)));
+        first_rival->seq_num = world->seq_num;
         world->seq_num++;
-        first_rival.title = trainer_rival;
-        first_rival.position[dim_x] = rand() % (MAP_X - 1) + 1;
-        first_rival.position[dim_x] = rand() % (MAP_Y - 1) + 1;
-
-	if(first_rival.position[dim_x] > 0) {
-	  printf("first_rival success\n");
-	}
+        first_rival->title = trainer_rival;
+        first_rival->next_turn = 0;
+        //pick rand spot for the rival
+        first_rival->position[dim_x] = rand() % (MAP_X - 1) + 1;
+        first_rival->position[dim_x] = rand() % (MAP_Y - 1) + 1;
+        //add rival to the character map
+        world->character_map[first_rival->position[dim_x]][first_rival->position[dim_y]] = first_rival;
       }
       //and at least one hiker
       if(x == 1) {
-        character_t first_hiker;
-        first_hiker.seq_num = world->seq_num;
+        character_t *first_hiker;
+        first_hiker = (character_t *) (malloc(sizeof(character_t)));
+        first_hiker->seq_num = world->seq_num;
         world->seq_num++;
-        first_hiker.title = trainer_hiker;
-        first_hiker.position[dim_x] = rand() % (MAP_X - 1) + 1;
-        first_hiker.position[dim_y] = rand() % (MAP_Y - 1) + 1;
-	world->character_map[first_hiker.position[dim_x]][first_hiker.position[dim_y]] = &first_hiker;
+        first_hiker->title = trainer_hiker;
+        first_hiker->next_turn = 0;
+        //pick a random spot on the map for the hiker
+        first_hiker->position[dim_x] = rand() % (MAP_X - 1) + 1;
+        first_hiker->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+        //add the hiker to the map
+	      world->character_map[first_hiker->position[dim_x]][first_hiker->position[dim_y]] = first_hiker;
       }
       //after that pick randomly
       if(x > 1) {
         //pick a random character that isn't the PC
         int character = rand() % (num_trainer_types-1) + 1;
-        character_t cur_character;
-        cur_character.seq_num = world->seq_num;
+        character_t *cur_npc;
+        cur_npc->seq_num = world->seq_num;
         world->seq_num++;
-        cur_character.title = character;
-        if(cur_character.title == trainer_hiker) {
-          printf("curr_char type: hiker\n");
-        }
-        else if(cur_character.title == trainer_rival) {
-          printf("curr_char type: rival\n");
-        }
-        else if(cur_character.title == trainer_sentry) {
-          printf("curr_char type: sentry\n");
-        }
-        else if(cur_character.title == trainer_wanderer) {
-          printf("curr_char type: wander\n");
-        }
-        else {
-          printf("curr_char type: SOMETHING NOT RIGHT!!\n");
-        }
+        cur_npc-> next_turn =0;
+        cur_npc->title = character;
+
+        //pick a random spot on the map for the current NPC
+        cur_npc->position[dim_x] = rand() % (MAP_X - 1) + 1;
+        cur_npc->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+
+        //add current character to the map
+	      world->character_map[cur_npc->position[dim_x]][cur_npc->position[dim_y]] = cur_npc;
+
       }
     }
     return num_trainers;
   }
+  //else just make one rival to fight the pc
   else if (num_trainers == 1) {
-    character_t solo_rival;
-    solo_rival.seq_num = 0;
-    solo_rival.title = trainer_rival;
-    if(solo_rival.title == trainer_rival) {
-      printf("solo rival success\n");
-    }
+    character_t *solo_rival;
+    solo_rival->seq_num = world->seq_num;
+    world->seq_num++;
+    solo_rival->title = trainer_rival;
+    solo_rival->position[dim_x] = rand() % (MAP_X - 1) + 1;
+    solo_rival->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+    solo_rival->next_turn = 0;
+
     return 1;
   }
+  
   else {
+    printf("No enemies? Seems a little strange.\n");
     return 0;
   }
   
@@ -1565,6 +1579,14 @@ void delete_world()
       }
     }
   }
+  for (y = 0; y < WORLD_SIZE; y++) {
+    for (x = 0; x < WORLD_SIZE; x++) {
+      if (world.character_map[y][x]) {
+        free(world.character_map[y][x]);
+        world.character_map[y][x] = NULL;
+      }
+    }
+  }
 }
 
 int main(int argc, char *argv[])
@@ -1584,22 +1606,24 @@ int main(int argc, char *argv[])
 
   init_world();
 
-  pc_t pc;
-  pc = place_pc(world.cur_map);
 
+  world.pc = place_pc(world.cur_map);
+  world.pc.seq_num = world.seq_num;
+  world.seq_num++;
+  world.pc.next_turn = 0;
   //error checking (not necissary but why not)
-  if((pc.coordinates[dim_y] == -1) || (pc.coordinates[dim_x] == -1)) {
+  if((world.pc.position[dim_y] == -1) || (world.pc.position[dim_x] == -1)) {
 
     fprintf(stderr, "Failed to place pc ?\n");
     return -1;
   }
-  
+
   print_map();
 
   printf("Rival Distance Map: \n");
-  dijkstra_rival_path(&world, pc.coordinates);
+  dijkstra_rival_path(&world, world.pc.position);
   printf("Hiker Distance Map: \n");
-  dijkstra_hiker_path(&world, pc.coordinates);
+  dijkstra_hiker_path(&world, world.pc.position);
 
   int num_trainers = 10;
   if (spawn_trainers(&world, num_trainers) > 0) {
@@ -1609,7 +1633,8 @@ int main(int argc, char *argv[])
   else {
     printf("something is very wrong\n");
   }
-  
+
+  delete_world();
  
 
   //printf("But how are you going to be the very best if you quit?\n");

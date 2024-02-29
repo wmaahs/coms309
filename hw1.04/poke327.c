@@ -61,6 +61,9 @@ typedef struct trainer_path {
 #define character_map_pair(pair) (world->character_map[pair[dim_y]][pair[dim_x]])
 #define character_map_xy(x, y) (world->character_map[y][x])
 
+#define character_map_xy_np(x, y) (world.character_map[y][x])
+#define character_map_pair_np(pair) (world.character_map[pair[dim_y]][pair[dim_x]])
+
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_debug,
   ter_boulder,
@@ -75,10 +78,6 @@ typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_water,
   ter_gate,
   ter_pc
-  // ter_hiker,
-  // ter_rival,
-  // ter_sentry,
-  // ter_wanderer
 } terrain_type_t;
 
 typedef enum trainer_type {
@@ -473,49 +472,49 @@ static void dijkstra_rival_path(world_t * world, pair_t to)
     }
   }
 
-  //write the cost for each node in the distance map 
+  // // write the cost for each node in the distance map 
   //  for(y = 0; y < MAP_Y; y++) {
   //    for(x = 0; x < MAP_X; x++) {
 
-      // if node is unreachable, print a space
+  //     // if node is unreachable, print a space
   //      if (rival_path[y][x].cost == INT_MAX)
   //      {
-        //print new lines for prettiness
+  //       // print new lines for prettiness
   //        if (x != MAP_X - 1)
   //        {
   //          printf("   ");
   //        }
   //        else
-	  //        {
-	  //          printf("   \n");
-	  //        }
-	  //      }
-      // also if node is unreachable, print a space
-      //      else if (rival_path[y][x].cost < 0)
+	//          {
+	//            printf("   \n");
+	//          }
+	//        }
+  //     // also if node is unreachable, print a space
+  //          else if (rival_path[y][x].cost < 0)
 	//      {
 	//        if (x != MAP_X - 1)
-	  //        {
-	  //          printf("   ");
-	  //        }
+	//          {
+	//            printf("   ");
+	//          }
 	//        else
-	  //        {
-	  //          printf("   \n");
-	  //        }
+	//          {
+	//            printf("   \n");
+	//          }
 	//      }
-      // the ones we care about
-      //      else
+  //     // the ones we care about
+  //          else
 	//      {
 	//        if (x != MAP_X - 1)
-	  //        {
-	  //          printf("%02d ", rival_path[y][x].cost % 100);
-	  //        }
+	//          {
+	//            printf("%02d ", rival_path[y][x].cost % 100);
+	//          }
 	//        else
-	  //        {
-	  //          printf("%02d \n", rival_path[y][x].cost % 100);
-	  //        }
+	//          {
+	//            printf("%02d \n", rival_path[y][x].cost % 100);
+	//          }
 	//      }
-      // }
-    //  }
+  //     }
+  //    }
   return;
 }
 /*
@@ -1548,6 +1547,10 @@ void init_world()
 void print_character_map()
 {
   int x, y;
+  int default_reached = 0;
+  map_t * m = world.cur_map;
+  // printf("\n\n\n\n");
+
   for (y = 0; y < MAP_Y; y++)
   {
     for (x = 0; x < MAP_X; x++)
@@ -1555,8 +1558,46 @@ void print_character_map()
 
       if (world.character_map[y][x] == NULL)
       {
-        putchar(' ');
+        // print the terrain map instead
+        switch (mapxy(x, y))
+        {
+        // copied from print map
+        case ter_boulder:
+        case ter_mountain:
+          putchar('%');
+          break;
+        case ter_tree:
+        case ter_forest:
+          putchar('^');
+          break;
+        case ter_path:
+        case ter_gate:
+          putchar('#');
+          break;
+        case ter_mart:
+          putchar('M');
+          break;
+        case ter_center:
+          putchar('C');
+          break;
+        case ter_grass:
+          putchar(':');
+          break;
+        case ter_clearing:
+          putchar('.');
+          break;
+        case ter_water:
+          putchar('~');
+          break;
+        case ter_pc:
+          putchar('@');
+          break;
+        default:
+          default_reached = 1;
+          break;
+        }
       }
+      // there is a character here
       else
       {
         switch (world.character_map[y][x]->title)
@@ -1581,13 +1622,61 @@ void print_character_map()
 
         // for now just print a space
         default:
-          putchar(' ');
+          default_reached = 1;
           break;
         }
       }
     }
     putchar('\n');
   }
+
+  if(default_reached = 1) {
+    fprintf(stderr, "Default reached in %s\n", __FUNCTION__);
+  }
+}
+
+/**
+ *  Move the hiker one step closer on the cheapest path the PC
+ * 
+ * @param hiker the hiker that needs to move
+*/
+void move_hiker(character_t *hiker) {
+
+  int x, y;
+  int cur_min = INT_MAX;
+  pair_t cur_min_pair;
+  int cur_y = hiker->position[dim_y];
+  int cur_x = hiker->position[dim_x];
+  //clear the character map
+  character_map_pair_np(hiker->position) = NULL;
+
+  //3x3 grid, hiker location is the center
+  for(x = -1; x < 1; x++) {
+    for(y = -1; y < 1; y++) {
+
+      //dont need to check the square we are on
+      if((x == 0) && (y == 0)) {
+        continue;
+      }
+      
+      //check which direction has the smallest value on the hiker distance map
+      // and that there isn't already somebody there
+      if((world.hiker_distance[cur_y + y][cur_x + x] < cur_min) &&
+          world.character_map[cur_y + y][cur_x + x] == NULL) {
+
+            cur_min = world.hiker_distance[cur_y + y][cur_x + x];
+            cur_min_pair[dim_y] = cur_y + y;
+            cur_min_pair[dim_x] = cur_x + x;
+          }
+    }
+  }
+
+  //update the hiker so it knows where it is
+  hiker->position[dim_y] = cur_min_pair[dim_y];
+  hiker->position[dim_x] = cur_min_pair[dim_x];
+  //update the character map
+  character_map_pair_np(hiker->position) = hiker;
+
 }
 
 void delete_world()
@@ -1617,12 +1706,15 @@ int main(int argc, char *argv[])
   struct timeval tv;
   uint32_t seed;
   int num_trainers;
-  //  char c;
+  char c;
+
+  //the player with the turn
+  character_t *cur_character;
 
   //add switch for how many trainers
-  if (argc == 2) {
+  if (argc >= 2) {
     //remove the dashes
-    num_trainers = atoi(argv[1]);
+    num_trainers = atoi(argv[2]);
   }
   else {
     num_trainers = 10;
@@ -1652,9 +1744,9 @@ int main(int argc, char *argv[])
 
   print_map();
 
-  printf("Rival Distance Map: \n");
+  // printf("Rival Distance Map: \n");
   dijkstra_rival_path(&world, world.pc->position);
-  printf("Hiker Distance Map: \n");
+  // printf("Hiker Distance Map: \n");
   dijkstra_hiker_path(&world, world.pc->position);
 
   if (spawn_trainers(&world, num_trainers) > 0) {
@@ -1676,8 +1768,6 @@ int main(int argc, char *argv[])
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
       if(world.character_map[y][x] != NULL) {
-        //for testing
-	printf("made it here\n");
 
         world.character_map[y][x]->hn = heap_insert(&character_heap, world.character_map[y][x]);
 
@@ -1689,12 +1779,33 @@ int main(int argc, char *argv[])
       }
     }
   }
-  // do {
+  while(1){
 
+    usleep(125000);  //8fps
+    cur_character = (character_t *) heap_remove_min(&character_heap);
+    if (cur_character == NULL) {
+      // maybe just a continue ?
+      printf("The current character is null\n");
+    }
+    else {
 
-  //   usleep(125000);  //8fps
-  //   c = 'q';
-  // } while(c != 'q');
+      switch(cur_character->title) {
+
+        case trainer_hiker:
+          move_hiker(cur_character);
+          break;
+        case trainer_rival:
+          move_rival(cur_character);
+          break;
+        
+        default:
+          fprintf(stderr, "Default reached in %s\n", __FUNCTION__);
+          break;
+
+      }
+    }
+    
+  }
 
   delete_world();
 

@@ -175,13 +175,6 @@ static int32_t character_nt_compare(const void *key, const void *with) {
 //}
 
 
-//This will also need to add characters to the queue and to the character map
-// May want this to return the character heap ?
-
-// or pass the heap in by address and make it in main (or calling function)
-
-// maybe this function should just initialize the structs and add them to the
-// character map?
 int spawn_trainers(world_t *world, int num_trainers) {
 
   int x, y;
@@ -208,8 +201,8 @@ int spawn_trainers(world_t *world, int num_trainers) {
         first_rival->title = trainer_rival;
         first_rival->next_turn = 0;
         //pick rand spot for the rival
-        first_rival->position[dim_x] = rand() % (MAP_X - 1) + 1;
-        first_rival->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+        first_rival->position[dim_x] = rand() % (MAP_X - 4) + 2;
+        first_rival->position[dim_y] = rand() % (MAP_Y - 4) + 2;
         //add rival to the character map
         world->character_map[first_rival->position[dim_y]][first_rival->position[dim_x]] = first_rival;
       }
@@ -222,8 +215,8 @@ int spawn_trainers(world_t *world, int num_trainers) {
         first_hiker->title = trainer_hiker;
         first_hiker->next_turn = 0;
         //pick a random spot on the map for the hiker
-        first_hiker->position[dim_x] = rand() % (MAP_X - 1) + 1;
-        first_hiker->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+        first_hiker->position[dim_x] = rand() % (MAP_X - 4) + 2;
+        first_hiker->position[dim_y] = rand() % (MAP_Y - 4) + 2;
         //add the hiker to the map
 	      world->character_map[first_hiker->position[dim_y]][first_hiker->position[dim_x]] = first_hiker;
       }
@@ -238,8 +231,8 @@ int spawn_trainers(world_t *world, int num_trainers) {
         cur_npc-> next_turn =0;
         cur_npc->title = character;
         //pick a random spot on the map for the current NPC
-        cur_npc->position[dim_x] = rand() % (MAP_X - 1) + 1;
-        cur_npc->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+        cur_npc->position[dim_x] = rand() % (MAP_X - 4) + 2;
+        cur_npc->position[dim_y] = rand() % (MAP_Y - 4) + 2;
 
         //add current character to the map
 	      world->character_map[cur_npc->position[dim_y]][cur_npc->position[dim_x]] = cur_npc;
@@ -255,8 +248,8 @@ int spawn_trainers(world_t *world, int num_trainers) {
     solo_rival->seq_num = world->seq_num;
     world->seq_num++;
     solo_rival->title = trainer_rival;
-    solo_rival->position[dim_x] = rand() % (MAP_X - 1) + 1;
-    solo_rival->position[dim_y] = rand() % (MAP_Y - 1) + 1;
+    solo_rival->position[dim_x] = rand() % (MAP_X - 4) + 2;
+    solo_rival->position[dim_y] = rand() % (MAP_Y - 4) + 2;
     solo_rival->next_turn = 0;
 
     //add the solo rival to the map
@@ -1680,6 +1673,184 @@ void move_hiker(character_t *hiker) {
 
 }
 
+/**
+ *  Move the rival one step closer on the cheapest path the PC
+ * 
+ * @param rival the rival that needs to move
+*/
+void move_rival(character_t *rival) {
+
+  int x, y;
+  int cur_min = INT_MAX;
+  pair_t cur_min_pair;
+  int cur_y = rival->position[dim_y];
+  int cur_x = rival->position[dim_x];
+  //clear the character map
+  character_map_pair_np(rival->position) = NULL;
+
+  //3x3 grid, rival location is the center
+  for(x = -1; x < 1; x++) {
+    for(y = -1; y < 1; y++) {
+
+      //dont need to check the square we are on
+      if((x == 0) && (y == 0)) {
+        continue;
+      }
+      
+      //check which direction has the smallest value on the rival distance map
+      // and that there isn't already somebody there
+      if((world.rival_distance[cur_y + y][cur_x + x] < cur_min) &&
+          world.character_map[cur_y + y][cur_x + x] == NULL) {
+
+            cur_min = world.rival_distance[cur_y + y][cur_x + x];
+            cur_min_pair[dim_y] = cur_y + y;
+            cur_min_pair[dim_x] = cur_x + x;
+      }
+    }
+  }
+
+  //update the rival so it knows where it is
+  rival->position[dim_y] = cur_min_pair[dim_y];
+  rival->position[dim_x] = cur_min_pair[dim_x];
+  //update the character map
+  character_map_pair_np(rival->position) = rival;
+
+}
+
+/**
+ *  Make the wanderer move in the first available direction
+ * 
+ * @param wanderer the wanderer that needs to wander
+*/
+void wandering_wanderer(character_t *wanderer) {
+
+  int x, y;
+  map_t *m = world.cur_map;
+  int cur_x = wanderer->position[dim_x];
+  int cur_y = wanderer->position[dim_y];
+  int moved = 0;
+
+  pair_t destination;
+  //scan all directions
+  for(y = -1; y < 1; y++) {
+    for(x = -1; x < 1; x++)  {
+
+
+
+      switch(mapxy(cur_x + x, cur_y + y)) {
+
+        //can't go this way
+        case ter_boulder:
+        case ter_mountain:
+        case ter_gate:
+          continue;
+          break;
+        // can't go this way either
+        case ter_forest:
+        case ter_tree:
+        case ter_water:
+          continue;
+          break;
+        //if it finds a path first, go that way
+        case ter_path:
+          //check to make sure no one is there
+          if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+            character_map_xy_np(cur_x, cur_y) = NULL;
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            moved = 1;
+          }
+          //if someone is there, swap them
+          else {
+            character_t *temp_character;
+            temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            character_map_xy_np(cur_x, cur_y) = temp_character;
+            moved = 1;
+          }
+          break;
+        // next look for a clearing
+        case ter_clearing:
+          //check to make sure no one is there
+          if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+            character_map_xy_np(cur_x, cur_y) = NULL;
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            moved = 1;
+          }
+          //if someone is there, swap them
+          else {
+            character_t *temp_character;
+            temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            character_map_xy_np(cur_x, cur_y) = temp_character;
+            moved = 1;
+          }
+          break;
+        // next look for some tall grass
+        case ter_grass:
+          //check to make sure no one is there
+          if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+            character_map_xy_np(cur_x, cur_y) = NULL;
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            moved = 1;
+          }
+          //if someone is there, swap them
+          else {
+            character_t *temp_character;
+            temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            character_map_xy_np(cur_x, cur_y) = temp_character;
+            moved = 1;
+          }
+          break;
+        // next look for some tall grass
+        case ter_mart:
+          //check to make sure no one is there
+          if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+            character_map_xy_np(cur_x, cur_y) = NULL;
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            moved = 1;
+          }
+          //if someone is there, swap them
+          else {
+            character_t *temp_character;
+            temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            character_map_xy_np(cur_x, cur_y) = temp_character;
+            moved = 1;
+          }
+          break;
+        
+        // next try to find a center
+        case ter_center:
+          //check to make sure no one is there
+          if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+            character_map_xy_np(cur_x, cur_y) = NULL;
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            moved = 1;
+          }
+          //if someone is there, swap them
+          else {
+            character_t *temp_character;
+            temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+            character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
+            character_map_xy_np(cur_x, cur_y) = temp_character;
+            moved = 1;
+          }
+          break;
+      }
+      //once we have moved, break out of loops
+      if(moved) {
+        break;
+      }
+    }
+    //once we have moved, break out of loops
+    if(moved) {
+      break;
+    }
+  }
+
+}
+
 void delete_world()
 {
   int x, y;
@@ -1793,11 +1964,26 @@ int main(int argc, char *argv[])
 
         case trainer_hiker:
           move_hiker(cur_character);
+          cur_character->next_turn += 15;
+          heap_insert(&character_heap, cur_character);
           break;
         case trainer_rival:
-	  //          move_rival(cur_character);
+          move_rival(cur_character);
+          cur_character->next_turn += 10;
+          heap_insert(&character_heap, cur_character);
           break;
-        
+        case trainer_sentry:
+          cur_character->next_turn += 12;
+          heap_insert(&character_heap, cur_character);
+          break;
+        case trainer_wanderer:
+          wandering_wanderer(cur_character);
+          cur_character->next_turn += 5;
+          heap_insert(&character_heap, cur_character);
+          break;
+        //need to add pacer
+
+        //and swimmer
         default:
           fprintf(stderr, "Default reached in %s\n", __FUNCTION__);
           break;

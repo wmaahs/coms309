@@ -161,9 +161,9 @@ void print_character_map(1541,43955
 void move_hiker(1637,45974
 void move_rival(1681,47228
 void wandering_wanderer(1725,48483
-void delete_world(1855,52776
-void delete_character(1878,53236
-int main(1889,53431
+void delete_world(1891,54245
+void delete_character(1914,54705
+int main(1925,54900
 
 visit_all.c,34
 #define SIDE 3,20

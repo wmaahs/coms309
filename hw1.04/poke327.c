@@ -1756,6 +1756,10 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_path:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1764,6 +1768,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1773,6 +1781,9 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_clearing:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1781,6 +1792,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1790,7 +1805,10 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_grass:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
-            character_map_xy_np(cur_x, cur_y) = NULL;
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
           }
@@ -1798,6 +1816,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1807,6 +1829,9 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_mart:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1815,6 +1840,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1825,6 +1854,9 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_center:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1833,6 +1865,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;

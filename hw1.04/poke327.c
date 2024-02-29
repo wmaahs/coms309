@@ -1873,6 +1873,19 @@ void delete_world()
   }
 }
 
+//delete the characters
+void delete_character(void *v){
+  // If the address matches the pc
+  if(v == &world.pc){
+    free(world.pc);
+  }
+  else{
+    // Free the npc attribute of the character struct
+    free(((character_t *)v)->title);
+    free(v);
+  }
+}
+
 int main(int argc, char *argv[])
 {
   struct timeval tv;
@@ -1930,7 +1943,7 @@ int main(int argc, char *argv[])
   
   heap_t character_heap;
   //init the heap
-  heap_init(&character_heap, character_nt_compare, NULL);
+  heap_init(&character_heap, character_nt_compare, delete_character);
 
   print_character_map();
 
@@ -1979,6 +1992,10 @@ int main(int argc, char *argv[])
         case trainer_wanderer:
           wandering_wanderer(cur_character);
           cur_character->next_turn += 5;
+          heap_insert(&character_heap, cur_character);
+          break;
+        case trainer_pc:
+          cur_character->next_turn += 10;
           heap_insert(&character_heap, cur_character);
           break;
         //need to add pacer

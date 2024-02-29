@@ -2082,7 +2082,7 @@ int main(int argc, char *argv[])
   }
   while(1){
 
-    usleep(1250000);  //8fps
+    usleep(125000);  //8fps
     cur_character = (character_t *) heap_remove_min(&character_heap);
     if (cur_character == NULL) {
       // maybe just a continue ?

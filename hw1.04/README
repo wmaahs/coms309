@@ -1,9 +1,15 @@
-This program has two functions, one to calculate the distance from every spot on the map for a rival trainer, and another to calculate the distance from every spot on the map for a hiker trainer.
-Both programs behave essentially the same way with the exception of the hiker having a few more terrain types that it is able to traverse. The functions use dijkstra's algorithm starting from the
-location of the PC, and then finds the distance cost for a trainer to travel to it from each of its neighboring locations.
+This program functions mostly to the specifications. There is a descrete event simulator which determines which NPC (or player) gets to move next.
+If it is the rival or hikers turn to move, then they pick the direction with the lowest cost according to their distance map. If the it is a wanderers turn to move
+then they will pick the first available direction to move in. If there is another npc in the first available location, then the wanderer swaps places with it.
+The pacer walks right until it can't anymore. Once it can no longer walk right, the pacer steps to the left. The sentry stands still on its turn, but during its turn, no other players can move.
 
-After using dijkstra's algorithm to find the cost of each path, on the map, the function prints the distance map to stdout. If the location on the map is "unreachable" the location is filled in
-with "   " on the map. The distance map displays every reachable location as the distance % 100. Each map is labeled for their respective trainers. I strated using emacs directly in pyrite for this
-assignment and it's kinda fun. :)
+You can exit the program with switch --numTrainersx[x] where x is the number of trainers you wish to spawn.
+
+For some reason I am getting a segmentation fault after a undetermined amount of executions when I run the program noramlly with the executable created by the makefile. But when I run the same
+executable in gdb, I never reach a seg fault. This is obviously a bug but it is really hard to find it when the debugger never finds the bug.
+
+Additionally, for some reason the hiker and the rival don't seem to be taking the shortest path to the PC. I double checked that the distance maps still looked somewhat reasonable but for some
+reason they always seem to want to walk up and to the left. Currently when the hiker and rival get to the edge of the screen they just disapear, but I am not going to add a border check to keep them
+on the screen because theoretically they should never want to go off the screen if they are taking the shortest path the PC.
 
 Will Maahs

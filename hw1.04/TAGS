@@ -42,7 +42,7 @@ typedef struct heap 13,153
   void (*datum_delete)datum_delete17,269
 } heap_t;18,301
 
-poke327.c,3470
+poke327.c,3568
 #define malloc(11,180
 typedef enum dim 17,324
   dim_x,18,343
@@ -137,30 +137,33 @@ typedef struct world 126,2563
 world_t world;142,2982
 static character_t * place_pc(144,2998
 static int32_t character_nt_compare(169,3591
-int spawn_trainers(185,4204
-static int32_t trainer_path_cmp(275,7233
-static void dijkstra_rival_path(286,7571
-static void dijkstra_hiker_path(524,15472
-static int32_t path_cmp(722,22386
-static int32_t edge_penalty(726,22509
-static void dijkstra_path(731,22635
-static int build_paths(834,26551
-static int gaussian[gaussian926,28228
-static int smooth_height(934,28391
-static void find_building_location(1091,32416
-static int place_pokemart(1122,33902
-static int place_center(1136,34194
-static terrain_type_t border_type(1151,34646
-static int map_terrain(1195,35576
-static int place_boulders(1378,40101
-static int place_trees(1396,40471
-static int new_map(1418,41033
-static void print_map(1482,42933
-void init_world(1536,43996
-void print_character_map(1548,44255
-void move_hiker(1644,46274
-void delete_world(1683,47409
-int main(1705,47845
+int spawn_trainers(178,3904
+static int32_t trainer_path_cmp(268,6933
+static void dijkstra_rival_path(279,7271
+static void dijkstra_hiker_path(517,15172
+static int32_t path_cmp(715,22086
+static int32_t edge_penalty(719,22209
+static void dijkstra_path(724,22335
+static int build_paths(827,26251
+static int gaussian[gaussian919,27928
+static int smooth_height(927,28091
+static void find_building_location(1084,32116
+static int place_pokemart(1115,33602
+static int place_center(1129,33894
+static terrain_type_t border_type(1144,34346
+static int map_terrain(1188,35276
+static int place_boulders(1371,39801
+static int place_trees(1389,40171
+static int new_map(1411,40733
+static void print_map(1475,42633
+void init_world(1529,43696
+void print_character_map(1541,43955
+void move_hiker(1637,45974
+void move_rival(1681,47228
+void wandering_wanderer(1725,48483
+void delete_world(1891,54245
+void delete_character(1914,54705
+int main(1925,54900
 
 visit_all.c,34
 #define SIDE 3,20

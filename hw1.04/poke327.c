@@ -1812,8 +1812,7 @@ void wandering_wanderer(character_t *wanderer) {
   int cur_x = wanderer->position[dim_x];
   int cur_y = wanderer->position[dim_y];
   int moved = 0;
-
-  pair_t destination;
+  
   //scan all directions
   for(y = -1; y < 1; y++) {
     for(x = -1; x < 1; x++)  {
@@ -1825,6 +1824,8 @@ void wandering_wanderer(character_t *wanderer) {
         //can't go this way
         case ter_boulder:
         case ter_mountain:
+        case ter_pc:
+        case ter_debug:
         case ter_gate:
           continue;
           break;
@@ -1838,6 +1839,10 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_path:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1846,6 +1851,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1855,6 +1864,9 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_clearing:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1863,6 +1875,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1872,7 +1888,10 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_grass:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
-            character_map_xy_np(cur_x, cur_y) = NULL;
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
           }
@@ -1880,6 +1899,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1889,6 +1912,9 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_mart:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1897,6 +1923,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1907,6 +1937,9 @@ void wandering_wanderer(character_t *wanderer) {
         case ter_center:
           //check to make sure no one is there
           if(character_map_xy_np(cur_x + x, cur_y + y) == NULL) {
+	    //adjust the wanderer
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
             character_map_xy_np(cur_x, cur_y) = NULL;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             moved = 1;
@@ -1915,6 +1948,10 @@ void wandering_wanderer(character_t *wanderer) {
           else {
             character_t *temp_character;
             temp_character = character_map_xy_np(cur_x + x, cur_y + y);
+	    wanderer->position[dim_x] = cur_x + x;
+	    wanderer->position[dim_y] = cur_y + y;
+	    temp_character->position[dim_x] = cur_x;
+	    temp_character->position[dim_y] = cur_y;
             character_map_xy_np(cur_x + x, cur_y + y) = wanderer;
             character_map_xy_np(cur_x, cur_y) = temp_character;
             moved = 1;
@@ -1964,7 +2001,6 @@ void delete_character(void *v){
   }
   else{
     // Free the npc attribute of the character struct
-    free(((character_t *)v)->title);
     free(v);
   }
 }
@@ -2038,8 +2074,6 @@ int main(int argc, char *argv[])
 
         world.character_map[y][x]->hn = heap_insert(&character_heap, world.character_map[y][x]);
 
-        printf("character added @ (%d,%d)\t", x, y);
-        printf("character seq_num: %d\n", world.character_map[y][x]->seq_num);
       }
       else {
         continue;
@@ -2094,6 +2128,7 @@ int main(int argc, char *argv[])
 
       }
     }
+    print_character_map();
     
   }
 

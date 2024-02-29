@@ -87,6 +87,7 @@ typedef enum trainer_type {
   trainer_rival,
   trainer_sentry,
   trainer_wanderer,
+  trainer_pacer,
   num_trainer_types
 } trainer_t;
 
@@ -1612,8 +1613,9 @@ void print_character_map()
         case trainer_wanderer:
           putchar('w');
           break;
-        // add more cases here
-
+        case trainer_pacer:
+          putchar('p');
+          break;
         // for now just print a space
         default:
           default_reached = 1;
@@ -1715,6 +1717,87 @@ void move_rival(character_t *rival) {
   //update the character map
   character_map_pair_np(rival->position) = rival;
 
+}
+
+void pacing_pacer(character_t *pacer) {
+
+  int cur_x = pacer->position[dim_x];
+  int cur_y = pacer->position[dim_y];
+
+  map_t *m = world.cur_map;
+  //can I move right?
+  if(mapxy(cur_x +1, cur_y) == ter_path || mapxy(cur_x +1, cur_y) == ter_clearing || mapxy(cur_x +1, cur_y) == ter_mart || mapxy(cur_x +1, cur_y) == ter_center) {
+
+    //check to make sure no one is there and in range
+    if(character_map_xy_np(cur_x + 1, cur_y) == NULL) {
+      if(cur_x + 1 < MAP_X - 1) {
+
+        //pace pacer
+        character_map_xy_np(cur_x, cur_y) = NULL;
+        pacer->position[dim_x] = cur_x +1;
+        character_map_xy_np(cur_x + 1, cur_y) = pacer;
+
+      }
+      //go left
+      else {
+        //no character to the left
+        if(character_map_xy_np(cur_x -1, cur_y) == NULL) {
+          character_map_xy_np(cur_x, cur_y) = NULL;
+          pacer->position[dim_x] = cur_x -1;
+          character_map_xy_np(cur_x -1, cur_y) = pacer;
+        }
+        //character to the left, so swap them.
+        else {
+          character_t *temp_character;
+          temp_character = character_map_xy_np(cur_x -1, cur_y);
+          temp_character->position[dim_x] = cur_x;
+          pacer->position[dim_x] = cur_x -1;
+          character_map_xy_np(cur_x, cur_y) = temp_character;
+          character_map_xy_np(cur_x - 1, cur_y) = pacer;
+
+        }
+      }
+    }
+    else {
+      character_t *temp_character;
+      if(cur_x + 1 < MAP_X - 1) {
+
+        temp_character = character_map_xy_np(cur_x + 1, cur_y);
+        temp_character->position[dim_x] = cur_x;
+        pacer->position[dim_x] = cur_x + 1;
+        character_map_xy_np(cur_x, cur_y) = temp_character;
+        character_map_xy_np(cur_x +1, cur_y) = pacer;
+      }
+      else {
+
+        temp_character = character_map_xy_np(cur_x -1, cur_y);
+        temp_character->position[dim_x] = cur_x;
+        pacer->position[dim_x] = cur_x - 1;
+        character_map_xy_np(cur_x, cur_y) = temp_character;
+        character_map_xy_np(cur_x -1, cur_y) = pacer;
+      }
+
+    }
+
+  }
+  else
+  {
+
+    if (character_map_xy_np(cur_x - 1, cur_y) == NULL)
+    {
+      character_map_xy_np(cur_x, cur_y) = NULL;
+      pacer->position[dim_x] = cur_x -1;
+      character_map_xy_np(cur_x -1, cur_y) = pacer;
+    }
+    else {
+      character_t *temp_character;
+      temp_character = character_map_xy_np(cur_x -1, cur_y);
+      temp_character->position[dim_x] = cur_x;
+      pacer->position[dim_x] = cur_x -1;
+      character_map_xy_np(cur_x, cur_y) = temp_character;
+      character_map_xy_np(cur_x - 1, cur_y) = pacer;
+    }
+  }
 }
 
 /**
@@ -1935,7 +2018,7 @@ int main(int argc, char *argv[])
 
   if (spawn_trainers(&world, num_trainers) > 0) {
     //it worked
-    printf("you have reached the end of spawing\n");
+    //printf("you have reached the end of spawing\n");
   }
   else {
     printf("something is very wrong\n");
@@ -1965,7 +2048,7 @@ int main(int argc, char *argv[])
   }
   while(1){
 
-    usleep(125000);  //8fps
+    usleep(1250000);  //8fps
     cur_character = (character_t *) heap_remove_min(&character_heap);
     if (cur_character == NULL) {
       // maybe just a continue ?
@@ -1998,9 +2081,13 @@ int main(int argc, char *argv[])
           cur_character->next_turn += 10;
           heap_insert(&character_heap, cur_character);
           break;
-        //need to add pacer
+        case trainer_pacer:
+          pacing_pacer(cur_character);
+          cur_character->next_turn += 8;
+          heap_insert(&character_heap, cur_character);
+          break;
 
-        //and swimmer
+        //add swimmer ?
         default:
           fprintf(stderr, "Default reached in %s\n", __FUNCTION__);
           break;

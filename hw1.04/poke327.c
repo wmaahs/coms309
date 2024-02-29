@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "heap.h"
 
 #define malloc(size) ({          \
@@ -1630,7 +1631,7 @@ void print_character_map()
     putchar('\n');
   }
 
-  if(default_reached = 1) {
+  if(default_reached == 1) {
     fprintf(stderr, "Default reached in %s\n", __FUNCTION__);
   }
 }
@@ -1706,7 +1707,6 @@ int main(int argc, char *argv[])
   struct timeval tv;
   uint32_t seed;
   int num_trainers;
-  char c;
 
   //the player with the turn
   character_t *cur_character;
@@ -1795,7 +1795,7 @@ int main(int argc, char *argv[])
           move_hiker(cur_character);
           break;
         case trainer_rival:
-          move_rival(cur_character);
+	  //          move_rival(cur_character);
           break;
         
         default:

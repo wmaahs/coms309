@@ -9,6 +9,7 @@
 #include <ncurses.h>
 
 #include "heap.h"
+#include "pc_movement.h"
 
 #define malloc(size) ({          \
   void *_tmp;                    \
@@ -28,6 +29,18 @@ typedef enum dim {
   dim_y,
   num_dims
 } dim_t;
+
+typedef enum directions {
+  upper_l,
+  up,
+  upper_r,
+  right,
+  lower_r,
+  down,
+  lower_l,
+  left
+
+} directions_t;
 
 typedef int16_t pair_t[num_dims];
 
@@ -1473,13 +1486,17 @@ static int new_map()
   return 0;
 }
 
-static void print_map()
+/**
+ * Was print_map, is now render_map
+ * Uses ncurses instead of standard terminal output
+*/
+static void render_map()
 {
   int x, y;
   int default_reached = 0;
 
+  clear();
   mvprintw(0, 1, "Messages: ");
-
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
       if (world.cur_map->cmap[y][x]) {
@@ -1487,51 +1504,68 @@ static void print_map()
       } else {
         switch (world.cur_map->map[y][x]) {
         case ter_boulder:
-          putchar(BOULDER_SYMBOL);
-          break;
-        case ter_mountain:
-          putchar(MOUNTAIN_SYMBOL);
-          break;
-        case ter_tree:
-          putchar(TREE_SYMBOL);
-          break;
-        case ter_forest:
-          putchar(FOREST_SYMBOL);
-          break;
-        case ter_path:
-          putchar(PATH_SYMBOL);
-          break;
-        case ter_gate:
-          putchar(GATE_SYMBOL);
-          break;
-        case ter_mart:
-          putchar(POKEMART_SYMBOL);
-          break;
-        case ter_center:
-          putchar(POKEMON_CENTER_SYMBOL);
-          break;
-        case ter_grass:
-          putchar(TALL_GRASS_SYMBOL);
-          break;
-        case ter_clearing:
-          putchar(SHORT_GRASS_SYMBOL);
-          break;
-        case ter_water:
-          putchar(WATER_SYMBOL);
-          break;
-        default:
-          putchar(ERROR_SYMBOL);
-          default_reached = 1;
-          break;
+            //if its on the boarder, print a curses line
+            if((x == 0) || (x == 79)) {
+              mvaddch(1 + y, x, ACS_VLINE);
+            }
+            if((y == 0) || (y == 20)) {
+              mvaddch(1+y, x, ACS_HLINE);
+            }
+            else{ 
+              mvaddch(1+y, x, BOULDER_SYMBOL);
+            }
+            break;
+          case ter_mountain:
+            mvaddch(1+y, x, MOUNTAIN_SYMBOL);
+            break;
+          case ter_tree:
+          //if its on the boarder, print a curses line
+            if((x == 0) || (x == 79)) {
+              mvaddch(1+y, x, ACS_VLINE);
+            }
+            if((y == 0) || (y == 20)) {
+              mvaddch(1+y, x, ACS_HLINE);
+            }
+            else{
+              mvaddch(1+y, x, TREE_SYMBOL);
+            }
+            break;
+          case ter_forest:
+            mvaddch(1+y, x, FOREST_SYMBOL);
+            break;
+          case ter_path:
+            mvaddch(1+y, x, PATH_SYMBOL);
+            break;
+          case ter_gate:
+            mvaddch(1+y, x, GATE_SYMBOL);
+            break;
+          case ter_mart:
+            mvaddch(1+y, x, POKEMART_SYMBOL);
+            break;
+          case ter_center:
+            mvaddch(1+y, x, POKEMON_CENTER_SYMBOL);
+            break;
+          case ter_grass:
+            mvaddch(1+y, x, TALL_GRASS_SYMBOL);
+            break;
+          case ter_clearing:
+            mvaddch(1+y, x, SHORT_GRASS_SYMBOL);
+            break;
+          case ter_water:
+            mvaddch(1+y, x, WATER_SYMBOL);
+            break;
+          default:
+            default_reached = 1;
+            break;
         }
       }
     }
-    putchar('\n');
+  }
+  if (default_reached) {
+    mvprintw(0, 1, "Messages: You have reached a default in render_map");
   }
 
-  if (default_reached) {
-    fprintf(stderr, "Default reached in %s\n", __FUNCTION__);
-  }
+  refresh();
 }
 
 // The world is global because of its size, so init_world is parameterless
@@ -1824,6 +1858,66 @@ void print_rival_dist()
     printf("\n");
   }
 }
+int move_pc_curses(directions_t pc_direction){
+
+  character_t *c;
+  pair_t d;
+  world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]] = NULL;
+
+  //gonna need to add some checks
+  if(pc_direction == up) {
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
+  }
+  if(pc_direction == upper_l) {
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
+    world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
+  }
+  if(pc_direction == upper_r) {
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
+    world.pc.pos[dim_x] =  world.pc.pos[dim_x] + 1;
+  }
+  if(pc_direction == right) {
+    world.pc.pos[dim_x] =  world.pc.pos[dim_x] + 1;
+  }
+  if(pc_direction == lower_r) {
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
+    world.pc.pos[dim_x] =  world.pc.pos[dim_x] + 1;
+  }
+  if(pc_direction == down) {
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
+  }
+  if(pc_direction == lower_l) {
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
+    world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
+  }
+  if(pc_direction == left) {
+    world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
+  }
+
+
+  world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]] = &world.pc;
+
+  //remake the hiker and rival maps
+  pathfind(world.cur_map);
+  c = heap_remove_min(&world.cur_map->turn);
+  // print_character(c);
+  render_map();
+  if (c == &world.pc) {
+    render_map();
+    c->next_turn += move_cost[char_pc][world.cur_map->map[c->pos[dim_y]]
+                                                          [c->pos[dim_x]]];
+  } else {
+    move_func[c->npc->mtype](c, d);
+    world.cur_map->cmap[c->pos[dim_y]][c->pos[dim_x]] = NULL;
+    world.cur_map->cmap[d[dim_y]][d[dim_x]] = c;
+    c->next_turn += move_cost[c->npc->ctype][world.cur_map->map[d[dim_y]]
+                                                                [d[dim_x]]];
+    c->pos[dim_y] = d[dim_y];
+    c->pos[dim_x] = d[dim_x];
+  }
+  heap_insert(&world.cur_map->turn, c);
+
+}
 
 void print_character(character_t *c)
 {
@@ -1848,100 +1942,103 @@ void init_ncruses_terminal(void)
   // init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
 }
 
-void testing_ncurses() {
-
-  int y, x;
-  // int color, ul;
-  int default_reached = 0;
-  mvprintw(0, 1, "Messages: ");
-  for(y = 0; y < 21; y++) {
-    for(x = 0; x < 80; x++) {
-      if (world.cur_map->cmap[y][x]) {
-        putchar(world.cur_map->cmap[y][x]->symbol);
-      } else {
-        switch(world.cur_map->map[y][x]) {
-          case ter_boulder:
-            //if its on the boarder, print a curses line
-            if((x == 1) || (x == 79)) {
-              mvaddch(1 + y, x, ACS_VLINE);
-            }
-            if((y == 0) || (y == 20)) {
-              mvaddch(1+y, x, ACS_HLINE);
-            }
-            else{ 
-              mvaddch(1+y, x, BOULDER_SYMBOL);
-            }
-            break;
-          case ter_mountain:
-            mvaddch(1+y, x, MOUNTAIN_SYMBOL);
-            break;
-          case ter_tree:
-          //if its on the boarder, print a curses line
-            if((x == 0) || (x == 79)) {
-              mvaddch(1+y, x, ACS_VLINE);
-            }
-            if((y == 0) || (y == 20)) {
-              mvaddch(1+y, x, ACS_HLINE);
-            }
-            else{
-              mvaddch(1+y, x, TREE_SYMBOL);
-            }
-            break;
-          case ter_forest:
-            mvaddch(1+y, x, FOREST_SYMBOL);
-            break;
-          case ter_path:
-            mvaddch(1+y, x, PATH_SYMBOL);
-            break;
-          case ter_gate:
-            mvaddch(1+y, x, GATE_SYMBOL);
-            break;
-          case ter_mart:
-            mvaddch(1+y, x, POKEMART_SYMBOL);
-            break;
-          case ter_center:
-            mvaddch(1+y, x, POKEMON_CENTER_SYMBOL);
-            break;
-          case ter_grass:
-            mvaddch(1+y, x, TALL_GRASS_SYMBOL);
-            break;
-          case ter_clearing:
-            mvaddch(1+y, x, SHORT_GRASS_SYMBOL);
-            break;
-          case ter_water:
-            mvaddch(1+y, x, WATER_SYMBOL);
-            break;
-          default:
-            default_reached = 1;
-            break;
-        }
-      }
-    }
-  }
-
-  if(default_reached == 1) {
-    mvprintw(0, 1, "Default Reached");
-  }
-
-  refresh();
-}
-
 void game_loop()
 {
+
+  /**
+   * TODO: Fix the directions in the case statments
+  */
+
   // character_t *c;
   // pair_t d;
+  directions_t pc_direction;
   uint32_t no_op;
   int32_t key;
-  testing_ncurses();
+  render_map();
 
   while (!quit_game) {
 
     key = getch();
     switch(key) {
 
-      case KEY_DOWN:
-        no_op = 2;
+      //upper-left
+      case '7':
+      case 'y':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
         break;
+      //up
+      case '8':
+      case 'k':
+        pc_direction = up;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //upper-right
+      case '9':
+      case 'u':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //right
+      case '6':
+      case 'l':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //lower-right
+      case '3':
+      case 'n':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //down
+      case '2':
+      case 'j':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //lower-left
+      case '1':
+      case 'b':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //left
+      case '4':
+      case 'h':
+        pc_direction = upper_l;
+        no_op = move_pc_curses(pc_direction);
+        break;
+      //Enter building
+      //add placeholder for now
+      case '>':
+        // no_op = 2;
+        break;
+      //Rest for a turn
+      case '5':
+      case ' ':
+      case '.':
+        // no_op = 2;
+        break;
+      //Display a list of trainers on the map, with their symbol
+      //and relative position to the PC (e.g.: "r, 2 north and 14 west")
+      case 't':
+        // no_op = 2;
+        break;
+      //when displaying trainer list, if possible scroll list up
+      case KEY_UP:
+        // no_op = 2;
+        break;
+      //when displaying trainer list, if possible scroll list down
+      case KEY_DOWN:
+        // no_op = 2;
+        break;
+      //exit trainer list
+      //gotta figure out what the escape key is
+      case KEY_DOWN:
+        // no_op = 2;
+        break;
+      
       case 'Q':
         quit_game = 1;
         break;
@@ -1949,29 +2046,11 @@ void game_loop()
         mvprintw(0, 1, "Message: You have reached the default");
         break;
     }
-    getch();
+    
     
 
-    // c = heap_remove_min(&world.cur_map->turn);
-    // //    print_character(c);
-    // if (c == &world.pc) {
-    //   print_map();
-    //   usleep(250000);
-    //   c->next_turn += move_cost[char_pc][world.cur_map->map[c->pos[dim_y]]
-    //                                                        [c->pos[dim_x]]];
-    // } else {
-    //   move_func[c->npc->mtype](c, d);
-    //   world.cur_map->cmap[c->pos[dim_y]][c->pos[dim_x]] = NULL;
-    //   world.cur_map->cmap[d[dim_y]][d[dim_x]] = c;
-    //   c->next_turn += move_cost[c->npc->ctype][world.cur_map->map[d[dim_y]]
-    //                                                              [d[dim_x]]];
-    //   c->pos[dim_y] = d[dim_y];
-    //   c->pos[dim_x] = d[dim_x];
-    // }
-    // heap_insert(&world.cur_map->turn, c);
-
-
   }
+  getch();
 }
 
 int main(int argc, char *argv[])

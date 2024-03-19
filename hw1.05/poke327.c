@@ -1478,7 +1478,7 @@ static void print_map()
   int x, y;
   int default_reached = 0;
 
-  printf("\n\n\n");
+  mvprintw(0, 1, "Messages: ");
 
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
@@ -1852,48 +1852,69 @@ void testing_ncurses() {
 
   int y, x;
   // int color, ul;
-  int default_reached;
+  int default_reached = 0;
   mvprintw(0, 1, "Messages: ");
   for(y = 0; y < 21; y++) {
     for(x = 0; x < 80; x++) {
-      
-      switch(world.cur_map->map[y][x]) {
-        case ter_boulder:
-          mvaddch(1+y, x, BOULDER_SYMBOL);
-          break;
-        case ter_mountain:
-          mvaddch(1+y, x, MOUNTAIN_SYMBOL);
-          break;
-        case ter_tree:
-          mvaddch(1+y, x, TREE_SYMBOL);
-          break;
-        case ter_forest:
-          mvaddch(1+y, x, FOREST_SYMBOL);
-          break;
-        case ter_path:
-          mvaddch(1+y, x, PATH_SYMBOL);
-          break;
-        case ter_gate:
-          mvaddch(1+y, x, GATE_SYMBOL);
-          break;
-        case ter_mart:
-          mvaddch(1+y, x, POKEMART_SYMBOL);
-          break;
-        case ter_center:
-          mvaddch(1+y, x, POKEMON_CENTER_SYMBOL);
-          break;
-        case ter_grass:
-          mvaddch(1+y, x, TALL_GRASS_SYMBOL);
-          break;
-        case ter_clearing:
-          mvaddch(1+y, x, SHORT_GRASS_SYMBOL);
-          break;
-        case ter_water:
-          mvaddch(1+y, x, WATER_SYMBOL);
-          break;
-        default:
-          default_reached = 1;
-          break;
+      if (world.cur_map->cmap[y][x]) {
+        putchar(world.cur_map->cmap[y][x]->symbol);
+      } else {
+        switch(world.cur_map->map[y][x]) {
+          case ter_boulder:
+            //if its on the boarder, print a curses line
+            if((x == 1) || (x == 79)) {
+              mvaddch(1 + y, x, ACS_VLINE);
+            }
+            if((y == 0) || (y == 20)) {
+              mvaddch(1+y, x, ACS_HLINE);
+            }
+            else{ 
+              mvaddch(1+y, x, BOULDER_SYMBOL);
+            }
+            break;
+          case ter_mountain:
+            mvaddch(1+y, x, MOUNTAIN_SYMBOL);
+            break;
+          case ter_tree:
+          //if its on the boarder, print a curses line
+            if((x == 0) || (x == 79)) {
+              mvaddch(1+y, x, ACS_VLINE);
+            }
+            if((y == 0) || (y == 20)) {
+              mvaddch(1+y, x, ACS_HLINE);
+            }
+            else{
+              mvaddch(1+y, x, TREE_SYMBOL);
+            }
+            break;
+          case ter_forest:
+            mvaddch(1+y, x, FOREST_SYMBOL);
+            break;
+          case ter_path:
+            mvaddch(1+y, x, PATH_SYMBOL);
+            break;
+          case ter_gate:
+            mvaddch(1+y, x, GATE_SYMBOL);
+            break;
+          case ter_mart:
+            mvaddch(1+y, x, POKEMART_SYMBOL);
+            break;
+          case ter_center:
+            mvaddch(1+y, x, POKEMON_CENTER_SYMBOL);
+            break;
+          case ter_grass:
+            mvaddch(1+y, x, TALL_GRASS_SYMBOL);
+            break;
+          case ter_clearing:
+            mvaddch(1+y, x, SHORT_GRASS_SYMBOL);
+            break;
+          case ter_water:
+            mvaddch(1+y, x, WATER_SYMBOL);
+            break;
+          default:
+            default_reached = 1;
+            break;
+        }
       }
     }
   }

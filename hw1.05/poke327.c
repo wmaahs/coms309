@@ -1909,11 +1909,27 @@ void game_loop()
 {
   // character_t *c;
   // pair_t d;
-  
+  uint32_t no_op;
+  int32_t key;
+  testing_ncurses();
+
   while (!quit_game) {
-    init_ncruses_terminal();
 
+    key = getch();
+    switch(key) {
 
+      case KEY_DOWN:
+        no_op = 2;
+        break;
+      case 'Q':
+        quit_game = 1;
+        break;
+      default:
+        mvprintw(0, 1, "Message: You have reached the default");
+        break;
+    }
+    getch();
+    
 
     // c = heap_remove_min(&world.cur_map->turn);
     // //    print_character(c);
@@ -1953,6 +1969,8 @@ int main(int argc, char *argv[])
   srand(seed);
 
   init_world();
+
+  init_ncruses_terminal();
 
   game_loop();
 

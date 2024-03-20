@@ -9,7 +9,7 @@
 #include <ncurses.h>
 
 #include "heap.h"
-#include "pc_movement.h"
+
 
 #define malloc(size) ({          \
   void *_tmp;                    \
@@ -212,6 +212,10 @@ int32_t move_cost[num_character_types][num_terrain_types] = {
    (world.cur_map->map[pos[dim_y] + 1][pos[dim_x] + 1] == ter))
 
 void pathfind(map_t *m);
+
+uint32_t move_pc_curses(directions_t pc_direction);
+
+uint32_t exit_game();
 
 //global flag to quit the game
 int quit_game = 0;
@@ -1500,15 +1504,34 @@ static void render_map()
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
       if (world.cur_map->cmap[y][x]) {
-        putchar(world.cur_map->cmap[y][x]->symbol);
+        mvaddch(1+y, x, world.cur_map->cmap[y][x]->symbol);
       } else {
         switch (world.cur_map->map[y][x]) {
         case ter_boulder:
             //if its on the boarder, print a curses line
-            if((x == 0) || (x == 79)) {
-              mvaddch(1 + y, x, ACS_VLINE);
+            if(x == 0) {
+              if(y == 0) {
+                mvaddch(1+y, x, ACS_ULCORNER);
+              }
+              else if(y == 20) {
+                mvaddch(1+y, x, ACS_LLCORNER);
+              }
+              else{
+                mvaddch(1+y, x, ACS_VLINE);
+              }
             }
-            if((y == 0) || (y == 20)) {
+            else if(x == 79){
+              if(y == 0) {
+                mvaddch(1+y, x, ACS_URCORNER);
+              }
+              else if(y == 20){
+                mvaddch(1+y, x, ACS_LRCORNER);
+              }
+              else{
+                mvaddch(1+y, x, ACS_VLINE);
+              }
+            }
+            else if((y == 0) || (y == 20)) {
               mvaddch(1+y, x, ACS_HLINE);
             }
             else{ 
@@ -1519,11 +1542,32 @@ static void render_map()
             mvaddch(1+y, x, MOUNTAIN_SYMBOL);
             break;
           case ter_tree:
+
           //if its on the boarder, print a curses line
-            if((x == 0) || (x == 79)) {
-              mvaddch(1+y, x, ACS_VLINE);
+          //if its on the boarder, print a curses line
+            if(x == 0) {
+              if(y == 0) {
+                mvaddch(1+y, x, ACS_ULCORNER);
+              }
+              else if(y == 20) {
+                mvaddch(1+y, x, ACS_LLCORNER);
+              }
+              else{
+                mvaddch(1+y, x, ACS_VLINE);
+              }
             }
-            if((y == 0) || (y == 20)) {
+            else if(x == 79){
+              if(y == 0) {
+                mvaddch(1+y, x, ACS_URCORNER);
+              }
+              else if(y == 20){
+                mvaddch(1+y, x, ACS_LRCORNER);
+              }
+              else{
+                mvaddch(1+y, x, ACS_VLINE);
+              }
+            }
+            else if((y == 0) || (y == 20)) {
               mvaddch(1+y, x, ACS_HLINE);
             }
             else{
@@ -1858,7 +1902,15 @@ void print_rival_dist()
     printf("\n");
   }
 }
-int move_pc_curses(directions_t pc_direction){
+
+/**
+ * Depending on the key pressed in game loop, this function moves the PC,
+ * then recalculates the distance maps for the rivals and the hikers,
+ * then performs the next players turn in the heap.
+ * If the next players turn was the PC, then all of the other NPCs have to wait.
+ * The PC is still in the heap even though it techniqually gets to move every turn.
+*/
+uint32_t move_pc_curses(directions_t pc_direction){
 
   character_t *c;
   pair_t d;
@@ -1866,6 +1918,7 @@ int move_pc_curses(directions_t pc_direction){
 
   //gonna need to add some checks
   if(pc_direction == up) {
+    // pc_saftey();
     world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
   }
   if(pc_direction == upper_l) {
@@ -1901,7 +1954,6 @@ int move_pc_curses(directions_t pc_direction){
   pathfind(world.cur_map);
   c = heap_remove_min(&world.cur_map->turn);
   // print_character(c);
-  render_map();
   if (c == &world.pc) {
     render_map();
     c->next_turn += move_cost[char_pc][world.cur_map->map[c->pos[dim_y]]
@@ -1917,12 +1969,44 @@ int move_pc_curses(directions_t pc_direction){
   }
   heap_insert(&world.cur_map->turn, c);
 
+  
+  render_map();
+  return 1;
+}
+
+uint32_t exit_game() {
+
+  int32_t confirm;
+  int confirmed = 0;
+  mvprintw(0, 10, " Are you sure you want to quit? (Y/n)");
+  refresh();
+  while(!confirmed) {
+
+    confirm = getch();
+    if(confirm == 'Y') {
+      quit_game = 1;
+      confirmed = 1;
+    }
+    if(confirm == 'n') {
+      quit_game = 0;
+      confirmed = 1;
+      return 0;
+    }
+    else {
+      mvprintw(0, 10, "Do you want to quit? ('Y' for yes, 'n' for no)");
+      refresh();
+    }
+  }
+
+  return 1;
 }
 
 void print_character(character_t *c)
 {
   printf("%c: <%d,%d> %d (%d)\n", c->symbol, c->pos[dim_x],
          c->pos[dim_y], c->next_turn, c->seq_num);
+
+  return;
 }
 
 void init_ncruses_terminal(void)
@@ -1946,9 +2030,12 @@ void game_loop()
 {
 
   /**
-   * TODO: Fix the directions in the case statments
+   * TODO:
+   * up and down commands are flipped
+   * implement the rest of the commands
+   * add color
+   * make some rules for where the pc can and cannot go
   */
-
   // character_t *c;
   // pair_t d;
   directions_t pc_direction;
@@ -1976,80 +2063,84 @@ void game_loop()
       //upper-right
       case '9':
       case 'u':
-        pc_direction = upper_l;
+        pc_direction = upper_r;
         no_op = move_pc_curses(pc_direction);
         break;
       //right
       case '6':
       case 'l':
-        pc_direction = upper_l;
+        pc_direction = right;
         no_op = move_pc_curses(pc_direction);
         break;
       //lower-right
       case '3':
       case 'n':
-        pc_direction = upper_l;
+        pc_direction = lower_r;
         no_op = move_pc_curses(pc_direction);
         break;
       //down
       case '2':
       case 'j':
-        pc_direction = upper_l;
+        pc_direction = down;
         no_op = move_pc_curses(pc_direction);
         break;
       //lower-left
       case '1':
       case 'b':
-        pc_direction = upper_l;
+        pc_direction = lower_l;
         no_op = move_pc_curses(pc_direction);
         break;
       //left
       case '4':
       case 'h':
-        pc_direction = upper_l;
+        pc_direction = left;
         no_op = move_pc_curses(pc_direction);
         break;
       //Enter building
       //add placeholder for now
-      case '>':
-        // no_op = 2;
-        break;
-      //Rest for a turn
-      case '5':
-      case ' ':
-      case '.':
-        // no_op = 2;
-        break;
-      //Display a list of trainers on the map, with their symbol
-      //and relative position to the PC (e.g.: "r, 2 north and 14 west")
-      case 't':
-        // no_op = 2;
-        break;
-      //when displaying trainer list, if possible scroll list up
-      case KEY_UP:
-        // no_op = 2;
-        break;
-      //when displaying trainer list, if possible scroll list down
-      case KEY_DOWN:
-        // no_op = 2;
-        break;
-      //exit trainer list
-      //gotta figure out what the escape key is
-      case KEY_DOWN:
-        // no_op = 2;
-        break;
+      // case '>':
+      //   // no_op = 2;
+      //   break;
+      // //Rest for a turn
+      // case '5':
+      // case ' ':
+      // case '.':
+      //   // no_op = 2;
+      //   break;
+      // //Display a list of trainers on the map, with their symbol
+      // //and relative position to the PC (e.g.: "r, 2 north and 14 west")
+      // case 't':
+      //   // no_op = 2;
+      //   break;
+      // //when displaying trainer list, if possible scroll list up
+      // case KEY_UP:
+      //   // no_op = 2;
+      //   break;
+      // //when displaying trainer list, if possible scroll list down
+      // case KEY_DOWN:
+      //   // no_op = 2;
+      //   break;
+      // //exit trainer list
+      // //gotta figure out what the escape key is
+      // case KEY_DOWN:
+      //   // no_op = 2;
+      //   break;
       
       case 'Q':
-        quit_game = 1;
+        no_op = exit_game();
         break;
       default:
-        mvprintw(0, 1, "Message: You have reached the default");
-        break;
+        mvprintw(0, 10, " Move Around");
+        no_op = 1;
+        break;    
+    }
+    if(!no_op) {
+      render_map();
     }
     
-    
-
   }
+  mvprintw(0, 10, " But how are you gonna be the very best if you quit? (enter to exit)");
+  refresh();
   getch();
 }
 
@@ -2076,7 +2167,7 @@ int main(int argc, char *argv[])
 
   delete_world();
 
-  printf("But how are you going to be the very best if you quit?\n");
+  // printf("But how are you going to be the very best if you quit?\n");
   
   return 0;
 }

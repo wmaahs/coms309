@@ -30,17 +30,6 @@ typedef enum dim {
   num_dims
 } dim_t;
 
-typedef enum directions {
-  upper_l,
-  up,
-  upper_r,
-  right,
-  lower_r,
-  down,
-  lower_l,
-  left
-
-} directions_t;
 
 typedef int16_t pair_t[num_dims];
 
@@ -79,10 +68,33 @@ typedef int16_t pair_t[num_dims];
 #define SWIMMER_SYMBOL  'm'
 #define WANDERER_SYMBOL 'w'
 
+#define COLOR_TREES 1
+#define COLOR_GRASS 2
+#define COLOR_PATH 3
+#define COLOR_MART 4
+#define COLOR_CENTER 5
+#define COLOR_MOUNTAIN 6
+#define COLOR_GATE 7
+#define COLOR_WATER 8
+
+
 #define mappair(pair) (m->map[pair[dim_y]][pair[dim_x]])
 #define mapxy(x, y) (m->map[y][x])
 #define heightpair(pair) (m->height[pair[dim_y]][pair[dim_x]])
 #define heightxy(x, y) (m->height[y][x])
+
+#define world_curmap_ter(pair) (world.cur_map->map[pair[dim_y]][pair[dim_x]])
+
+typedef enum __attribute__ ((__packed__)) directions {
+  upper_l,
+  left,
+  lower_l,
+  up,
+  down,
+  upper_r,
+  right,
+  lower_r
+} directions_t;
 
 typedef enum __attribute__ ((__packed__)) terrain_type {
   ter_boulder,
@@ -169,14 +181,14 @@ typedef struct world {
 world_t world;
 
 static pair_t all_dirs[8] = {
-  { -1, -1 },
-  { -1,  0 },
-  { -1,  1 },
-  {  0, -1 },
-  {  0,  1 },
-  {  1, -1 },
-  {  1,  0 },
-  {  1,  1 },
+  { -1, -1 }, //up-left
+  { -1,  0 }, //left
+  { -1,  1 }, //down-left
+  {  0, -1 }, //up
+  {  0,  1 }, //down
+  {  1, -1 }, //up-right
+  {  1,  0 }, //right
+  {  1,  1 }, //down-right
 };
 
 /* Just to make the following table fit in 80 columns */
@@ -216,6 +228,8 @@ void pathfind(map_t *m);
 uint32_t move_pc_curses(directions_t pc_direction);
 
 uint32_t exit_game();
+
+int pc_saftey(directions_t pc_direction);
 
 //global flag to quit the game
 int quit_game = 0;
@@ -1498,6 +1512,7 @@ static void render_map()
 {
   int x, y;
   int default_reached = 0;
+  int color;
 
   clear();
   mvprintw(0, 1, "Messages: ");
@@ -1508,6 +1523,11 @@ static void render_map()
       } else {
         switch (world.cur_map->map[y][x]) {
         case ter_boulder:
+            //colors
+            attron(COLOR_PAIR(COLOR_MOUNTAIN));
+            color = COLOR_MOUNTAIN;
+            attron(A_BOLD);
+
             //if its on the boarder, print a curses line
             if(x == 0) {
               if(y == 0) {
@@ -1539,12 +1559,20 @@ static void render_map()
             }
             break;
           case ter_mountain:
+            // colors
+            attron(COLOR_PAIR(COLOR_MOUNTAIN));
+            color = COLOR_MOUNTAIN;
+            attron(A_BOLD);
+
             mvaddch(1+y, x, MOUNTAIN_SYMBOL);
             break;
           case ter_tree:
+            //colors
+            attron(COLOR_PAIR(COLOR_TREES));
+            color = COLOR_TREES;
+            attron(A_BOLD);
 
-          //if its on the boarder, print a curses line
-          //if its on the boarder, print a curses line
+            //if its on the boarder, print a curses line
             if(x == 0) {
               if(y == 0) {
                 mvaddch(1+y, x, ACS_ULCORNER);
@@ -1575,33 +1603,68 @@ static void render_map()
             }
             break;
           case ter_forest:
+            //colors
+            attron(COLOR_PAIR(COLOR_TREES));
+            color = COLOR_TREES;
+
             mvaddch(1+y, x, FOREST_SYMBOL);
             break;
           case ter_path:
+            //colors
+            attron(COLOR_PAIR(COLOR_PATH));
+            color = COLOR_PATH;
+            attron(A_BOLD);
+
             mvaddch(1+y, x, PATH_SYMBOL);
             break;
           case ter_gate:
+            //colors
+            attron(COLOR_PAIR(COLOR_GATE));
+            color = COLOR_GATE;
+            attron(A_BOLD);
+            
             mvaddch(1+y, x, GATE_SYMBOL);
             break;
           case ter_mart:
+            attron(COLOR_PAIR(COLOR_MART));
+            color = COLOR_MART;
+            attron(A_BOLD);
+
             mvaddch(1+y, x, POKEMART_SYMBOL);
             break;
           case ter_center:
+            attron(COLOR_PAIR(COLOR_CENTER));
+            color = COLOR_CENTER;
+            attron(A_BOLD);
+
             mvaddch(1+y, x, POKEMON_CENTER_SYMBOL);
             break;
           case ter_grass:
+            attron(COLOR_PAIR(COLOR_GRASS));
+            color = COLOR_GRASS;
+            attron(A_BOLD);
+
             mvaddch(1+y, x, TALL_GRASS_SYMBOL);
             break;
           case ter_clearing:
+            attron(COLOR_PAIR(COLOR_GRASS));
+            color = COLOR_GRASS;
+
             mvaddch(1+y, x, SHORT_GRASS_SYMBOL);
             break;
           case ter_water:
+            attron(COLOR_PAIR(COLOR_WATER));
+            color = COLOR_WATER;
+
             mvaddch(1+y, x, WATER_SYMBOL);
             break;
           default:
             default_reached = 1;
             break;
         }
+        
+        attroff(A_BOLD);
+        attroff(COLOR_PAIR(color));
       }
     }
   }
@@ -1903,6 +1966,30 @@ void print_rival_dist()
   }
 }
 
+
+/**
+ * 
+ * Function to check weather a pending PC move is valid or not
+ * 
+ * Start basic
+*/
+int pc_saftey(directions_t pc_direction) {
+
+  pair_t d;
+
+  d[dim_x] = world.pc.pos[dim_x] + all_dirs[pc_direction][0];
+  d[dim_y] = world.pc.pos[dim_y] + all_dirs[pc_direction][1];
+
+  if((world_curmap_ter(d) == ter_gate) || (world_curmap_ter(d) == ter_boulder)
+      || (world_curmap_ter(d) == ter_tree) || (world_curmap_ter(d) == ter_water)) {
+
+    return -1;    
+  }
+
+  return 1;
+
+}
+
 /**
  * Depending on the key pressed in game loop, this function moves the PC,
  * then recalculates the distance maps for the rivals and the hikers,
@@ -1914,33 +2001,45 @@ uint32_t move_pc_curses(directions_t pc_direction){
 
   character_t *c;
   pair_t d;
+  
+  int saftey_rating;
+  //gonna need to add some checks
+  saftey_rating = pc_saftey(pc_direction);
+
+  //no_op, print warning (hit boulder or tree or something)
+  if(saftey_rating == -1) {
+
+    mvprintw(0, 10, " You can't go there.");
+    refresh();
+    return 1;
+  }
+
+
   world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]] = NULL;
 
-  //gonna need to add some checks
   if(pc_direction == up) {
-    // pc_saftey();
-    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
   }
   if(pc_direction == upper_l) {
-    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
   }
   if(pc_direction == upper_r) {
-    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] + 1;
   }
   if(pc_direction == right) {
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] + 1;
   }
   if(pc_direction == lower_r) {
-    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] + 1;
   }
   if(pc_direction == down) {
-    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
   }
   if(pc_direction == lower_l) {
-    world.pc.pos[dim_y] =  world.pc.pos[dim_y] - 1;
+    world.pc.pos[dim_y] =  world.pc.pos[dim_y] + 1;
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
   }
   if(pc_direction == left) {
@@ -2017,13 +2116,14 @@ void init_ncruses_terminal(void)
   curs_set(0);
   keypad(stdscr, TRUE);
   start_color();
-  // init_pair(COLOR_RED, COLOR_RED, COLOR_BLACK);
-  // init_pair(COLOR_GREEN, COLOR_GREEN, COLOR_BLACK);
-  // init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
-  // init_pair(COLOR_BLUE, COLOR_BLUE, COLOR_BLACK);
-  // init_pair(COLOR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-  // init_pair(COLOR_CYAN, COLOR_CYAN, COLOR_BLACK);
-  // init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
+  init_pair(COLOR_TREES, COLOR_GREEN, COLOR_BLACK);
+  init_pair(COLOR_GRASS, COLOR_GREEN, COLOR_WHITE);
+  init_pair(COLOR_PATH, COLOR_YELLOW, COLOR_BLACK);
+  init_pair(COLOR_MART, COLOR_BLUE, COLOR_BLACK);
+  init_pair(COLOR_CENTER, COLOR_MAGENTA, COLOR_BLACK);
+  init_pair(COLOR_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
+  init_pair(COLOR_GATE, COLOR_YELLOW, COLOR_WHITE);
+  init_pair(COLOR_WATER, COLOR_BLUE, COLOR_WHITE);
 }
 
 void game_loop()
@@ -2167,7 +2267,7 @@ int main(int argc, char *argv[])
 
   delete_world();
 
-  // printf("But how are you going to be the very best if you quit?\n");
-  
+  endwin();
+
   return 0;
 }

@@ -76,6 +76,8 @@ typedef int16_t pair_t[num_dims];
 #define COLOR_MOUNTAIN 6
 #define COLOR_GATE 7
 #define COLOR_WATER 8
+#define COLOR_PC 9
+#define COLOR_RIVAL 10
 
 
 #define mappair(pair) (m->map[pair[dim_y]][pair[dim_x]])
@@ -93,7 +95,9 @@ typedef enum __attribute__ ((__packed__)) directions {
   down,
   upper_r,
   right,
-  lower_r
+  lower_r,
+  none
+
 } directions_t;
 
 typedef enum __attribute__ ((__packed__)) terrain_type {
@@ -1538,7 +1542,23 @@ static void render_map()
   for (y = 0; y < MAP_Y; y++) {
     for (x = 0; x < MAP_X; x++) {
       if (world.cur_map->cmap[y][x]) {
-        mvaddch(1+y, x, world.cur_map->cmap[y][x]->symbol);
+        switch(world.cur_map->cmap[y][x]->symbol) {
+          case RIVAL_SYMBOL:
+            attron(COLOR_PAIR(COLOR_RIVAL));
+            color = COLOR_RIVAL;
+            attron(A_BOLD);
+            mvaddch(1+y, x, world.cur_map->cmap[y][x]->symbol);
+            break;
+          case PC_SYMBOL:
+            attron(COLOR_PAIR(COLOR_PC));
+            color = COLOR_PC;
+            attron(A_BOLD);
+            mvaddch(1+y, x, world.cur_map->cmap[y][x]->symbol);
+            break;
+          default:
+            mvaddch(1+y, x, world.cur_map->cmap[y][x]->symbol);
+            break;
+        } 
       } else {
         switch (world.cur_map->map[y][x]) {
         case ter_boulder:
@@ -2023,14 +2043,15 @@ int battle_trainer(character_t *c) {
   int key;
   while(!has_exited) {
 
-    key = getch();
     clear();
     mvprintw(0, 1, "Messages: You have started a battle (hit 'w' to win)");
     refresh();
     if(key == 'w') {
       has_exited = 1;
+      break;
     }
 
+    key = getch();
   }
 
   return 1;
@@ -2065,8 +2086,9 @@ uint32_t move_pc_curses(directions_t pc_direction){
 
   int saftey_rating;
   //gonna need to add some checks
-  saftey_rating = pc_saftey(pc_direction);
-
+  if(pc_direction != none) {
+    saftey_rating = pc_saftey(pc_direction);
+  }
   //no_op, print warning (hit boulder or tree or something)
   if(saftey_rating == -1) {
 
@@ -2106,6 +2128,7 @@ uint32_t move_pc_curses(directions_t pc_direction){
   if(pc_direction == left) {
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
   }
+
 
   //first check if there is a trainer there to battle
   if (world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]])
@@ -2254,29 +2277,17 @@ void trainer_dist_pc(pair_t *dist, character_t *c) {
   return;
 }
 
-
-/**
- * 
- * Function to display the list of trainers on the map
- * and there distance away from the pc
- * 
- * (e.g.: r, 2 north and 14 west);
-*/
-uint32_t display_trainer_list() {
+void render_trainer_list(int start, int end){
 
   character_t *trainers[world.char_seq_num];
   int trainer_count = 0;
   int y, x;
   pair_t *temp_dist = (pair_t *) malloc(sizeof(pair_t));
-  int has_exited = 0;
-
-  int key;
-
-  
 
   clear();
   mvprintw(0, 1, "Messages: You have opened the Trainer List (Up or Down arrow keys to scroll, ESC to exit)");
 
+  //find all the trainer from the map
   for(y = 0; y < MAP_Y; y++) {
     for(x = 0; x < MAP_X; x++) {
 
@@ -2287,44 +2298,88 @@ uint32_t display_trainer_list() {
     }
 
   }
-  for(x = 0; x < world.char_seq_num; x++) {
+
+  //scroll bounds checking
+  if(start < 0)
+  {
+    start = 0;
+  }
+  if(end > trainer_count) {
+    end = trainer_count;
+  }
+
+  for (x = start; x < end; x++)
+  {
     trainer_dist_pc(temp_dist, trainers[x]);
-    if(*temp_dist[dim_x] > 0) {
-      if(*temp_dist[dim_y] > 0) {
-        //north west
-        mvprintw(x+3, 3, "Trainer %d: %c, %d north and %d west", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+    if (*temp_dist[dim_x] > 0)
+    {
+      if (*temp_dist[dim_y] > 0)
+      {
+        // north west
+        mvprintw(x + 3, 3, "Trainer %d: %c, %d north and %d west", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
       }
-      else{
-        //south west
-        mvprintw(x+3, 3, "Trainer %d: %c, %d south and %d west", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+      else
+      {
+        // south west
+        mvprintw(x + 3, 3, "Trainer %d: %c, %d south and %d west", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
       }
-
     }
-    else{
-
-      if(*temp_dist[dim_y] > 0) {
-        //north east
-        mvprintw(x+3, 3, "Trainer %d: %c, %d north and %d east", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+    else
+    {
+      if (*temp_dist[dim_y] > 0)
+      {
+        // north east
+        mvprintw(x + 3, 3, "Trainer %d: %c, %d north and %d east", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
       }
-      else{
-        //south east
-        mvprintw(x+3, 3, "Trainer %d: %c, %d south and %d east", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+      else
+      {
+        // south east
+        mvprintw(x + 3, 3, "Trainer %d: %c, %d south and %d east", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
       }
     }
   }
+  free(temp_dist);
+
   refresh();
+
+  return;
+}
+
+/**
+ * 
+ * Function to display the list of trainers on the map
+ * and there distance away from the pc
+ * 
+ * (e.g.: r, 2 north and 14 west);
+*/
+uint32_t display_trainer_list() {
+
+  int has_exited = 0;
+  int key;
+
+  int list_start = 0;
+  int list_end = 19;
+
   while(!has_exited){
+    render_trainer_list(list_start, list_end);
     key = getch();
 
     if(key == 27) {
       has_exited = 1;
     }
-    if(key == 'e') {
-      has_exited = 1;
+    if(key == KEY_DOWN) {
+      list_start++;
+      list_end++;
+      render_trainer_list(list_start, list_end);
+    }
+    if(key == KEY_UP) {
+      list_start--;
+      list_end--;
+      render_trainer_list(list_start, list_end);
     }
   }
-
-  free(temp_dist);
+  
+  render_map();
   return 1;
 
 
@@ -2349,14 +2404,16 @@ void init_ncruses_terminal(void)
   curs_set(0);
   keypad(stdscr, TRUE);
   start_color();
-  init_pair(COLOR_TREES, COLOR_GREEN, COLOR_BLACK);
-  init_pair(COLOR_GRASS, COLOR_GREEN, COLOR_WHITE);
+  init_pair(COLOR_TREES, COLOR_GREEN, COLOR_WHITE);
+  init_pair(COLOR_GRASS, COLOR_GREEN, COLOR_BLACK);
   init_pair(COLOR_PATH, COLOR_YELLOW, COLOR_BLACK);
   init_pair(COLOR_MART, COLOR_BLUE, COLOR_BLACK);
   init_pair(COLOR_CENTER, COLOR_MAGENTA, COLOR_BLACK);
   init_pair(COLOR_MOUNTAIN, COLOR_BLACK, COLOR_WHITE);
-  init_pair(COLOR_GATE, COLOR_YELLOW, COLOR_WHITE);
-  init_pair(COLOR_WATER, COLOR_BLUE, COLOR_WHITE);
+  init_pair(COLOR_GATE, COLOR_CYAN, COLOR_BLACK);
+  init_pair(COLOR_WATER, COLOR_BLUE, COLOR_BLACK);
+  init_pair(COLOR_PC, COLOR_RED, COLOR_BLACK);
+  init_pair(COLOR_RIVAL, COLOR_MAGENTA, COLOR_BLACK);
 }
 
 void game_loop()
@@ -2374,11 +2431,10 @@ void game_loop()
   directions_t pc_direction;
   uint32_t no_op;
   int32_t key;
+  render_map();
 
   while (!quit_game) {
 
-    render_map();
-    key = getch();
     switch(key) {
 
       //upper-left
@@ -2440,11 +2496,12 @@ void game_loop()
         }
         break;
       // //Rest for a turn
-      // case '5':
-      // case ' ':
-      // case '.':
-      //   // no_op = 2;
-      //   break;
+      case '5':
+      case ' ':
+      case '.':
+        pc_direction = none;
+        no_op = move_pc_curses(pc_direction);
+        break;
       // //Display a list of trainers on the map, with their symbol
       // //and relative position to the PC (e.g.: "r, 2 north and 14 west")
       case 't':
@@ -2461,6 +2518,7 @@ void game_loop()
     if(!no_op) {
       render_map();
     }
+    key = getch();
     
   }
   mvprintw(0, 10, " But how are you gonna be the very best if you quit? (enter to exit)");

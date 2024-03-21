@@ -1,0 +1,500 @@
+commit 98bc88b8edc00ba4453c2ef57a44595b496e116f
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Mar 20 23:50:18 2024 -0500
+
+    Finished assignment 1.05
+
+commit 2694b2e5306918a51c4f945cc8a34f5e938ec7f7
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Mar 20 23:43:29 2024 -0500
+
+    finished project
+
+commit 2393a67e33aa61c569ac5b56162349c4514f2bdd
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Mar 20 21:53:44 2024 -0500
+
+    got most of the other commands finished, working on the battling.
+
+commit 267dcecab71e2db92e41b141c4afba8afc43e22e
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Mar 20 00:59:36 2024 -0500
+
+    Added some boundaries for the pc. Added color but looks kinda bad lol. Will fix that later.
+
+commit e1745fb90e144c19ee959c69e1aad90820d9e3d1
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Tue Mar 19 22:09:47 2024 -0500
+
+    basic movement commands work, need to fix some stuff.
+
+commit 1aa6ee04ff6df1325260d69d2a9dd90015c7d3d9
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Tue Mar 19 18:20:23 2024 -0500
+
+    working on moving the pc with key presses
+
+commit ec57758dfe4fe125eb929bffbdba7e36110ebbe8
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Mar 19 15:19:52 2024 -0500
+
+    working on getting map printed in ncurses
+
+commit 86a83ffc683918471510c4b6658e21e989270d04
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Mar 18 23:41:18 2024 -0500
+
+    working on curses
+
+commit 8f0fd5f7a9768b8dbfe35104a89efd68fc460fd9
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Mar 18 22:39:14 2024 -0500
+
+    adding ncurses library
+
+commit bed7928305ce88535a6428ed1bce41f4684f6bb9
+Author: wmaahs <wmaahs@pyrite-n1.cs.iastate.edu>
+Date:   Thu Feb 29 02:32:59 2024 -0600
+
+    added tarball assignment1.04
+
+commit b315728552f448df6274edd8ce62c76931805484
+Author: wmaahs <wmaahs@pyrite-n1.cs.iastate.edu>
+Date:   Thu Feb 29 02:26:47 2024 -0600
+
+    I am finished.
+
+commit 1f5c9341e1d3245c3a216674538e5aa51c850e18
+Merge: 67ec6f9 4b26aef
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Feb 29 01:59:47 2024 -0600
+
+    Merge branch 'main' of https://git.ece.iastate.edu/wmaahs/com-s-327
+
+commit 67ec6f908116a2626925a494e567dbcfb21beea7
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Feb 29 01:59:27 2024 -0600
+
+    added pacer.
+
+commit 4b26aef45f12562f686ba9460da279794692607d
+Author: wmaahs <wmaahs@pyrite-n1.cs.iastate.edu>
+Date:   Thu Feb 29 01:17:04 2024 -0600
+
+    the hiker, rival and wanderer are moving
+
+commit 928ea34a74a192902bfd4d1feffcf6aa03ea3dc3
+Author: wmaahs <wmaahs@pyrite-n1.cs.iastate.edu>
+Date:   Thu Feb 29 00:51:00 2024 -0600
+
+    hiker and rival are almost working?
+
+commit eece6c745ee0e7d60d39d365a9b0b92e2b440e55
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Feb 29 00:35:09 2024 -0600
+
+    trying the movement again.
+
+commit e8051c7a0a2d8776fbe1ac1a0b717f3a6f83cf06
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Feb 29 00:14:30 2024 -0600
+
+    added some of the other npc movements; testing the ones I have, add the rest after.
+
+commit 41531a6a6c0cbb329be24608845a80d921956601
+Author: wmaahs <wmaahs@pyrite-n1.cs.iastate.edu>
+Date:   Wed Feb 28 22:16:29 2024 -0600
+
+    fixed some errors for hiker movement
+
+commit 957315f71150c31657dbd3d58f657b08be5ccd8e
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 28 22:10:25 2024 -0600
+
+    Ready to test hiker movement.
+
+commit dacd8c2c975a5a793a300332845725b8e1bc8130
+Author: wmaahs <wmaahs@pyrite-n5.cs.iastate.edu>
+Date:   Wed Feb 28 17:45:04 2024 -0600
+
+    got all characters added and freed without seg fault
+
+commit e1307fae755eab036238d8028ec85f074f28ad2d
+Author: wmaahs <wmaahs@pyrite-n5.cs.iastate.edu>
+Date:   Wed Feb 28 17:22:36 2024 -0600
+
+    fixed printing pc
+
+commit 2925888ec1aad1c93edba1062aa513f860950ea2
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 28 17:13:47 2024 -0600
+
+    hopefully it prints the pc now too.
+
+commit 12890271d243514017cc9db5da6e400b78309ef1
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 28 16:58:35 2024 -0600
+
+    fixing seg fault from printing character map.
+
+commit fd5a998d87b495a10f0fa16d1e75ef34b85818a0
+Author: wmaahs <wmaahs@pyrite-n1.cs.iastate.edu>
+Date:   Wed Feb 28 13:03:54 2024 -0600
+
+    tested, getting seg fault when trying to print character map
+
+commit 129c8524d5fde619bed653bbbed7ca0bd2951371
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 28 12:36:33 2024 -0600
+
+    added the characters to the character_heap. testing.
+
+commit 2703dace2c4f84b0bb901ac2be5fda381ea99f9f
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 28 00:09:34 2024 -0600
+
+    Working on spawning npcs and adding them to character map.
+
+commit 7cbf2fafd150544d079cda2fcf08ebe95fc8795c
+Author: wmaahs <wmaahs@pyrite-n2.cs.iastate.edu>
+Date:   Mon Feb 26 23:25:10 2024 -0600
+
+    spawn_trainer test
+
+commit e5413fd6870d168eded9e3113c28f4b8f209fe05
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Mon Feb 26 23:06:44 2024 -0600
+
+    added spawn_trainer method, time to test
+
+commit 7e9129b9b5bf219490b4cc910b725f98ab6bf645
+Author: wmaahs <wmaahs@pyrite-n2.cs.iastate.edu>
+Date:   Mon Feb 26 21:57:00 2024 -0600
+
+    tested refactoring
+
+commit 79c3650cedd6a71113b111f0d03029381cf535a0
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Mon Feb 26 21:28:50 2024 -0600
+
+    added hw1.04 directory. Testing refactoring.
+
+commit 21d1e93ce365b59ae8ecbdfb5a374a1356d5fcdb
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 26 14:12:03 2024 -0600
+
+    Started refactoring for hw1.04
+
+commit 5ba94312c148857b2ef2f328cd792070acabed3a
+Author: wmaahs <wmaahs@pyrite-n3.cs.iastate.edu>
+Date:   Wed Feb 21 21:25:34 2024 -0600
+
+    Im done! Created submission tarball.
+
+commit 010d074ce11509e44fe65b3f3306cb7eff7a6bcf
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 21 20:49:37 2024 -0600
+
+    refactored in vscode. Ready to test hiker_distance_map.
+
+commit c0968f567526d6d39d6fbb12bc62cef8faddf5c9
+Author: wmaahs <wmaahs@pyrite-n3.cs.iastate.edu>
+Date:   Wed Feb 21 20:15:24 2024 -0600
+
+    working rival_distance_map! now just need to fix the hiker_distance_map
+
+commit 86477200988ac7002d1d21c84579164f74001307
+Author: wmaahs <wmaahs@pyrite-n4.cs.iastate.edu>
+Date:   Wed Feb 21 13:23:40 2024 -0600
+
+    getting closer, seg fault instead of a bunch of -34, -39, map prints correctly now.
+
+commit ba2851f415bdf3345bb396b641be890616a40a70
+Author: wmaahs <wmaahs@pyrite-n4.cs.iastate.edu>
+Date:   Wed Feb 21 02:17:49 2024 -0600
+
+    not quite working correctly. noticed a bug. PC getting written lots of time. add return (im going to bed)
+
+commit bacb97896a51b719267640096665f59f8b5e782c
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 21 01:56:03 2024 -0600
+
+    Finished dijkstras algorithms. Ready to test.
+
+commit dac371f55171d0bdb5232a6941ff599e427d5f2f
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sat Feb 17 20:52:07 2024 -0600
+
+    Added rival dijkstras. Still need to test both.
+
+commit 04f185b5f9f6ba9efe75c2f7d8422285a318bdca
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 13:58:10 2024 -0600
+
+    working on hikers_path dijkstras
+
+commit bc9a068796deed056345730a563d017c863bf3f0
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:47:52 2024 -0600
+
+    Working on hikers shortest path.
+
+commit 353ff8f92fcb524084dff5b58f2d7adb7ba53674
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:37:58 2024 -0600
+
+    fixing bugs..
+
+commit db7b907623b7f454c556846251b8451529c9834a
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:34:08 2024 -0600
+
+    fixed pair_t error
+
+commit 92e9405f8d0727b3e92744fc7fd83fae3449530e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 13 00:30:37 2024 -0600
+
+    saving work. Working on dijkstras_trainer_path.
+
+commit dea945833f430beff8c97a5d06506e6abca5ac07
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 21:40:37 2024 -0600
+
+    trying to place pc again.
+
+commit 8a2cede529b7a97b846cb5e599b82fb91acb3afb
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 21:37:20 2024 -0600
+
+    pushing to test.
+
+commit b7fc6234a2d5763f28ee45fa41d46f3e74f66e83
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 21:32:55 2024 -0600
+
+    Add player character
+
+commit d725cbc3c6723748c557c7c51fb7974549edacff
+Author: wmaahs <wmaahs@pyrite-n2.cs.iastate.edu>
+Date:   Mon Feb 12 12:45:57 2024 -0600
+
+    started modifying source code
+
+commit b5289b7521def7e67fed96b05e49ae0fc86aef0d
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Mon Feb 12 11:55:37 2024 -0600
+
+    Added assignment1.02 solution to CWD
+
+commit b44a83c0cb3800aed82ec2a52ff9193ad44f1f04
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Feb 8 03:12:01 2024 -0600
+
+    Updated CHANGELOG and added tarball.
+
+commit 265163c309d2c8a5ecfc6e4a108e8b3a140e5363
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Feb 8 03:04:08 2024 -0600
+
+    I am done.
+
+commit a827143dee18334a4ba52d5117b6476bde05c533
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Feb 8 01:05:51 2024 -0600
+
+    fly is working, seg faults near west border  of map
+
+commit b8d450860c0d25e714cfe1a2f858072e1978cc9c
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 22:35:43 2024 -0600
+
+    Adding in flying
+
+commit 79e53d36970f1eb8958835af2071c9c4a1f6db3c
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 21:20:48 2024 -0600
+
+    Fixed the sig faultgit add .! OMG! Had to pas everything by address
+
+commit df39a1aefe8fec6d429fa43bd0a04555e41c1a65
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 20:58:58 2024 -0600
+
+    Seg Fault. Four maps work, the fifth always faults
+
+commit 9542aac7a09854c96a6d3a04b871f7d398aacc3e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 19:19:19 2024 -0600
+
+    Finally got the gates to align. Only works for going north.
+
+commit b3475487902973c08a05a5308d34462c2da8186e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 18:59:51 2024 -0600
+
+    More refactoring. Still trying to get gates to line up.
+
+commit f12f9f7d759d822dc4e64a7215d4afcda6f2005d
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 17:21:53 2024 -0600
+
+    a little more refactoring. Working on linking the roads.
+
+commit 8d7958ef2d6de2e64a00daf6bc00eb905e93bbfb
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 16:38:06 2024 -0600
+
+    Refactored old code so that new code works with it better. Working on aligning the gates.
+
+commit 75121a538e4303321a564dc2bb9de88b12c5ce9c
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 13:01:04 2024 -0600
+
+    working on collecting user input
+
+commit 543b7a1b41c5173a4890ed4b3dda0de70a01a611
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 03:10:24 2024 -0600
+
+    working on taking user input
+
+commit 752dd8666c7464a0505f4e8941bc7489267631f3
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 02:48:27 2024 -0600
+
+    compiled, first map generated
+
+commit c1b4260d36baef76f31a32a7de4e367d138f6573
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Feb 7 00:08:02 2024 -0600
+
+    Still working on trying to link the files. World should be intialized and first map created.
+
+commit 2392dd30490b2f3daa3873fdfa7bf1347466c993
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Feb 6 22:41:20 2024 -0600
+
+    started working on assignment1.02, started refactoring and adding in assignment1.01
+
+commit 9baa5e6748eec17fa12caca22f0feed7ab052d76
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 31 18:32:51 2024 -0600
+
+    puhsing tarball (hw1.01).
+
+commit e3053c8a2390ce77cc10cdfeb5be17f37903e68c
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 31 18:18:17 2024 -0600
+
+    added random objects here and there (trees,rocks), finished comments, added README and CHANGELOG. Done HW1.01.
+
+commit 2aac4104cf441455797c8b42662f3384a239fc7e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 31 00:57:26 2024 -0600
+
+    pokemon map generation bare minimum is completed. specal in some tress and boudlers
+
+commit cd842cea80156db497b5c8db3669bc8cfeff6281
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sun Jan 28 01:25:45 2024 -0600
+
+    added shortgrass, working on mountains
+
+commit 5ac49ef40bbb83660fd99fc3dc2caf2ca4912287
+Merge: 7cb2db4 83518e3
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sat Jan 27 22:47:45 2024 -0600
+
+    merge commit after adding hw1.01
+    Merge branch 'main' of https://git.ece.iastate.edu/wmaahs/com-s-327
+
+commit 7cb2db4a3b2a4ca4d6e451dfdfb2c516a67af4a1
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sat Jan 27 22:46:51 2024 -0600
+
+    started map generator. Finsished generating boarders, started mountains.
+
+commit 83518e3381f7c8950edd4afcb2f32c1ff398daad
+Author: wmaahs <wmaahs@pyrite-n2.cs.iastate.edu>
+Date:   Wed Jan 24 20:37:27 2024 -0600
+
+    added tarball to repo
+
+commit 3519e1195bb2d24b17e9588258455a7bf81591af
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 24 20:20:42 2024 -0600
+
+    working recursive knights tour
+
+commit bfacf8c7f700f22ab7a32f714be93a003d9e417d
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 24 14:46:44 2024 -0600
+
+    still stuck in infinite recursion
+
+commit 4eee712c7f30e147365167187553ff634dc2a08d
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 24 01:46:24 2024 -0600
+
+    saving work on knights tour
+
+commit b23ca72edba8323f59d72aa2c5a8af857ca26b04
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 24 00:04:45 2024 -0600
+
+    fixed some errors
+
+commit 8aac21d4007b19a8fbefb922f0d57ed8c9046507
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Jan 23 23:34:46 2024 -0600
+
+    finished knights tour recursion method
+
+commit 6ea776683a9ba6466594456b15fae86b612d4f10
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Jan 23 09:41:52 2024 -0600
+
+    added make file
+
+commit dc176ec142e6e6076bedba8ef011de50e48315f3
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Jan 18 14:28:47 2024 -0600
+
+    added hw0 folder
+
+commit 2fcec6769430aa6251d6e0ad1aecf69ac241dac4
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Jan 17 20:49:50 2024 -0600
+
+    working on get_next_move
+
+commit 92f19ae346aebff352b2536c2f4f732ec600c040
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Jan 17 20:04:08 2024 -0600
+
+    working on get_next_move
+
+commit 71d7a17861f945ac6a2970b79888725a61b98f53
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Jan 18 02:02:38 2024 +0000
+
+    Add new file
+
+commit 72858ce60adb130ea7101ec38be683dc22075eb6
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 17 19:34:57 2024 -0600
+
+    Saving work.
+
+commit 6f063f5d52647d7f306e35b720afee3c44bdc418
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 17 19:13:15 2024 -0600
+
+    Saving work, chess board generates
+
+commit 4beea38023cf497f4ecc0a2e30a9d3b9ade4a7f8
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Jan 17 16:09:05 2024 +0000
+
+    Initial commit

@@ -1,0 +1,9 @@
+Will Maahs
+
+This application uses ncurses to implement a user interface for the pokemon game instead of the timer that we were using previously.
+When a PC runs into a NPC, a battle is started, if you hit 'w', you will win. Once the trainer has been defeated,
+they apear back on the map after their next turn. All of the other menu options are listed in the window.
+
+All of the requirements for this assignment were met.
+
+I was trying to make a fancy looking table to display the list of trainers, but unfortunatly I ran out of time.

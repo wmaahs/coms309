@@ -142,6 +142,25 @@ typedef struct npc {
   pair_t dir;
 } npc_t;
 
+typedef enum cardinal_directions {
+
+  north,
+  south,
+  east,
+  west,
+  num_card_dirs
+} card_dir_t;
+
+typedef struct dist_from_pc {
+
+  card_dir_t card_x;
+  card_dir_t card_y;
+  int x_dist;
+  int y_dist;
+
+} dist_from_pc_t;
+
+
 typedef struct character {
   npc_t *npc;
   pc_t *pc;
@@ -1606,6 +1625,7 @@ static void render_map()
             //colors
             attron(COLOR_PAIR(COLOR_TREES));
             color = COLOR_TREES;
+            attroff(A_BOLD);
 
             mvaddch(1+y, x, FOREST_SYMBOL);
             break;
@@ -1649,12 +1669,14 @@ static void render_map()
           case ter_clearing:
             attron(COLOR_PAIR(COLOR_GRASS));
             color = COLOR_GRASS;
+            attron(A_BOLD);
 
             mvaddch(1+y, x, SHORT_GRASS_SYMBOL);
             break;
           case ter_water:
             attron(COLOR_PAIR(COLOR_WATER));
             color = COLOR_WATER;
+            attron(A_BOLD);
 
             mvaddch(1+y, x, WATER_SYMBOL);
             break;
@@ -1991,6 +2013,45 @@ int pc_saftey(directions_t pc_direction) {
 }
 
 /**
+ * 
+ * for now just hit 'w' to exit the battle,
+ * after exiting the battle, rivals and hikers stop moving
+*/
+int battle_trainer(character_t *c) {
+
+  int has_exited = 0;
+  int key;
+  while(!has_exited) {
+
+    key = getch();
+    clear();
+    mvprintw(0, 1, "Messages: You have started a battle (hit 'w' to win)");
+    refresh();
+    if(key == 'w') {
+      has_exited = 1;
+    }
+
+  }
+
+  return 1;
+
+}
+/**
+ * 
+ * Function to check if after a move, a pc has collided with a NPC
+ * If they have collided then returns characters seq num, else 0
+ * 
+ *  @returns seq_num on true, null on false
+*/
+// character_t *check_for_battle() {
+
+//   if(world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]]) {
+//     return world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]];
+//   }
+//   return NULL;
+// }
+
+/**
  * Depending on the key pressed in game loop, this function moves the PC,
  * then recalculates the distance maps for the rivals and the hikers,
  * then performs the next players turn in the heap.
@@ -2001,7 +2062,7 @@ uint32_t move_pc_curses(directions_t pc_direction){
 
   character_t *c;
   pair_t d;
-  
+
   int saftey_rating;
   //gonna need to add some checks
   saftey_rating = pc_saftey(pc_direction);
@@ -2046,19 +2107,27 @@ uint32_t move_pc_curses(directions_t pc_direction){
     world.pc.pos[dim_x] =  world.pc.pos[dim_x] - 1;
   }
 
-
-  world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]] = &world.pc;
+  //first check if there is a trainer there to battle
+  if (world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]])
+  {
+    battle_trainer(world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]]);
+  }
+  else{
+    world.cur_map->cmap[world.pc.pos[dim_y]][world.pc.pos[dim_x]] = &world.pc;
+  }
 
   //remake the hiker and rival maps
   pathfind(world.cur_map);
   c = heap_remove_min(&world.cur_map->turn);
   // print_character(c);
   if (c == &world.pc) {
-    render_map();
     c->next_turn += move_cost[char_pc][world.cur_map->map[c->pos[dim_y]]
                                                           [c->pos[dim_x]]];
   } else {
     move_func[c->npc->mtype](c, d);
+    if(d[dim_y] == world.pc.pos[dim_y] && d[dim_x] == world.pc.pos[dim_x]) {
+      battle_trainer(c);
+    }
     world.cur_map->cmap[c->pos[dim_y]][c->pos[dim_x]] = NULL;
     world.cur_map->cmap[d[dim_y]][d[dim_x]] = c;
     c->next_turn += move_cost[c->npc->ctype][world.cur_map->map[d[dim_y]]
@@ -2068,11 +2137,17 @@ uint32_t move_pc_curses(directions_t pc_direction){
   }
   heap_insert(&world.cur_map->turn, c);
 
-  
+  // character_t *battle = check_for_battle();
+  // if(battle) {
+  //   battle_trainer(battle);
+  // }
   render_map();
   return 1;
 }
 
+/**
+ * Function called when 'Q' is inputed by the user
+*/
 uint32_t exit_game() {
 
   int32_t confirm;
@@ -2099,6 +2174,164 @@ uint32_t exit_game() {
 
   return 1;
 }
+
+
+/**
+ * Function called when the user attempts to enter a building
+*/
+uint32_t enter_building() {
+
+  // pair_t building;
+  int has_exited = 0;
+  int key;
+  pair_t pc;
+  pc[dim_x] = world.pc.pos[dim_x];
+  pc[dim_y] = world.pc.pos[dim_y];
+
+  //check if the pc is standing on a building
+  if(world_curmap_ter(pc) == ter_center) {
+
+    clear();
+    mvprintw(0, 1, "Messages: You have entered the PokeCenter (Press '<' to exit)");
+    refresh();
+
+    while(!has_exited) {
+      key = getch();
+      if(key == '<') {
+        render_map();
+        mvprintw(0, 11, "See you next time!");
+        refresh();
+        has_exited = 1;
+      }
+    }
+
+    return 1;
+  }
+  else if(world_curmap_ter(pc) == ter_mart) {
+
+    clear();
+    mvprintw(0, 1, "Messages: You have entered the PokeMart (Press '<' to exit)");
+    refresh();
+
+    while(!has_exited) {
+      key = getch();
+      if(key == '<') {
+        render_map();
+        mvprintw(0, 11, "See you next time!");
+        refresh();
+        has_exited = 1;
+      }
+    }
+
+    return 1;
+  }
+  //not a building
+  else{
+    return 0;
+  }
+  
+  //unreachable code
+  return 0;
+}
+
+/**
+ * helper function for display_trainer_list
+ * that calculates the given trainers distance from the PC
+ * 
+ * @returns distance from PC (int)
+*/
+void trainer_dist_pc(pair_t *dist, character_t *c) {
+
+  int y_diff;
+  int x_diff;
+
+  y_diff = world.pc.pos[dim_y] - c->pos[dim_y];
+  x_diff = world.pc.pos[dim_x] - c->pos[dim_x];
+
+  *dist[dim_y] = y_diff;
+  *dist[dim_x] = x_diff;
+
+  return;
+}
+
+
+/**
+ * 
+ * Function to display the list of trainers on the map
+ * and there distance away from the pc
+ * 
+ * (e.g.: r, 2 north and 14 west);
+*/
+uint32_t display_trainer_list() {
+
+  character_t *trainers[world.char_seq_num];
+  int trainer_count = 0;
+  int y, x;
+  pair_t *temp_dist = (pair_t *) malloc(sizeof(pair_t));
+  int has_exited = 0;
+
+  int key;
+
+  
+
+  clear();
+  mvprintw(0, 1, "Messages: You have opened the Trainer List (Up or Down arrow keys to scroll, ESC to exit)");
+
+  for(y = 0; y < MAP_Y; y++) {
+    for(x = 0; x < MAP_X; x++) {
+
+      if(world.cur_map->cmap[y][x]) {
+        trainers[trainer_count] = world.cur_map->cmap[y][x];
+        trainer_count++;
+      }
+    }
+
+  }
+  for(x = 0; x < world.char_seq_num; x++) {
+    trainer_dist_pc(temp_dist, trainers[x]);
+    if(*temp_dist[dim_x] > 0) {
+      if(*temp_dist[dim_y] > 0) {
+        //north west
+        mvprintw(x+3, 3, "Trainer %d: %c, %d north and %d west", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+      }
+      else{
+        //south west
+        mvprintw(x+3, 3, "Trainer %d: %c, %d south and %d west", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+      }
+
+    }
+    else{
+
+      if(*temp_dist[dim_y] > 0) {
+        //north east
+        mvprintw(x+3, 3, "Trainer %d: %c, %d north and %d east", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+      }
+      else{
+        //south east
+        mvprintw(x+3, 3, "Trainer %d: %c, %d south and %d east", x, trainers[x]->symbol, abs(*temp_dist[dim_y]), abs(*temp_dist[dim_x]));
+      }
+    }
+  }
+  refresh();
+  while(!has_exited){
+    key = getch();
+
+    if(key == 27) {
+      has_exited = 1;
+    }
+    if(key == 'e') {
+      has_exited = 1;
+    }
+  }
+
+  free(temp_dist);
+  return 1;
+
+
+}
+
+
+
 
 void print_character(character_t *c)
 {
@@ -2141,10 +2374,10 @@ void game_loop()
   directions_t pc_direction;
   uint32_t no_op;
   int32_t key;
-  render_map();
 
   while (!quit_game) {
 
+    render_map();
     key = getch();
     switch(key) {
 
@@ -2185,8 +2418,8 @@ void game_loop()
         no_op = move_pc_curses(pc_direction);
         break;
       //lower-left
-      case '1':
       case 'b':
+      case '1':
         pc_direction = lower_l;
         no_op = move_pc_curses(pc_direction);
         break;
@@ -2196,11 +2429,16 @@ void game_loop()
         pc_direction = left;
         no_op = move_pc_curses(pc_direction);
         break;
-      //Enter building
+      // Enter building
       //add placeholder for now
-      // case '>':
-      //   // no_op = 2;
-      //   break;
+      case '>':
+        no_op = enter_building();
+        if(!no_op) {
+          mvprintw(0, 11, "You have to be standing on a building to enter them (enter to continue)");
+          refresh();
+          getch();
+        }
+        break;
       // //Rest for a turn
       // case '5':
       // case ' ':
@@ -2209,23 +2447,9 @@ void game_loop()
       //   break;
       // //Display a list of trainers on the map, with their symbol
       // //and relative position to the PC (e.g.: "r, 2 north and 14 west")
-      // case 't':
-      //   // no_op = 2;
-      //   break;
-      // //when displaying trainer list, if possible scroll list up
-      // case KEY_UP:
-      //   // no_op = 2;
-      //   break;
-      // //when displaying trainer list, if possible scroll list down
-      // case KEY_DOWN:
-      //   // no_op = 2;
-      //   break;
-      // //exit trainer list
-      // //gotta figure out what the escape key is
-      // case KEY_DOWN:
-      //   // no_op = 2;
-      //   break;
-      
+      case 't':
+        no_op = display_trainer_list();
+        break;
       case 'Q':
         no_op = exit_game();
         break;

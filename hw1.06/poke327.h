@@ -6,7 +6,7 @@
 
 # include "heap.h"
 
-typedef struct character character_t;
+typedef class character character_t;
 
 #define malloc(size) ({          \
   void *_tmp;                    \
@@ -97,8 +97,8 @@ typedef struct map {
   int8_t n, s, e, w;
 } map_t;
 
-typedef struct npc npc_t;
-typedef struct pc pc_t;
+typedef class npc npc_t;
+typedef class pc pc_t;
 /* Here instead of character.h to abvoid including character.h */
 typedef class character {
 public:
@@ -109,6 +109,7 @@ public:
   int next_turn;
   int seq_num;
 } character_t;
+
 
 class pc : public character{
 

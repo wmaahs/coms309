@@ -1,7 +1,7 @@
 #ifndef IO_H
 # define IO_H
 
-typedef struct character character_t;
+typedef class character character_t;
 typedef int16_t pair_t[2];
 
 void io_init_terminal(void);

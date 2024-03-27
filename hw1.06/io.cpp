@@ -302,12 +302,12 @@ static void io_list_trainers_display(character_t **c,
 
   mvprintw(3, 19, " %-40s ", "");
   /* Borrow the first element of our array for this string: */
-  snprintf(s[0], 40, "You know of %d trainers:", count);
+  snprintf(s[0], 46, "You know of %d trainers:", count);
   mvprintw(4, 19, " %-40s ", *s);
   mvprintw(5, 19, " %-40s ", "");
 
   for (i = 0; i < count; i++) {
-    snprintf(s[i], 40, "%16s %c: %2d %s by %2d %s",
+    snprintf(s[i], 46, "%16s %c: %2d %s by %2d %s",
              char_type_name[c[i]->npc->ctype],
              c[i]->symbol,
 	     abs(c[i]->pos[dim_y] - world.pc.pos[dim_y]),

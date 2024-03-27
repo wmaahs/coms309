@@ -352,19 +352,19 @@ static void move_swimmer_func(character_t *c, pair_t dest)
                [dest[dim_x] + dir[dim_x]] == ter_water) ||
         ((m->map[dest[dim_y] + dir[dim_y]]
                 [dest[dim_x] + dir[dim_x]] == ter_path) &&
-         is_adjacent(((pair_t){ (dest[dim_x] + dir[dim_x]),
-                                (dest[dim_y] + dir[dim_y]) }), ter_water))) {
+         is_adjacent(((pair_t){ (dest[dim_x] + (int16_t) dir[dim_x]),
+                                (dest[dim_y] + (int16_t) dir[dim_y]) }), ter_water))) {
       dest[dim_x] += dir[dim_x];
       dest[dim_y] += dir[dim_y];
-    } else if ((m->map[dest[dim_y]][dest[dim_x] + dir[dim_x]] == ter_water) ||
-               ((m->map[dest[dim_y]][dest[dim_x] + dir[dim_x]] == ter_path) &&
-                is_adjacent(((pair_t){ (dest[dim_x] + dir[dim_x]),
+    } else if ((m->map[dest[dim_y]][dest[dim_x] + (int16_t) dir[dim_x]] == ter_water) ||
+               ((m->map[dest[dim_y]][dest[dim_x] + (int16_t) dir[dim_x]] == ter_path) &&
+                is_adjacent(((pair_t){ (dest[dim_x] + (int16_t) dir[dim_x]),
                                        (dest[dim_y]) }), ter_water))) {
       dest[dim_x] += dir[dim_x];
     } else if ((m->map[dest[dim_y] + dir[dim_y]][dest[dim_x]] == ter_water) ||
                ((m->map[dest[dim_y] + dir[dim_y]][dest[dim_x]] == ter_path) &&
                 is_adjacent(((pair_t){ (dest[dim_x]),
-                                       (dest[dim_y] + dir[dim_y]) }),
+                                       (dest[dim_y] + (int16_t) dir[dim_y]) }),
                             ter_water))) {
       dest[dim_y] += dir[dim_y];
     }
@@ -376,8 +376,8 @@ static void move_swimmer_func(character_t *c, pair_t dest)
                     [dest[dim_x] + dir[dim_x]] != ter_water) ||
         !((m->map[dest[dim_y] + dir[dim_y]]
                  [dest[dim_x] + dir[dim_x]] == ter_path) &&
-          is_adjacent(((pair_t) { dest[dim_x] + dir[dim_x],
-                                  dest[dim_y] + dir[dim_y] }), ter_water))) {
+          is_adjacent(((pair_t) { dest[dim_x] + (int16_t) dir[dim_x],
+                                  dest[dim_y] + (int16_t) dir[dim_y] }), ter_water))) {
       rand_dir(dir);
     }
 
@@ -385,8 +385,8 @@ static void move_swimmer_func(character_t *c, pair_t dest)
                     [dest[dim_x] + dir[dim_x]] == ter_water) ||
         ((m->map[dest[dim_y] + dir[dim_y]]
                 [dest[dim_x] + dir[dim_x]] == ter_path) &&
-         is_adjacent(((pair_t) { dest[dim_x] + dir[dim_x],
-                                 dest[dim_y] + dir[dim_y] }), ter_water))) {
+         is_adjacent(((pair_t) { dest[dim_x] + (int16_t) dir[dim_x],
+                                 dest[dim_y] + (int16_t) dir[dim_y] }), ter_water))) {
       dest[dim_x] += dir[dim_x];
       dest[dim_y] += dir[dim_y];
     }

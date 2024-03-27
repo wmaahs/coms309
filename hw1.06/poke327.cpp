@@ -81,10 +81,10 @@ static void dijkstra_path(map_t *m, pair_t from, pair_t to)
 
     if ((p->pos[dim_y] == to[dim_y]) && p->pos[dim_x] == to[dim_x]) {
       for (x = to[dim_x], y = to[dim_y];
-           (x != from[dim_x]) || (y != from[dim_y]);
+           ((int16_t) x != from[dim_x]) || ((int16_t) y != from[dim_y]);
            p = &path[y][x], x = p->from[dim_x], y = p->from[dim_y]) {
         /* Don't overwrite the gate */
-        if (x != to[dim_x] || y != to[dim_y]) {
+        if ((int16_t) x != to[dim_x] || (int16_t) y != to[dim_y]) {
           mapxy(x, y) = ter_path;
           heightxy(x, y) = 0;
         }

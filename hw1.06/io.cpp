@@ -310,10 +310,10 @@ static void io_list_trainers_display(character_t **c,
     snprintf(s[i], 40, "%16s %c: %2d %s by %2d %s",
              char_type_name[c[i]->npc->ctype],
              c[i]->symbol,
-             abs(c[i]->pos[dim_y] - world.pc.pos[dim_y]),
+	     abs(c[i]->pos[dim_y] - world.pc.pos[dim_y]),
              ((c[i]->pos[dim_y] - world.pc.pos[dim_y]) <= 0 ?
               "North" : "South"),
-             abs(c[i]->pos[dim_x] - world.pc.pos[dim_x]),
+	     abs(c[i]->pos[dim_x] - world.pc.pos[dim_x]),
              ((c[i]->pos[dim_x] - world.pc.pos[dim_x]) <= 0 ?
               "West" : "East"));
     if (count <= 13) {

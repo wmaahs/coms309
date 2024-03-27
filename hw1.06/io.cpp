@@ -263,7 +263,7 @@ uint32_t io_teleport_pc(pair_t dest)
   return 0;
 }
 
-static void io_scroll_trainer_list(char (*s)[40], uint32_t count)
+static void io_scroll_trainer_list(char (*s)[46], uint32_t count)
 {
   uint32_t offset;
   uint32_t i;
@@ -296,9 +296,9 @@ static void io_list_trainers_display(character_t **c,
                                      uint32_t count)
 {
   uint32_t i;
-  char (*s)[40]; /* pointer to array of 40 char */
+  char (*s)[46]; /* pointer to array of 40 char */
 
-  s = (char(*)[40]) malloc(count * sizeof (*s));
+  s = (char(*)[46]) malloc(count * sizeof (*s));
 
   mvprintw(3, 19, " %-40s ", "");
   /* Borrow the first element of our array for this string: */

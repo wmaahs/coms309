@@ -51,7 +51,7 @@ void io_queue_message(const char *format, ...)
   io_message_t *tmp;
   va_list ap;
 
-  if (!(tmp = (io_message_t *) malloc(sizeof (*tmp)))) {
+  if (!(tmp = malloc(sizeof (*tmp)))) {
     perror("malloc");
     exit(1);
   }
@@ -102,8 +102,8 @@ static void io_print_message_queue(uint32_t y, uint32_t x)
  **************************************************************************/
 static int compare_trainer_distance(const void *v1, const void *v2)
 {
-  const character_t *const *c1 = (const character_t *const *) v1;
-  const character_t *const *c2 = (const character_t *const *) v2;
+  const character_t *const *c1 = v1;
+  const character_t *const *c2 = v2;
 
   return (world.rival_dist[(*c1)->pos[dim_y]][(*c1)->pos[dim_x]] -
           world.rival_dist[(*c2)->pos[dim_y]][(*c2)->pos[dim_x]]);
@@ -114,7 +114,7 @@ static character_t *io_nearest_visible_trainer()
   character_t **c, *n;
   uint32_t x, y, count;
 
-  c = (character_t **) malloc(world.cur_map->num_trainers * sizeof (*c));
+  c = malloc(world.cur_map->num_trainers * sizeof (*c));
 
   /* Get a linear list of trainers */
   for (count = 0, y = 1; y < MAP_Y - 1; y++) {
@@ -247,30 +247,6 @@ void io_display()
   refresh();
 }
 
-void walk_through_gate(pair_t dest)
-{
-  //west gate
-  if(dest[dim_x] == 0) {
-    world.cur_idx[dim_x]--;
-  }
-  //south gate
-  else if(dest[dim_y] == 0) {
-    world.cur_idx[dim_y]--;
-  }
-  else if(dest[dim_x] == MAP_X -1) {
-    world.cur_idx[dim_x]++;
-  }
-  else {
-    world.cur_idx[dim_y]++;
-  }
-}
-
-uint32_t io_fly_pc( pair_t dest) 
-{
-
-
-}
-
 uint32_t io_teleport_pc(pair_t dest)
 {
   /* Just for fun. And debugging.  Mostly debugging. */
@@ -322,7 +298,7 @@ static void io_list_trainers_display(character_t **c,
   uint32_t i;
   char (*s)[40]; /* pointer to array of 40 char */
 
-  s = (char(*)[40]) malloc(count * sizeof (*s));
+  s = malloc(count * sizeof (*s));
 
   mvprintw(3, 19, " %-40s ", "");
   /* Borrow the first element of our array for this string: */
@@ -367,7 +343,7 @@ static void io_list_trainers()
   character_t **c;
   uint32_t x, y, count;
 
-  c = (character_t **) malloc(world.cur_map->num_trainers * sizeof (*c));
+  c = malloc(world.cur_map->num_trainers * sizeof (*c));
 
   /* Get a linear list of trainers */
   for (count = 0, y = 1; y < MAP_Y - 1; y++) {
@@ -473,8 +449,7 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
   }
 
   if (world.cur_map->map[dest[dim_y]][dest[dim_x]] == ter_gate) {
-    /* Add code for going to next map*/
-    walk_through_gate(dest);
+    /* Can't leave the map */  
     return 1;
   }
 
@@ -573,9 +548,6 @@ void io_handle_input(pair_t dest)
       io_teleport_pc(dest);
       turn_not_consumed = 0;
       break;
-    case 'f':
-      io_fly_pc(dest);
-      turn_not_consumed = 0;
     case 'm':
       
     case 'q':

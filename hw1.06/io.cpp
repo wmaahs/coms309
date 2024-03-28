@@ -275,6 +275,8 @@ void walk_through_gate(pair_t dest)
   }
 
   new_map(0);
+
+  return;
 }
 
 uint32_t io_teleport_pc(pair_t dest)
@@ -314,7 +316,7 @@ uint32_t io_fly_pc( pair_t dest)
 
   //get the x
   do {
-    mvscanw(0, 51, "%d", &dest_map[dim_x]);
+    mvscanw(0, 62, "%d", &dest_map[dim_x]);
     //check x is valid
     if(dest_map[dim_x] <= 200 && dest_map[dim_x] >= -200) {
       //display
@@ -324,21 +326,24 @@ uint32_t io_fly_pc( pair_t dest)
       x_set = 1;
     }
     else{
-      attron(COLOR_PAIR(COLOR_CYAN));
-      mvprintw(0, 27, "(Try again! Between -200 and 200): ");
-      attroff(COLOR_PAIR(COLOR_CYAN));
+      mvprintw(0, 27, "");
+      clrtoeol();
+      attron(COLOR_PAIR(COLOR_RED));
+      mvprintw(0, 27, " (Try again! Between -200 and 200): ");
+      attroff(COLOR_PAIR(COLOR_RED));
     }
     refresh();
   }while (x_set == 0);
   
   //now prompt for y
-  mvprintw(0, 51, "   ");
+  mvprintw(0, 27, "");
+  clrtoeol();
   attron(COLOR_PAIR(COLOR_CYAN));
   mvprintw(0, 27, " (Now enter a y coordinate): ");
   attroff(COLOR_PAIR(COLOR_CYAN));
   refresh();
   do {
-    mvscanw(0, 56, "%d", &dest_map[dim_y]);
+    mvscanw(0, 62, "%d", &dest_map[dim_y]);
     //check bounds
     if(dest_map[dim_y] <= 200 && dest_map[dim_y] >= -200) {
       attron(COLOR_PAIR(COLOR_GREEN));
@@ -348,8 +353,10 @@ uint32_t io_fly_pc( pair_t dest)
     }
     else
     {
+      mvprintw(0, 27, "");
+      clrtoeol();
       attron(COLOR_PAIR(COLOR_RED));
-      mvprintw(0, 27, " (Try again! Between -200 and 200)");
+      mvprintw(0, 27, " (Try again! Between -200 and 200): ");
       attroff(COLOR_PAIR(COLOR_RED));
     }
     refresh();
@@ -359,7 +366,7 @@ uint32_t io_fly_pc( pair_t dest)
   noecho();
   curs_set(0);
 
-  mvprintw(0, 1, "Coordinates set to [%3d,%3d]. (Hit any key to fly away)", dest_map[dim_x], dest_map[dim_y]);
+  mvprintw(0, 1, "Coordinates set to [%3d,%3d]. (Hit any key to fly away)            ", dest_map[dim_x], dest_map[dim_y]);
   refresh();
   getch();
 
@@ -663,6 +670,7 @@ void io_handle_input(pair_t dest)
     case 'f':
       io_fly_pc(dest);
       turn_not_consumed = 0;
+      break;
     case 'm':
       
     case 'q':

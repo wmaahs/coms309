@@ -1102,15 +1102,24 @@ void game_loop()
 {
   character_t *c;
   pair_t d;
-  
+  npc_t *npc;
+  pc_t *pc;
   while (!world.quit) {
     c = (character_t *) heap_remove_min(&world.cur_map->turn);
+    npc = (npc_t *) (c);
+    pc = (pc_t *) (c);
+
 
     move_func[c->npc ? c->npc->mtype : move_pc](c, d);
 
     world.cur_map->cmap[c->pos[dim_y]][c->pos[dim_x]] = NULL;
-    world.cur_map->cmap[d[dim_y]][d[dim_x]] = c;
 
+    if((d[dim_x] == 0) || (d[dim_y] == 0) || (d[dim_y] == MAP_Y -1) || (d[dim_x] == MAP_X -1))
+    {
+      d[dim_x] = world.pc.pos[dim_x];
+      d[dim_y] = world.pc.pos[dim_y];
+    }
+    world.cur_map->cmap[d[dim_y]][d[dim_x]] = c;
     if (c->pc) {
       pathfind(world.cur_map);
     }

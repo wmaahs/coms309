@@ -277,51 +277,6 @@ void walk_through_gate(pair_t dest)
   new_map(0);
 }
 
-uint32_t io_fly_pc( pair_t dest) 
-{
-  pair_t dest_map;
-  int x_set = 0;
-  //make sure they aren't in range to start
-  dest_map[dim_x] = INT16_MAX;
-  dest_map[dim_y] = INT16_MAX;
-  //dispaly message to tell user to input coordinates.
-  attron(COLOR_PAIR(COLOR_BLUE));
-  mvprintw(0, 1, "Fly to world [ ___ , ___ ] (Enter a x coordinate): " );
-  attroff(COLOR_PAIR(COLOR_BLUE));
-
-  /* turn the cursor and ehco on so
-  you can see where and what you are typing */
-  curs_set(1);
-  echo();
-  refresh();
-
-  //get the x
-  do {
-    mvscanw(0, 51, "%3d", &dest[dim_x]);
-    //check x is valid
-    if(dest[dim_x] <= 200 && dest[dim_x] >= -200) {
-      attron(COLOR_PAIR(COLOR_BLUE));
-      mvprintw(0, 16, "%3d", dest[dim_x]);
-      attroff(COLOR_PAIR(COLOR_BLUE));
-      x_set = 1;
-    }
-    else{
-      mvprintw(0, 1, "Fly to world [ ___ , ___ ] (Try again! Between -200 and 200): ");
-    }
-    refresh();
-  }while (x_set == 0);
-
-  getch();
-  // do {
-    
-  // }
-
-  //turn of echo and cursor
-  noecho();
-  curs_set(0);
-  return 0;
-}
-
 uint32_t io_teleport_pc(pair_t dest)
 {
   /* Just for fun. And debugging.  Mostly debugging. */
@@ -337,6 +292,87 @@ uint32_t io_teleport_pc(pair_t dest)
 
   return 0;
 }
+
+uint32_t io_fly_pc( pair_t dest) 
+{
+  pair_t dest_map;
+  int x_set = 0;
+  int y_set = 0;
+  //make sure they aren't in range to start
+  dest_map[dim_x] = INT16_MAX;
+  dest_map[dim_y] = INT16_MAX;
+  //dispaly message to tell user to input coordinates.
+  attron(COLOR_PAIR(COLOR_CYAN));
+  mvprintw(0, 0, " Fly to world [ ___ , ___ ] (Enter a x coordinate): " );
+  attroff(COLOR_PAIR(COLOR_CYAN));
+
+  /* turn the cursor and ehco on so
+  you can see where and what you are typing */
+  curs_set(1);
+  echo();
+  refresh();
+
+  //get the x
+  do {
+    mvscanw(0, 51, "%d", &dest_map[dim_x]);
+    //check x is valid
+    if(dest_map[dim_x] <= 200 && dest_map[dim_x] >= -200) {
+      //display
+      attron(COLOR_PAIR(COLOR_GREEN));
+      mvprintw(0, 16, "%3d", dest_map[dim_x]);
+      attroff(COLOR_PAIR(COLOR_GREEN));
+      x_set = 1;
+    }
+    else{
+      attron(COLOR_PAIR(COLOR_CYAN));
+      mvprintw(0, 27, "(Try again! Between -200 and 200): ");
+      attroff(COLOR_PAIR(COLOR_CYAN));
+    }
+    refresh();
+  }while (x_set == 0);
+  
+  //now prompt for y
+  mvprintw(0, 51, "   ");
+  attron(COLOR_PAIR(COLOR_CYAN));
+  mvprintw(0, 27, " (Now enter a y coordinate): ");
+  attroff(COLOR_PAIR(COLOR_CYAN));
+  refresh();
+  do {
+    mvscanw(0, 56, "%d", &dest_map[dim_y]);
+    //check bounds
+    if(dest_map[dim_y] <= 200 && dest_map[dim_y] >= -200) {
+      attron(COLOR_PAIR(COLOR_GREEN));
+      mvprintw(0, 16, "%3d", dest_map[dim_y]);
+      attroff(COLOR_PAIR(COLOR_GREEN));
+      y_set = 1;
+    }
+    else
+    {
+      attron(COLOR_PAIR(COLOR_RED));
+      mvprintw(0, 27, " (Try again! Between -200 and 200)");
+      attroff(COLOR_PAIR(COLOR_RED));
+    }
+    refresh();
+  }while (y_set == 0);
+
+  //turn of echo and cursor
+  noecho();
+  curs_set(0);
+
+  mvprintw(0, 1, "Coordinates set to [%3d,%3d]. (Hit any key to fly away)", dest_map[dim_x], dest_map[dim_y]);
+  refresh();
+  getch();
+
+  dest_map[dim_x] += 200;
+  dest_map[dim_y] += 200;
+  
+  world.cur_idx[dim_x] = dest_map[dim_x];
+  world.cur_idx[dim_y] = dest_map[dim_y];
+  new_map(1);
+
+  return 0;
+}
+
 
 static void io_scroll_trainer_list(char (*s)[40], uint32_t count)
 {

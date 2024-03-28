@@ -252,23 +252,74 @@ void walk_through_gate(pair_t dest)
   //west gate
   if(dest[dim_x] == 0) {
     world.cur_idx[dim_x]--;
+    world.pc.pos[dim_x] = MAP_X - 2;
+    world.pc.pos[dim_y] = dest[dim_y];
   }
   //south gate
   else if(dest[dim_y] == 0) {
     world.cur_idx[dim_y]--;
+    world.pc.pos[dim_x] = dest[dim_x];
+    world.pc.pos[dim_y] = 1;
   }
+  //east gate
   else if(dest[dim_x] == MAP_X -1) {
     world.cur_idx[dim_x]++;
+    world.pc.pos[dim_x] = 1;
+    world.pc.pos[dim_y] = dest[dim_y];
   }
+  //north gate
   else {
     world.cur_idx[dim_y]++;
+    world.pc.pos[dim_x] = dest[dim_x];
+    world.pc.pos[dim_y] = MAP_Y - 2;
   }
+
+  new_map(0);
 }
 
 uint32_t io_fly_pc( pair_t dest) 
 {
+  pair_t dest_map;
+  int x_set = 0;
+  //make sure they aren't in range to start
+  dest_map[dim_x] = INT16_MAX;
+  dest_map[dim_y] = INT16_MAX;
+  //dispaly message to tell user to input coordinates.
+  attron(COLOR_PAIR(COLOR_BLUE));
+  mvprintw(0, 1, "Fly to world [ ___ , ___ ] (Enter a x coordinate): " );
+  attroff(COLOR_PAIR(COLOR_BLUE));
 
+  /* turn the cursor and ehco on so
+  you can see where and what you are typing */
+  curs_set(1);
+  echo();
+  refresh();
 
+  //get the x
+  do {
+    mvscanw(0, 51, "%3d", &dest[dim_x]);
+    //check x is valid
+    if(dest[dim_x] <= 200 && dest[dim_x] >= -200) {
+      attron(COLOR_PAIR(COLOR_BLUE));
+      mvprintw(0, 16, "%3d", dest[dim_x]);
+      attroff(COLOR_PAIR(COLOR_BLUE));
+      x_set = 1;
+    }
+    else{
+      mvprintw(0, 1, "Fly to world [ ___ , ___ ] (Try again! Between -200 and 200): ");
+    }
+    refresh();
+  }while (x_set == 0);
+
+  getch();
+  // do {
+    
+  // }
+
+  //turn of echo and cursor
+  noecho();
+  curs_set(0);
+  return 0;
 }
 
 uint32_t io_teleport_pc(pair_t dest)

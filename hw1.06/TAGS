@@ -1,0 +1,149 @@
+
+character.h,746
+# define CHARACTER_H2,20
+#define DIJKSTRA_PATH_MAX 8,87
+#define NO_NPCS 9,127
+typedef enum __attribute__ ((__packed__)) movement_type 11,147
+  move_hiker,12,205
+  move_rival,13,219
+  move_pace,14,233
+  move_wander,15,246
+  move_sentry,16,261
+  move_explore,17,276
+  move_swim,18,292
+  move_pc,19,305
+  num_movement_types20,316
+} movement_type_t;21,337
+typedef enum __attribute__ ((__packed__)) character_type 23,357
+  char_pc,24,416
+  char_hiker,25,427
+  char_rival,26,441
+  char_swimmer,27,455
+  char_other,28,471
+  num_character_types29,485
+} character_type_t;30,507
+typedef class npc{npc36,652
+  character_type_t ctype;38,679
+  movement_type_t mtype;39,705
+  int defeated;40,730
+  pair_t dir;41,746
+} npc_t;42,760
+
+heap.h,245
+# define HEAP_H2,15
+typedef struct heap_node heap_node_t;11,114
+typedef struct heap 13,153
+  heap_node_t *min;min14,175
+  uint32_t size;15,195
+  int32_t (*compare)compare16,212
+  void (*datum_delete)datum_delete17,269
+} heap_t;18,301
+
+io.h,97
+# define IO_H2,13
+typedef class character character_t;4,28
+typedef int16_t pair_t[pair_t5,65
+
+poke327.h,2815
+# define POKE327_H2,18
+typedef class character character_t;9,101
+#define malloc(11,139
+# define rand_under(19,396
+# define rand_range(23,539
+# define UNUSED(25,613
+typedef enum dim 27,644
+  dim_x,28,663
+  dim_y,29,672
+  num_dims30,681
+} dim_t;31,692
+typedef int16_t pair_t[pair_t33,702
+#define MAP_X 35,737
+#define MAP_Y 36,767
+#define MIN_TREES 37,797
+#define MIN_BOULDERS 38,827
+#define TREE_PROB 39,857
+#define BOULDER_PROB 40,887
+#define WORLD_SIZE 41,917
+#define MIN_TRAINERS 43,949
+#define ADD_TRAINER_PROB 44,976
+#define MOUNTAIN_SYMBOL 46,1005
+#define BOULDER_SYMBOL 47,1039
+#define TREE_SYMBOL 48,1073
+#define FOREST_SYMBOL 49,1107
+#define GATE_SYMBOL 50,1141
+#define BAILEY_SYMBOL 51,1175
+#define PATH_SYMBOL 52,1209
+#define POKEMART_SYMBOL 53,1243
+#define POKEMON_CENTER_SYMBOL 54,1277
+#define TALL_GRASS_SYMBOL 55,1311
+#define SHORT_GRASS_SYMBOL 56,1345
+#define WATER_SYMBOL 57,1379
+#define ERROR_SYMBOL 58,1413
+#define PC_SYMBOL 60,1448
+#define HIKER_SYMBOL 61,1476
+#define RIVAL_SYMBOL 62,1504
+#define EXPLORER_SYMBOL 63,1532
+#define SENTRY_SYMBOL 64,1560
+#define PACER_SYMBOL 65,1588
+#define SWIMMER_SYMBOL 66,1616
+#define WANDERER_SYMBOL 67,1644
+#define mappair(69,1673
+#define mapxy(70,1730
+#define heightpair(71,1765
+#define heightxy(72,1828
+typedef enum __attribute__ ((__packed__)) terrain_type 74,1870
+  ter_boulder,75,1927
+  ter_tree,76,1942
+  ter_path,77,1954
+  ter_mart,78,1966
+  ter_center,79,1978
+  ter_grass,80,1992
+  ter_clearing,81,2005
+  ter_mountain,82,2021
+  ter_forest,83,2037
+  ter_water,84,2051
+  ter_gate,85,2064
+  ter_bailey,86,2076
+  num_terrain_types,87,2090
+  ter_debug88,2111
+} terrain_type_t;89,2123
+typedef struct map 91,2142
+  terrain_type_t map[map92,2163
+  uint8_t height[height93,2199
+  character_t *cmap[cmap94,2231
+  heap_t turn;95,2266
+  int32_t num_trainers;96,2281
+  int8_t n,97,2305
+  int8_t n, s,97,2305
+  int8_t n, s, e,97,2305
+  int8_t n, s, e, w;97,2305
+} map_t;98,2326
+typedef class npc npc_t;100,2336
+typedef class pc pc_t;101,2361
+typedef class character 103,2450
+  npc_t *npc;npc105,2484
+  pc_t *pc;pc106,2498
+  pair_t pos;107,2510
+  char symbol;108,2524
+  int next_turn;109,2539
+  int seq_num;110,2556
+} character_t;111,2571
+class pc 114,2588
+typedef struct world 118,2622
+  map_t *world[world119,2645
+  pair_t cur_idx;120,2685
+  map_t *cur_map;cur_map121,2703
+  int hiker_dist[hiker_dist124,2828
+  int rival_dist[rival_dist125,2860
+  character_t pc;126,2892
+  int quit;127,2910
+  int add_trainer_prob;128,2922
+  int char_seq_num;129,2946
+} world_t;130,2966
+#define rand_dir(138,3184
+typedef struct path 144,3307
+  heap_node_t *hn;hn145,3329
+  uint8_t pos[pos146,3348
+  uint8_t from[from147,3366
+  int32_t cost;148,3385
+} path_t;149,3401

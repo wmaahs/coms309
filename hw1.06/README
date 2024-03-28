@@ -1,0 +1,6 @@
+The application almost performs to the required specifications entirely.
+I have ported the application from C to C++.
+The fly command works as expected.
+
+Walking through gates is a kind of buggy but it also kind of works. When you reach a gate, if it is
+the north/south gate, you have to walk up/down "through it" twice (same direction) once you get one square away from the gate. If it is an east/west gate, then you have to walk once in the direction towards the gate, and then once in the opposite direction of the gate in order for it to take you to the new map. Once you get to the new map, the location of the PC when spawned in is usually close to where it is supposed to be. It was kind of difficult to debug why walking through gates was a kind of buggy.

@@ -1,0 +1,9 @@
+When the program is run with a single command line argument from one of the 9 options (pokemon, moves, pokemon moves, pokemon species, experience,
+type names, pokemon stats, stats or pokemon types), it will not initialize curses, instead it will parse the specified csv filename from the database.
+The database is located in one of two places. The first location is the /share/coms327/ directory. If the querry for the database in the first location failes,
+it will then look for the database in the $HOME/.poke327/ directory. My $HOME env_variable resolves as /home/wmaahs, but the program uses the getenv() function
+to resolve this dynamically.
+
+When printing my csv files to std out, I used two spaces after each comma because I have bad eyes and this helped me see the spaces a little easier.
+
+Will Maahs

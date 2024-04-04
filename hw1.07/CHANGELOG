@@ -1,0 +1,102 @@
+commit a00643e366d288c1fdcd33a7bc539bd72def5303
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 01:34:40 2024 -0500
+
+    num_moves was way too large.
+
+commit d620c2962087ede522ae4311de289e8000e0f06c
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 01:21:35 2024 -0500
+
+    quick fix
+
+commit b604d1ae8f32d4e381967527cb6b654d569443bf
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 01:20:27 2024 -0500
+
+    forgot to erase the line as I was parsing moves.
+
+commit 82cca986691c4920b9e0a253bd553ac3889d67cc
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 01:13:46 2024 -0500
+
+    fixing double print of species_id
+
+commit 1af4dbfbe2e3fcde3810297543c94a6083472719
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 01:05:15 2024 -0500
+
+    much closer. forgot to add the species_id to the poke_arr.
+
+commit 944edc5cdb0756b9080eeb62236291d016b0ef5e
+Author: wmaahs <wmaahs@pyrite-n5.cs.iastate.edu>
+Date:   Thu Apr 4 00:53:06 2024 -0500
+
+    stats works. fixing some things from pokemon
+
+commit 1f57196332442237ecfca681b4380b02deeccab9
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 00:30:13 2024 -0500
+
+    trying to fix the last values again.
+
+commit cd377c463a721d59b94bfbdcbf02c46ed8e77242
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 4 00:12:24 2024 -0500
+
+    fixing parse_stats, and other final values in csv's
+
+commit 951facba333ab3a239d30abd758bcc265697aa0e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 23:43:24 2024 -0500
+
+    added mode to .open()
+
+commit 19d8f1d0051543c0d72ad50985534ce068ce42ca
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 23:38:38 2024 -0500
+
+    added more prints
+
+commit a048fb14818988d7b8c62932522a1aa5460c2c46
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 23:30:53 2024 -0500
+
+    added prints for testing
+
+commit db4949982126885e4590e9a05ff3f77ca6142b53
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 23:24:44 2024 -0500
+
+    fixed some compile errors
+
+commit 0af28eadc36394825f6758e5daf2d7df82f6a875
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 23:11:04 2024 -0500
+
+    ready to test fileio
+
+commit f6d8a14ce87401db18179adbc6c9a5ee6131f532
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 20:26:42 2024 -0500
+
+    working on parsing different csvs
+
+commit d964dfaf9c1739ca3050135e6b3941326a2a8f2a
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 17:54:16 2024 -0500
+
+    adding vscode workspace json
+
+commit d382b63e1aa6fe0ffd7095123aa5adac08c38d31
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 17:35:13 2024 -0500
+
+    created classes for different files data types, starting to parse them
+
+commit 753d680a91441edabc89ab7750580faf5bd1a2f9
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 3 13:54:48 2024 -0500
+
+    Started hw7
+

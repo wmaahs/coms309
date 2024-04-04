@@ -55,6 +55,7 @@ void parse_pokemon(char * line, int line_ind)
     {
         poke_arr[line_ind].species_id = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* height */
     next = line_str.find(',');

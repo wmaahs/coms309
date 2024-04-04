@@ -235,7 +235,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* super_contest_effect_id */
-    if(line_str.empty() == true)
+    if(line_str.size() == 0)
     {
         moves_arr[line_ind].super_contest_effect_id = INT_MAX;
     }
@@ -303,7 +303,7 @@ void parse_poke_moves(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* order */
-    if(line_str.empty() == true)
+    if(line_str.size() == 0)
     {
         poke_moves_arr[line_ind].order = INT_MAX;
     }
@@ -340,7 +340,7 @@ void parse_experience(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* experience */
-    if(line_str.empty() == true)
+    if(line_str.size() == 0)
     {
         experience_arr[line_ind].xp = INT_MAX;
     }
@@ -547,7 +547,7 @@ void parse_poke_species(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* conquest_order */
-    if(line_str.empty() == true)
+    if(line_str.size() == 0)
     {
         poke_species_arr[line_ind].conquest_order = INT_MAX;
     }
@@ -630,7 +630,12 @@ void parse_poke_stats(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* effort */
-    poke_stats_arr[line_ind].effort = std::stoi(line_str);
+    if(line_str.size() == 0) {
+        poke_stats_arr[line_ind].effort = INT_MAX;
+    }
+    else{
+        poke_stats_arr[line_ind].effort = std::stoi(line_str);
+    }
 
     return;
 }
@@ -681,7 +686,7 @@ void parse_stats(char * line, int line_ind)
     line_str.erase(0, next +1);
     
     /* game_index */
-    if(line_str.empty() == true)
+    if(line_str.size() == 0)
     {
         stats_arr[line_ind].game_index = INT_MAX;
     }
@@ -733,7 +738,7 @@ void parse_poke_types(char * line, int line_ind)
  * Looks for the database in two different locations
  * if it it finds the database, it then calls the
  * parsing funciton for that specific file
- * if it fails to find the data base, returns 0
+ * if it fails to find the database, returns 0
 */
 void find_in_database(std::string filename)
 {
@@ -973,6 +978,13 @@ std::string int_to_string(int i) {
     return ret_str;
 }
 
+
+/**
+ * 
+ * Prints the global arrays after it has been parsed and loaded in to
+ * the array. INT_MAX is printed as '' via the int_to_string function
+ * 
+*/
 void print_parsed_csv(std::string filename)
 {
     int i;

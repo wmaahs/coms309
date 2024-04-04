@@ -746,6 +746,7 @@ void find_in_database(std::string filename)
     //first try to open from the /share/cs327/
     cur_csv.open("/share/cs327/pokedex/pokedex/data/csv/" + filename + ".csv");
 
+    std::cout << "/share/cs327/pokedex/pokedex/data/csv/" + filename + ".csv" << std::endl;
     //found in /share/cs327/
     if(cur_csv.is_open()) {
 
@@ -973,7 +974,7 @@ std::string int_to_string(int i) {
 void print_parsed_csv(std::string filename)
 {
     int i;
-    std::cout << "Found csv in /shared/..." << std::endl;
+    std::cout << "Printing csv" << std::endl;
         //pokemon.csv
         if(filename == "pokemon") {
             

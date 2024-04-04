@@ -748,6 +748,7 @@ void find_in_database(std::string filename)
 
     std::cout << "/share/cs327/pokedex/pokedex/data/csv/" + filename + ".csv" << std::endl;
     //found in /share/cs327/
+    std::cout << std::to_string(cur_csv.is_open()) << std::endl;
     if(cur_csv.is_open()) {
 
         std::cout << "Found csv in /shared/..." << std::endl;
@@ -949,6 +950,7 @@ void find_in_database(std::string filename)
     }
     
     std::cout << "File not found" << std::endl;
+    free(buf);
     return;
 }
 

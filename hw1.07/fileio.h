@@ -71,13 +71,13 @@ public:
     int gender_rate;
     int capture_rate;
     int base_happiness;
-    bool is_baby;
+    int is_baby;
     int hatch_counter;
-    bool has_gender_differences;
+    int has_gender_differences;
     int growth_rate_id;
     int forms_switchable;
-    bool is_legendary;
-    bool is_mythical;
+    int is_legendary;
+    int is_mythical;
     int order;
     int conquest_order;
 };
@@ -96,20 +96,21 @@ public:
 class poke_stats : public csv_file {
 public:
     int poke_id;
-    int type_id;
-    int slot;
+    int stat_id;
+    int base_stat;
+    int effort;
 };
 class stats : public csv_file {
 public:
     int id;
     int damage_class_id;
     std::string name;
-    bool is_battle_only;
+    int is_battle_only;
     int game_index;
 };
 class poke_types : public csv_file {
 public:
-    int pokemon_id;
+    int poke_id;
     int type_id;
     int slot;
 };

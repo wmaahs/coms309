@@ -8,11 +8,13 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <unistd.h>
+#include <cstring>
 
 #include "heap.h"
 #include "poke327.h"
 #include "character.h"
 #include "io.h"
+#include "fileio.h"
 
 typedef struct queue_node {
   int x, y;
@@ -1148,6 +1150,8 @@ int main(int argc, char *argv[])
   uint32_t seed;
   int long_arg;
   int do_seed;
+
+  std::string filename;
   //  char c;
   //  int x, y;
   int i;
@@ -1175,7 +1179,8 @@ int main(int argc, char *argv[])
           usage(argv[0]);
         }
       } else { /* No dash */
-        usage(argv[0]);
+        filename = argv[i];
+        find_in_database(filename);
       }
     }
   }
@@ -1189,8 +1194,6 @@ int main(int argc, char *argv[])
 
   printf("Using seed: %u\n", seed);
   srand(seed);
-
-  io_init_terminal();
   
   init_world();
 
@@ -1256,12 +1259,8 @@ int main(int argc, char *argv[])
   } while (c != 'q');
 
   */
-
-  game_loop();
   
   delete_world();
-
-  io_reset_terminal();
   
   return 0;
 }

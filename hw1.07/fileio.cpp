@@ -86,12 +86,11 @@ void parse_pokemon(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* is_default */
-    next = std::stoi(line_str);
-    if(next == 0){
-        poke_arr[line_ind].is_default = 0;
+    if(line_str.size() == 0){
+        poke_arr[line_ind].is_default = INT_MAX;
     }
     else{
-        poke_arr[line_ind].is_default = 1;
+      poke_arr[line_ind].is_default = std::stoi(line_str);
     }
 
     return;
@@ -708,7 +707,7 @@ void parse_poke_types(char * line, int line_ind)
         poke_types_arr[line_ind].poke_id = INT_MAX;
     }
     else{
-        poke_types_arr[line_ind].poke_id = std::stoi(line_str.substr(0, next));
+      poke_types_arr[line_ind].poke_id = std::stoi(line_str.substr(0, next));
     }
     line_str.erase(0, next +1);
 
@@ -968,7 +967,7 @@ std::string int_to_string(int i) {
     std::string ret_str;
     if(i == INT_MAX) {
         ret_str.clear();
-        ret_str.at(0) = ' ';
+        ret_str.append(" ");
     }
     else
     {

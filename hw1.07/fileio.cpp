@@ -181,7 +181,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].accuracy = std::stoi(line_str.substr(0, next));;
     }
-
+    line_str.erase(0, next +1);
     /* priority */
     next = line_str.find(',');
     if(next == 0){
@@ -190,6 +190,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].priority = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* target_id */
     next = line_str.find(',');
@@ -199,6 +200,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].target_id = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* damage_class_id */
     next = line_str.find(',');
@@ -208,6 +210,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].damage_class_id = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* effect_id */
     next = line_str.find(',');
@@ -217,6 +220,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].effect_id = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* effect_chance */
     next = line_str.find(',');
@@ -226,6 +230,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].effect_chance = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* contest_type_id */
     next = line_str.find(',');
@@ -235,6 +240,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].contest_type_id = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* contest_effect_id */
     next = line_str.find(',');
@@ -244,6 +250,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].contest_effect_id = std::stoi(line_str.substr(0, next));
     }
+    line_str.erase(0, next +1);
 
     /* super_contest_effect_id */
     if(line_str.size() == 0)
@@ -253,6 +260,7 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].super_contest_effect_id = std::stoi(line_str);
     }
+    line_str.erase(0, next +1);
 
     return;
 

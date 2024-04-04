@@ -260,7 +260,6 @@ void parse_moves(char * line, int line_ind)
     else{
         moves_arr[line_ind].super_contest_effect_id = std::stoi(line_str);
     }
-    line_str.erase(0, next +1);
 
     return;
 

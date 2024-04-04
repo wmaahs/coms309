@@ -45,6 +45,17 @@ void parse_pokemon(char * line, int line_ind)
     }
     line_str.erase(0, next +1);
 
+    /* species_id */
+    next = line_str.find(',');
+    if(next == 0)
+    {
+        poke_arr[line_ind].species_id = INT_MAX;
+    }
+    else
+    {
+        poke_arr[line_ind].species_id = std::stoi(line_str.substr(0, next));
+    }
+
     /* height */
     next = line_str.find(',');
     if(next == 0){
@@ -162,7 +173,7 @@ void parse_moves(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* accuracy */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].accuracy = INT_MAX;
     }
@@ -171,7 +182,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* priority */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].priority = INT_MAX;
     }
@@ -180,7 +191,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* target_id */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].target_id = INT_MAX;
     }
@@ -189,7 +200,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* damage_class_id */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].damage_class_id = INT_MAX;
     }
@@ -198,7 +209,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* effect_id */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].effect_id = INT_MAX;
     }
@@ -207,7 +218,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* effect_chance */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].effect_chance = INT_MAX;
     }
@@ -216,7 +227,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* contest_type_id */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].contest_type_id = INT_MAX;
     }
@@ -225,7 +236,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* contest_effect_id */
-    next = std::stoi(line_str);
+    next = line_str.find(',');
     if(next == 0){
         moves_arr[line_ind].contest_effect_id = INT_MAX;
     }

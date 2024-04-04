@@ -88,10 +88,10 @@ void parse_pokemon(char * line, int line_ind)
     /* is_default */
     next = std::stoi(line_str);
     if(next == 0){
-        poke_arr[line_ind].is_default = false;
+        poke_arr[line_ind].is_default = 0;
     }
     else{
-        poke_arr[line_ind].is_default = true;
+        poke_arr[line_ind].is_default = 1;
     }
 
     return;
@@ -235,7 +235,7 @@ void parse_moves(char * line, int line_ind)
     }
 
     /* super_contest_effect_id */
-    if(line_str.at(0) == '\0')
+    if(line_str.empty() == true)
     {
         moves_arr[line_ind].super_contest_effect_id = INT_MAX;
     }
@@ -303,7 +303,7 @@ void parse_poke_moves(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* order */
-    if(line_str.at(0) == '\0')
+    if(line_str.empty() == true)
     {
         poke_moves_arr[line_ind].order = INT_MAX;
     }
@@ -340,7 +340,7 @@ void parse_experience(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* experience */
-    if(line_str.at(0) == '\0')
+    if(line_str.empty() == true)
     {
         experience_arr[line_ind].xp = INT_MAX;
     }
@@ -547,7 +547,7 @@ void parse_poke_species(char * line, int line_ind)
     line_str.erase(0, next +1);
 
     /* conquest_order */
-    if(line_str.at(0) == '\0')
+    if(line_str.empty() == true)
     {
         poke_species_arr[line_ind].conquest_order = INT_MAX;
     }
@@ -681,7 +681,7 @@ void parse_stats(char * line, int line_ind)
     line_str.erase(0, next +1);
     
     /* game_index */
-    if(line_str.at(0) == '\0')
+    if(line_str.empty() == true)
     {
         stats_arr[line_ind].game_index = INT_MAX;
     }

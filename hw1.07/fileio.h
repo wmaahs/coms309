@@ -28,7 +28,7 @@ public:
     int w;
     int base_xp;
     int order;
-    bool is_default;
+    int is_default;
 };
 
 class moves : public csv_file {

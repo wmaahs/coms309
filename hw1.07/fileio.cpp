@@ -744,7 +744,7 @@ void find_in_database(std::string filename)
     char * buf;
     buf = (char *) malloc(sizeof(char) * 800);
     //first try to open from the /share/cs327/
-    cur_csv.open("/share/cs327/pokedex/pokedex/data/csv/" + filename + ".csv");
+    cur_csv.open("/share/cs327/pokedex/pokedex/data/csv/" + filename + ".csv", std::fstream::in);
 
     std::cout << "/share/cs327/pokedex/pokedex/data/csv/" + filename + ".csv" << std::endl;
     //found in /share/cs327/
@@ -850,7 +850,7 @@ void find_in_database(std::string filename)
     //next try to open from the $HOME/.poke
     char * home_env;
     home_env = getenv("HOME");
-    cur_csv.open(strcat(home_env, "/.poke327/pokedex/pokedex/data/csv/") + filename + ".csv");
+    cur_csv.open(strcat(home_env, "/.poke327/pokedex/pokedex/data/csv/") + filename + ".csv", std::fstream::in);
     if(cur_csv.is_open()){
 
         std::cout << "Found csv in /HOME/..." << std::endl;

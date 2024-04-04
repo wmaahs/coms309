@@ -8,7 +8,12 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <unistd.h>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <iostream>
+#include <fstream>
+#include <climits>
 
 #include "heap.h"
 #include "poke327.h"

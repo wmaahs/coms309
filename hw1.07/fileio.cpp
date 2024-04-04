@@ -247,7 +247,6 @@ void parse_moves(char * line, int line_ind)
 
 }
 
-
 void parse_poke_moves(char * line, int line_ind)
 {
     std::string line_str(line);
@@ -635,6 +634,7 @@ void parse_poke_stats(char * line, int line_ind)
 
     return;
 }
+
 void parse_stats(char * line, int line_ind)
 {
     std::string line_str(line);
@@ -691,6 +691,7 @@ void parse_stats(char * line, int line_ind)
     }
     return;
 }
+
 void parse_poke_types(char * line, int line_ind)
 {
     std::string line_str(line);
@@ -734,7 +735,7 @@ void parse_poke_types(char * line, int line_ind)
  * parsing funciton for that specific file
  * if it fails to find the data base, returns 0
 */
-int find_in_database(std::string filename)
+void find_in_database(std::string filename)
 {
     std::fstream cur_csv;
 
@@ -840,7 +841,7 @@ int find_in_database(std::string filename)
             }
         }
         print_parsed_csv(filename);
-        return 1;
+        return;
     }
 
     std::cout << "Failed to find csv in /shared/..." << std::endl;
@@ -943,11 +944,11 @@ int find_in_database(std::string filename)
         }
 
         print_parsed_csv(filename);
-        return 1;
+        return;
     }
     
     std::cout << "File not found" << std::endl;
-    return 0;
+    return;
 }
 
 /**

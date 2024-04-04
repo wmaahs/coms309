@@ -114,4 +114,17 @@ public:
     int type_id;
     int slot;
 };
+
+void print_parsed_csv(std::string filename);
+void parse_pokemon(char * line, int line_ind);
+void parse_moves(char * line, int line_ind);
+void parse_poke_moves(char * line, int line_ind);
+void parse_experience(char * line, int line_ind);
+void parse_poke_species(char * line, int line_ind);
+void parse_type_names(char * line, int line_ind);
+void parse_poke_stats(char * line, int line_ind);
+void parse_stats(char * line, int line_ind);
+void parse_poke_types(char * line, int line_ind);
+
+void find_in_database(std::string filename);
 #endif

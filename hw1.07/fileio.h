@@ -3,7 +3,7 @@
 
 #define NUM_FILES 9
 
-#define NUM_POMEMON 1092
+#define NUM_POKEMON 1092
 #define NUM_MOVES 10018
 #define NUM_POKE_MOVES 528239
 #define NUM_POKE_SPECIES 898

@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "character.h"
+#include "pokemon.h"
 #include "poke327.h"
 
 #define TRAINER_LIST_FIELD_WIDTH 46
@@ -399,6 +400,7 @@ void io_battle(character *aggressor, character *defender)
 
 uint32_t move_pc_dir(uint32_t input, pair_t dest)
 {
+  // TODO: Change the call to spawn_pokemon() to outside this function
   dest[dim_y] = world.pc.pos[dim_y];
   dest[dim_x] = world.pc.pos[dim_x];
 
@@ -464,6 +466,8 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
     return 1;
   }
 
+  //potentially spawn a pokemon
+  spawn_pokemon();
   return 0;
 }
 

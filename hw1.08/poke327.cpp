@@ -1199,7 +1199,7 @@ int main(int argc, char *argv[])
   
   init_world();
 
-  io_select_starters();
+  io_select_starter();
 
   game_loop();
   

@@ -471,6 +471,23 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
   return 0;
 }
 
+/**
+ * For now is void, eventually will probably return a bool
+ * true if pc has won, false otherwise
+ * 
+ * right now just a place holder for when a pokemon is spawned in the grass
+ * 
+*/
+void io_battle_wild_pokemon(Pokemon wild_pokemon)
+{
+  clear();
+  mvprintw(0, 0, "you have encountered a wild %s", wild_pokemon.name.c_str());
+  refresh();
+
+  getch();
+}
+
+
 void io_teleport_world(pair_t dest)
 {
   /* mvscanw documentation is unclear about return values.  I believe *
@@ -508,8 +525,12 @@ void io_teleport_world(pair_t dest)
   io_teleport_pc(dest);
 }
 
-void io_select_starters()
+void io_select_starter()
 {
+
+  int user_input;
+  int confirmation;
+  int poke_selected;
   std::vector<Pokemon> starters;
   int i;
   for(i = 0; i < 3; i++) {
@@ -520,37 +541,111 @@ void io_select_starters()
   mvprintw(1, 0, "You have three options to select from. Choose wisely.");
 
   attron(COLOR_PAIR(COLOR_BLUE));
-  mvprintw(3, 20, "Option 1: %s", starters[0].name.c_str());
-  mvprintw(4, 25, "Base HP: %d", starters[0].stats[hp]);
-  mvprintw(5, 25, "Base Attack: %d", starters[0].stats[attack]);
-  mvprintw(6, 25, "Base Defense: %d", starters[0].stats[defense]);
-  mvprintw(7, 25, "Base Speed: %d", starters[0].stats[speed]);
-  mvprintw(8, 25, "Base Special Attack: %d", starters[0].stats[special_attk]);
-  mvprintw(9, 25, "Base Special Defense: %d", starters[0].stats[special_def]);
+  mvprintw(3, 10, "Option 1: %s", starters[0].name.c_str());
+  mvprintw(4, 15, "Base HP: %d", starters[0].stats[hp]);
+  mvprintw(5, 15, "Base Attack: %d", starters[0].stats[attack]);
+  mvprintw(6, 15, "Base Defense: %d", starters[0].stats[defense]);
+  mvprintw(7, 15, "Base Speed: %d", starters[0].stats[speed]);
+  mvprintw(8, 15, "Base Special Attack: %d", starters[0].stats[special_attk]);
+  mvprintw(9, 15, "Base Special Defense: %d", starters[0].stats[special_def]);
   attroff(COLOR_PAIR(COLOR_BLUE));
   
   attron(COLOR_PAIR(COLOR_MAGENTA));
-  mvprintw(10, 20, "Option 2: %s",            starters[1].name.c_str());
-  mvprintw(11, 25, "Base HP: %d",             starters[1].stats[hp]);
-  mvprintw(12, 25, "Base Attack: %d",         starters[1].stats[attack]);
-  mvprintw(13, 25, "Base Defense: %d",        starters[1].stats[defense]);
-  mvprintw(14, 25, "Base Speed: %d",          starters[1].stats[speed]);
-  mvprintw(15, 25, "Base Special Attack: %d", starters[1].stats[special_attk]);
-  mvprintw(16, 25, "Base Special Defense: %d",starters[1].stats[special_def]);
+  mvprintw(10, 10, "Option 2: %s",            starters[1].name.c_str());
+  mvprintw(11, 15, "Base HP: %d",             starters[1].stats[hp]);
+  mvprintw(12, 15, "Base Attack: %d",         starters[1].stats[attack]);
+  mvprintw(13, 15, "Base Defense: %d",        starters[1].stats[defense]);
+  mvprintw(14, 15, "Base Speed: %d",          starters[1].stats[speed]);
+  mvprintw(15, 15, "Base Special Attack: %d", starters[1].stats[special_attk]);
+  mvprintw(16, 15, "Base Special Defense: %d",starters[1].stats[special_def]);
   attroff(COLOR_PAIR(COLOR_MAGENTA));
 
   attron(COLOR_PAIR(COLOR_GREEN));
-  mvprintw(17, 20, "Option 3: %s",              starters[2].name.c_str());
-  mvprintw(18, 25, "Base HP: %d",               starters[2].stats[hp]);
-  mvprintw(19, 25, "Base Attack: %d",           starters[2].stats[attack]);
-  mvprintw(20, 25, "Base Defense: %d",          starters[2].stats[defense]);
-  mvprintw(21, 25, "Base Speed: %d",            starters[2].stats[speed]);
-  mvprintw(22, 25, "Base Special Attack: %d",   starters[2].stats[special_attk]);
-  mvprintw(23, 25, "Base Special Defense: %d",  starters[2].stats[special_def]);
+  mvprintw(17, 10, "Option 3: %s",              starters[2].name.c_str());
+  mvprintw(18, 15, "Base HP: %d",               starters[2].stats[hp]);
+  mvprintw(19, 15, "Base Attack: %d",           starters[2].stats[attack]);
+  mvprintw(20, 15, "Base Defense: %d",          starters[2].stats[defense]);
+  mvprintw(21, 15, "Base Speed: %d",            starters[2].stats[speed]);
+  mvprintw(22, 15, "Base Special Attack: %d",   starters[2].stats[special_attk]);
+  mvprintw(23, 15, "Base Special Defense: %d",  starters[2].stats[special_def]);
   attroff(COLOR_PAIR(COLOR_GREEN));
 
   refresh();
-  getch();
+
+  while(!(poke_selected))
+  {
+    user_input = getch();
+    switch(user_input){
+      case '1':
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[0].name.c_str());
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        confirmation = getch();
+        if(confirmation == 'y'){
+          world.pc.roster.push_back(starters[0]);
+          poke_selected = 1;
+        }
+        else if(confirmation == 'n') {
+          poke_selected = 0;
+        }
+        else{
+          mvprintw(0, 0, "y/n not selected, Cancelling..");
+          refresh();
+        }
+        break;
+      case '2':
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[1].name.c_str());
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        confirmation = getch();
+        if(confirmation == 'y'){
+          world.pc.roster.push_back(starters[1]);
+          poke_selected = 1;
+        }
+        else if(confirmation == 'n') {
+          poke_selected = 0;
+        }
+        else{
+          mvprintw(0, 0, "y/n not selected, Cancelling..");
+          refresh();
+        }
+        break;
+      case '3':
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[2].name.c_str());
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        confirmation = getch();
+        if(confirmation == 'y'){
+          world.pc.roster.push_back(starters[2]);
+          poke_selected = 1;
+        }
+        else if(confirmation == 'n') {
+          poke_selected = 0;
+        }
+        else{
+          mvprintw(0, 0, "y/n not selected, Cancelling..");
+          refresh();
+        }
+        break;
+      default:
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "Enter 1, 2, or 3 to select a pokemon");
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        break;
+    }
+  }
 
 }
 

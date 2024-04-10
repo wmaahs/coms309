@@ -1,5 +1,6 @@
 #include "pokemon.h"
 #include "poke327.h"
+#include "io.h"
 
 int manhattan_distance(pair_t xy1, pair_t xy2)
 {
@@ -112,6 +113,7 @@ void gen_pokemon()
             new_poke_id = rand() % 1092;
 
             Pokemon new_poke(pokemon[new_poke_id]);
+            io_battle_wild_pokemon(new_poke);
             return;
         }
     }

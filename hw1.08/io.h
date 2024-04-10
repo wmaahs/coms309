@@ -1,6 +1,8 @@
 #ifndef IO_H
 # define IO_H
 
+#include "pokemon.h"
+
 class character;
 typedef int16_t pair_t[2];
 

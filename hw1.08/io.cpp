@@ -520,7 +520,7 @@ void io_select_starters()
   mvprintw(1, 0, "You have three options to select from. Choose wisely.");
 
   attron(COLOR_PAIR(COLOR_BLUE));
-  mvprintw(3, 20, "Option 1: %s", starters[0].name);
+  mvprintw(3, 20, "Option 1: %s", starters[0].name.c_str());
   mvprintw(4, 25, "Base HP: %d", starters[0].stats[hp]);
   mvprintw(5, 25, "Base Attack: %d", starters[0].stats[attack]);
   mvprintw(6, 25, "Base Defense: %d", starters[0].stats[defense]);
@@ -530,7 +530,7 @@ void io_select_starters()
   attroff(COLOR_PAIR(COLOR_BLUE));
   
   attron(COLOR_PAIR(COLOR_MAGENTA));
-  mvprintw(10, 20, "Option 2: %s",            starters[1].name);
+  mvprintw(10, 20, "Option 2: %s",            starters[1].name.c_str());
   mvprintw(11, 25, "Base HP: %d",             starters[1].stats[hp]);
   mvprintw(12, 25, "Base Attack: %d",         starters[1].stats[attack]);
   mvprintw(13, 25, "Base Defense: %d",        starters[1].stats[defense]);
@@ -540,7 +540,7 @@ void io_select_starters()
   attroff(COLOR_PAIR(COLOR_MAGENTA));
 
   attron(COLOR_PAIR(COLOR_GREEN));
-  mvprintw(17, 20, "Option 3: %s",              starters[2].name);
+  mvprintw(17, 20, "Option 3: %s",              starters[2].name.c_str());
   mvprintw(18, 25, "Base HP: %d",               starters[2].stats[hp]);
   mvprintw(19, 25, "Base Attack: %d",           starters[2].stats[attack]);
   mvprintw(20, 25, "Base Defense: %d",          starters[2].stats[defense]);

@@ -468,6 +468,7 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
 
   //potentially spawn a pokemon
   gen_pokemon();
+  
   return 0;
 }
 

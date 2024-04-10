@@ -50,17 +50,17 @@ Pokemon::Pokemon(pokemon_db new_poke)
         }
     }
     //randomly select first move
-    int random_level;
+    int random_move;
     do {
-        random_level = rand() % total_moves.size();
-        moves[0].id = total_moves[random_level].move_id;
-    } while(!(level <= total_moves[random_level].level));
+        random_move = rand() % total_moves.size();
+        moves[0].id = total_moves[random_move].move_id;
+    } while(!(total_moves[random_move].level <= level));
 
     //randomly select second move that isn't first move
     do {
-        random_level = rand() % total_moves.size();
+        random_move = rand() % total_moves.size();
         moves[1].id = total_moves[rand() % total_moves.size()].move_id;
-    } while((!(level <= total_moves[random_level].level)) && (moves[0].id != moves[1].id));
+    } while((!(total_moves[random_move].level <= level)) && (moves[0].id != moves[1].id));
 
     //get basic stats
     for(i = 0; i < NUM_POKE_STATS; i++) {
@@ -69,7 +69,10 @@ Pokemon::Pokemon(pokemon_db new_poke)
         }
     }
 
-    //STILL NEED TO DO IV's
+    //IV's
+    for(i = 0; i < 6; i++) {
+        iv[i] = rand() % 16;
+    }
 
     //gender
     if(rand() % 2 == 0) {

@@ -41,7 +41,6 @@ public:
     gender_t poke_gender;
     Pokemon(){};
     Pokemon(pokemon_db new_poke);
-    ~Pokemon(){};
 };
 
 

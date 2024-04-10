@@ -14,6 +14,7 @@
 #include "character.h"
 #include "io.h"
 #include "db_parse.h"
+#include "pokemon.h"
 
 typedef struct queue_node {
   int x, y;
@@ -1197,6 +1198,8 @@ int main(int argc, char *argv[])
   io_init_terminal();
   
   init_world();
+
+  io_select_starters();
 
   game_loop();
   

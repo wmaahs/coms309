@@ -467,7 +467,7 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
   }
 
   //potentially spawn a pokemon
-  spawn_pokemon();
+  gen_pokemon();
   return 0;
 }
 
@@ -506,6 +506,52 @@ void io_teleport_world(pair_t dest)
 
   new_map(1);
   io_teleport_pc(dest);
+}
+
+void io_select_starters()
+{
+  std::vector<Pokemon> starters;
+  int i;
+  for(i = 0; i < 3; i++) {
+    starters.push_back({Pokemon(pokemon[((rand() % 1092) + 1)])});
+  }
+
+  mvprintw(0, 0, "Welcome to the Poke-Universe! First things first, you need pick your first Pokemon.");
+  mvprintw(1, 0, "You have three options to select from. Choose wisely.");
+
+  attron(COLOR_PAIR(COLOR_BLUE));
+  mvprintw(3, 20, "Option 1: %s", starters[0].name);
+  mvprintw(4, 25, "Base HP: %d", starters[0].stats[hp]);
+  mvprintw(5, 25, "Base Attack: %d", starters[0].stats[attack]);
+  mvprintw(6, 25, "Base Defense: %d", starters[0].stats[defense]);
+  mvprintw(7, 25, "Base Speed: %d", starters[0].stats[speed]);
+  mvprintw(8, 25, "Base Special Attack: %d", starters[0].stats[special_attk]);
+  mvprintw(9, 25, "Base Special Defense: %d", starters[0].stats[special_def]);
+  attroff(COLOR_PAIR(COLOR_BLUE));
+  
+  attron(COLOR_PAIR(COLOR_MAGENTA));
+  mvprintw(10, 20, "Option 2: %s",            starters[1].name);
+  mvprintw(11, 25, "Base HP: %d",             starters[1].stats[hp]);
+  mvprintw(12, 25, "Base Attack: %d",         starters[1].stats[attack]);
+  mvprintw(13, 25, "Base Defense: %d",        starters[1].stats[defense]);
+  mvprintw(14, 25, "Base Speed: %d",          starters[1].stats[speed]);
+  mvprintw(15, 25, "Base Special Attack: %d", starters[1].stats[special_attk]);
+  mvprintw(16, 25, "Base Special Defense: %d",starters[1].stats[special_def]);
+  attroff(COLOR_PAIR(COLOR_MAGENTA));
+
+  attron(COLOR_PAIR(COLOR_GREEN));
+  mvprintw(17, 20, "Option 3: %s",              starters[2].name);
+  mvprintw(18, 25, "Base HP: %d",               starters[2].stats[hp]);
+  mvprintw(19, 25, "Base Attack: %d",           starters[2].stats[attack]);
+  mvprintw(20, 25, "Base Defense: %d",          starters[2].stats[defense]);
+  mvprintw(21, 25, "Base Speed: %d",            starters[2].stats[speed]);
+  mvprintw(22, 25, "Base Special Attack: %d",   starters[2].stats[special_attk]);
+  mvprintw(23, 25, "Base Special Defense: %d",  starters[2].stats[special_def]);
+  attroff(COLOR_PAIR(COLOR_GREEN));
+
+  refresh();
+  getch();
+
 }
 
 void io_handle_input(pair_t dest)

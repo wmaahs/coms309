@@ -6,30 +6,47 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <vector>
+
+typedef struct simple_move {
+    int level;
+    int move_id;
+} simple_move_t;
+
+typedef enum stat_index {
+    hp,
+    attack,
+    defense,
+    speed,
+    special_attk,
+    special_def
+} stat_ind_t;
+
+typedef enum gender {
+    male,
+    female
+} gender_t;
 
 class Pokemon {
 public:
     std::string name; 
     int poke_id;
+    int poke_species_id;
     int level;
-    int hp;
-    int max_hp;
+    int stats[6];
+    int iv[6];
+    bool shiny;
     move_db moves[2];
+    std::vector<simple_move_t> total_moves;
+    gender_t poke_gender;
     Pokemon(){};
-    Pokemon(pokemon_db *new_poke)
-    {
-        name = new_poke->identifier;
-        poke_id = new_poke->species_id;
-        level = 0;
-        hp = 0;
-        max_hp = 0;
-    }
-    void get_pokemon_level();
-    void get_pokemon_moveset();
+    Pokemon(pokemon_db new_poke);
+    ~Pokemon(){};
 };
 
 
-void spawn_pokemon();
+int set_pokemon_level();
+void gen_pokemon();
 
 
 

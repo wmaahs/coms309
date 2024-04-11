@@ -128,5 +128,6 @@ typedef struct path {
 
 int new_map(int teleport);
 void pathfind(map *m);
+void fill_trainer_roster(npc *c);
 
 #endif

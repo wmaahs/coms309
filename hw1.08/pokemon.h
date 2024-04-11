@@ -48,7 +48,4 @@ int set_pokemon_level();
 void gen_pokemon();
 
 
-
-
-
 #endif  /* POKEMON_H */

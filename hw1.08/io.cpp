@@ -386,7 +386,19 @@ void io_pokemon_center()
 void io_battle(character *aggressor, character *defender)
 {
   npc *n = (npc *) ((aggressor == &world.pc) ? defender : aggressor);
+  int i;
 
+  //placeholder with trainer pokemon data
+  clear();
+  mvprintw(0, 0, "Hey Kid, Want to see my Pokemon?");
+  mvprintw(2, 2, "This Trainer has %d Pokemon :", n->roster.size());
+
+  for(i = 0; i < n->roster.size(); i++) {
+    mvprintw(i+3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i], n->roster[i].level);
+  }
+  refresh();
+  getch();
+  //defeated message
   io_display();
   mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
   refresh();

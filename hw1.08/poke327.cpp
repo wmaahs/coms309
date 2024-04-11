@@ -402,6 +402,23 @@ static int smooth_height(map *m)
   return 0;
 }
 
+
+void fill_trainer_roster(npc *c)
+{
+  int extra;
+  int poke_id = rand() % 1092;
+  Pokemon npc_starter(pokemon[poke_id]);
+  c->roster.push_back(npc_starter);
+
+  do{
+    extra = rand() % 5;
+    Pokemon extra(pokemon[rand() % 1092]);
+    c->roster.push_back(extra);
+  } while(((extra == 0) ||(extra == 1) || (extra == 2)) && (c->roster.size() < 7));
+
+  return;
+}
+
 static void find_building_location(map *m, pair_t p)
 {
   do {
@@ -757,6 +774,7 @@ void new_hiker()
   c->symbol = HIKER_SYMBOL;
   c->next_turn = 0;
   c->seq_num = world.char_seq_num++;
+  fill_trainer_roster(c);
   heap_insert(&world.cur_map->turn, c);
 }
 
@@ -784,6 +802,7 @@ void new_rival()
   c->symbol = RIVAL_SYMBOL;
   c->next_turn = 0;
   c->seq_num = world.char_seq_num++;
+  fill_trainer_roster(c);
   heap_insert(&world.cur_map->turn, c);
 }
 
@@ -807,6 +826,7 @@ void new_swimmer()
   c->symbol = SWIMMER_SYMBOL;
   c->next_turn = 0;
   c->seq_num = world.char_seq_num++;
+  fill_trainer_roster(c);
   heap_insert(&world.cur_map->turn, c);
 }
 
@@ -849,6 +869,7 @@ void new_char_other()
   c->defeated = 0;
   c->next_turn = 0;
   c->seq_num = world.char_seq_num++;
+  fill_trainer_roster(c);
   heap_insert(&world.cur_map->turn, c);
 }
 

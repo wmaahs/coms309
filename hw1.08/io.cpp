@@ -391,13 +391,14 @@ void io_battle(character *aggressor, character *defender)
   //placeholder with trainer pokemon data
   clear();
   mvprintw(0, 0, "Hey Kid, Want to see my Pokemon?");
-  mvprintw(2, 2, "This Trainer has %d Pokemon :", n->roster.size());
+  mvprintw(2, 2, "This Trainer has %ld Pokemon :", n->roster.size());
 
-  for(i = 0; i < n->roster.size(); i++) {
-    mvprintw(i+3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i], n->roster[i].level);
+  for(i = 0; i < (int) n->roster.size(); i++) {
+    mvprintw(i+3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i].name.c_str(), n->roster[i].level);
   }
   refresh();
   getch();
+  
   //defeated message
   io_display();
   mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");

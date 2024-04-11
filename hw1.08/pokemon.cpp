@@ -102,7 +102,7 @@ void Pokemon::levelup(){
     stats[hp] = ((((stats[hp] + iv[hp]) * 2) * level)/100) + level + 10;
     int i;
     for(i = 1; i < 6; i++){
-        stats[i] = ((((stats[hp] + iv[hp]) * 2) * level)/100) + 5;
+        stats[i] = ((((stats[i] + iv[i]) * 2) * level)/100) + 5;
     }
 }
 

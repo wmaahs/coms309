@@ -468,7 +468,7 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
 
   //potentially spawn a pokemon
   gen_pokemon();
-  
+
   return 0;
 }
 
@@ -530,8 +530,8 @@ void io_select_starter()
 {
 
   int user_input;
-  int confirmation;
-  int poke_selected;
+  int confirmation = 0;
+  int poke_selected = 0;
   std::vector<Pokemon> starters;
   int i;
   for(i = 0; i < 3; i++) {

@@ -127,6 +127,7 @@ void gen_pokemon()
             new_poke_id = rand() % 1092;
 
             Pokemon new_poke(pokemon[new_poke_id]);
+            new_poke.levelup();
             io_battle_wild_pokemon(new_poke);
             return;
         }

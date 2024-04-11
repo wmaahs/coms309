@@ -408,11 +408,13 @@ void fill_trainer_roster(npc *c)
   int extra;
   int poke_id = rand() % 1092;
   Pokemon npc_starter(pokemon[poke_id]);
+  npc_starter.levelup();
   c->roster.push_back(npc_starter);
 
   do{
     extra = rand() % 5;
     Pokemon extra(pokemon[rand() % 1092]);
+    extra.levelup();
     c->roster.push_back(extra);
   } while(((extra == 0) ||(extra == 1) || (extra == 2)) && (c->roster.size() < 7));
 

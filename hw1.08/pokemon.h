@@ -41,6 +41,20 @@ public:
     gender_t poke_gender;
     Pokemon(){};
     Pokemon(pokemon_db new_poke);
+
+    void levelup();
+    int get_id(){return poke_id;}
+    int get_species_id(){return poke_species_id;}
+    int get_level(){return level;}
+    int get_hp(){return stats[hp];}
+    int get_attack(){return stats[attack];}
+    int get_defense(){return stats[defense];}
+    int get_speed(){return stats[speed];}
+    int get_special_attk(){return stats[special_attk];}
+    int get_special_def(){return stats[special_def];}
+    std::vector<simple_move_t> get_all_moves(){return total_moves;}
+    gender_t get_gender(){return poke_gender;}
+    bool is_shiny(){return shiny;}
 };
 
 

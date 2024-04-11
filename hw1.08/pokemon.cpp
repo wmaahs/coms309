@@ -96,6 +96,17 @@ Pokemon::Pokemon(pokemon_db new_poke)
 }
 
 /**
+ * Function used to level up the stats of a pokemon, given its current level
+*/
+void Pokemon::levelup(){
+    stats[hp] = ((((stats[hp] + iv[hp]) * 2) * level)/100) + level + 10;
+    int i;
+    for(i = 1; i < 6; i++){
+        stats[i] = ((((stats[hp] + iv[hp]) * 2) * level)/100) + 5;
+    }
+}
+
+/**
  * Function to determin if a pokemon is spawned,
  * called from io.cpp in function io_handle_input
  * after every return from move_pc_dir.

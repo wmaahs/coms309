@@ -394,11 +394,14 @@ void io_battle(character *aggressor, character *defender)
   mvprintw(2, 2, "This Trainer has %ld Pokemon :", n->roster.size());
 
   for(i = 0; i < (int) n->roster.size(); i++) {
-    mvprintw(i+3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i].name.c_str(), n->roster[i].level);
+    mvprintw(i*4 + 3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i].name.c_str(), n->roster[i].level);
+    mvprintw(i*4 + 4, 15, "HP: %d", n->roster[i].get_hp());
+    mvprintw(i*4 + 5, 15, "Attack: %d", n->roster[i].get_attack());
+    mvprintw(i*4 + 6, 15, "Defense: %d", n->roster[i].get_defense());
   }
   refresh();
   getch();
-  
+
   //defeated message
   io_display();
   mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
@@ -496,6 +499,12 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
 {
   clear();
   mvprintw(0, 0, "you have encountered a wild %s", wild_pokemon.name.c_str());
+  mvprintw(3, 10, "HP: %d", wild_pokemon.get_hp());
+  mvprintw(4, 10, "Attack: %d", wild_pokemon.get_attack());
+  mvprintw(5, 10, "Defense: %d", wild_pokemon.get_defense());
+  mvprintw(6, 10, "Speed: %d", wild_pokemon.get_speed());
+  mvprintw(7, 10, "Special Attack: %d", wild_pokemon.get_special_attk());
+  mvprintw(8, 10, "Special Defese: %d", wild_pokemon.get_special_def());
   refresh();
 
   getch();

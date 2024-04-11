@@ -593,6 +593,8 @@ void io_select_starter()
           poke_selected = 0;
         }
         else{
+          move(0, 0);
+          clrtoeol();
           mvprintw(0, 0, "y/n not selected, Cancelling..");
           refresh();
         }
@@ -613,6 +615,8 @@ void io_select_starter()
           poke_selected = 0;
         }
         else{
+          move(0, 0);
+          clrtoeol();
           mvprintw(0, 0, "y/n not selected, Cancelling..");
           refresh();
         }
@@ -633,6 +637,8 @@ void io_select_starter()
           poke_selected = 0;
         }
         else{
+          move(0, 0);
+          clrtoeol();
           mvprintw(0, 0, "y/n not selected, Cancelling..");
           refresh();
         }

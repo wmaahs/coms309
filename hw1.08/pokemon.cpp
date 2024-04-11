@@ -11,8 +11,8 @@ int set_pokemon_level()
 {
     int man_dist;
     pair_t origin;
-    origin[dim_x] = 0;
-    origin[dim_y] = 0;
+    origin[dim_x] = 200;
+    origin[dim_y] = 200;
 
     int level;
     int min_level;
@@ -21,8 +21,11 @@ int set_pokemon_level()
     man_dist = manhattan_distance(world.cur_idx, origin);
 
     if(man_dist <= 200) {
-        min_level = 1;
-        max_level = man_dist / 2;
+      if(man_dist == 0){
+	return 1;
+      }
+      min_level = 1;
+      max_level = man_dist / 2;
     }
     else
     {
@@ -30,7 +33,7 @@ int set_pokemon_level()
         max_level = 100;
     }
 
-    level = rand() % max_level + min_level;
+    level = rand() % (max_level - min_level + 1) + min_level;
     
     return level;
 }

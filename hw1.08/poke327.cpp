@@ -416,7 +416,7 @@ void fill_trainer_roster(npc *c)
     Pokemon extra(pokemon[rand() % 1092]);
     extra.levelup();
     c->roster.push_back(extra);
-  } while(((extra == 0) ||(extra == 1) || (extra == 2)) && (c->roster.size() < 7));
+  } while(((extra == 0) ||(extra == 1) || (extra == 2)) && (c->roster.size() < 6));
 
   return;
 }

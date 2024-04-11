@@ -1,0 +1,13 @@
+The updated game now includs pokemon! At the start of the game, the user is asked to pick one starter pokemon from three randomly generated options.
+Once the game has started, when the PC is running around there is 10% of encountering a wild pokemon while running through the tall grass.
+
+When trainers are created, they now are given at least one pokemon to start. There is a 60% chance that the trainer gets a second pokemon,
+and then another 60% chance that the trainer is spawned in with 3 pokemon etc. When you battle a trainer, you can no see all of the pokemon in their roster,
+as well as some of their pokemons general stats.
+
+The Pokemon class is responsible for most of the work done to generate pokemon. All of the initial generation is done directly in the constructor when the pokemon
+is created. There is also a levelup method for the Pokemon class that updates the pokemons stats if the pokemon is higher than level 1.
+
+To my knowledge, everything in my program functions according to the assignment specifications.
+
+Will Maahs

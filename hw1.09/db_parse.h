@@ -1,7 +1,15 @@
 #ifndef DB_PARSE_H
 # define DB_PARSE_H
 
-#include <vector>
+#define NUM_POKEMON 1092
+#define NUM_MOVES 844
+#define NUM_POKE_MOVES 528238
+#define NUM_POKE_SPECIES 898
+#define NUM_EXPERIENCE 601
+#define NUM_TYPE_NAMES 193
+#define NUM_POKE_STATS 6552
+#define NUM_STATS 8
+#define NUM_POKE_TYPES 1675
 
 struct pokemon_db {
   int id;
@@ -67,12 +75,6 @@ struct pokemon_species_db {
   int is_mythical;
   int order;
   int conquest_order;
-
-  pokemon_species_db() : levelup_moves() {}
-  virtual ~pokemon_species_db() {}
-
-  std::vector<levelup_move> levelup_moves;
-  int base_stat[6];
 };
 
 struct experience_db {

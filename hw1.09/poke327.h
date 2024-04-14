@@ -34,8 +34,6 @@
 
 #define MIN_TRAINERS     7
 #define ADD_TRAINER_PROB 60
-#define ENCOUNTER_PROB       10
-#define ADD_TRAINER_POK_PROB 60
 
 #define MOUNTAIN_SYMBOL       '%'
 #define BOULDER_SYMBOL        '0'
@@ -130,5 +128,6 @@ typedef struct path {
 
 int new_map(int teleport);
 void pathfind(map *m);
+void fill_trainer_roster(npc *c);
 
 #endif

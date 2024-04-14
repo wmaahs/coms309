@@ -1,172 +1,137 @@
-#include <cstdlib>
-#include <algorithm>
-
 #include "pokemon.h"
-#include "db_parse.h"
 #include "poke327.h"
+#include "io.h"
 
-static bool operator<(const levelup_move &f, const levelup_move &s)
+int manhattan_distance(pair_t xy1, pair_t xy2)
 {
-  return ((f.level < s.level) || ((f.level == s.level) && f.move < s.move));
+    return (abs(xy1[dim_x] - xy2[dim_x]) + abs(xy1[dim_y] - xy2[dim_y]));
 }
 
-static int pkmn_lvl()
+int set_pokemon_level()
 {
-    int md = (abs(world.cur_idx[dim_x] - (WORLD_SIZE / 2)) +
-            abs(world.cur_idx[dim_y] - (WORLD_SIZE / 2)));
-  int minl, maxl;
+    int man_dist;
+    pair_t origin;
+    origin[dim_x] = 200;
+    origin[dim_y] = 200;
 
-  if (md <= 200) {
-    minl = 1;
-    maxl = md / 2;
-  } else {
-    minl = (md - 200) / 2;
-    maxl = 100;
-  }
-  if (minl < 1) {
-    minl = 1;
-  }
-  if (minl > 100) {
-    minl = 100;
-  }
-  if (maxl < 1) {
-    maxl = 1;
-  }
-  if (maxl > 100) {
-    maxl = 100;
-  }
+    int level;
+    int min_level;
+    int max_level;
+    //find the manhattan distance from the origin
+    man_dist = manhattan_distance(world.cur_idx, origin);
 
-  return (rand() % (maxl - minl + 1)) + minl;
-}
-
-pokemon::pokemon() : pokemon(pkmn_lvl()) {}
-
-pokemon::pokemon(int level) : level(level)
-{
-  pokemon_species_db *s;
-  unsigned i, j;
-  bool found;
-
-  // Subtract 1 because array is 1-indexed
-  pokemon_species_index = rand() % ((sizeof (species) /
-                                     sizeof (species[0])) - 1);
-  s = species + pokemon_species_index;
-  
-  if (!s->levelup_moves.size()) {
-    // We have never generated a pokemon of this species before, so we
-    // need to find it's level-up moveset and save it for next time.
-    for (i = 1; i < (sizeof (pokemon_moves) /
-                     sizeof (pokemon_moves[0])); i++) {
-      if (s->id == pokemon_moves[i].pokemon_id &&
-          pokemon_moves[i].pokemon_move_method_id == 1) {
-        for (found = false, j = 0; !found && j < s->levelup_moves.size(); j++) {
-          if (s->levelup_moves[j].move == pokemon_moves[i].move_id) {
-            found = true;
-          }
-        }
-        if (!found) {
-          s->levelup_moves.push_back({ pokemon_moves[i].level,
-                                       pokemon_moves[i].move_id });
-        }
+    if(man_dist <= 200) {
+      if(man_dist == 0){
+	return 1;
       }
+      min_level = 1;
+      max_level = man_dist / 2;
+    }
+    else
+    {
+        min_level = (man_dist - 200) / 2;
+        max_level = 100;
     }
 
-    // s->levelup_moves now contains all of the moves this species can learn
-    // through leveling up.  Now we'll sort it by level to make that process
-    // simpler.
-    sort(s->levelup_moves.begin(), s->levelup_moves.end());
+    level = rand() % (max_level - min_level + 1) + min_level;
+    
+    return level;
+}
 
-    // Also initialize base stats while we're here
-    s->base_stat[0] = pokemon_stats[pokemon_species_index * 6 - 5].base_stat;
-    s->base_stat[1] = pokemon_stats[pokemon_species_index * 6 - 4].base_stat;
-    s->base_stat[2] = pokemon_stats[pokemon_species_index * 6 - 3].base_stat;
-    s->base_stat[3] = pokemon_stats[pokemon_species_index * 6 - 2].base_stat;
-    s->base_stat[4] = pokemon_stats[pokemon_species_index * 6 - 1].base_stat;
-    s->base_stat[5] = pokemon_stats[pokemon_species_index * 6 - 0].base_stat;
-  }
+Pokemon::Pokemon(pokemon_db new_poke)
+{
+    name = new_poke.identifier;
+    poke_species_id = new_poke.species_id;
+    poke_id = new_poke.id;
 
-  // Get pokemon's move(s).
-  for (i = 0;
-       i < s->levelup_moves.size() && s->levelup_moves[i].level <= level;
-       i++)
-    ;
+    level = set_pokemon_level();
 
-  // 0 is an invalid index, since the array is 1 indexed.
-  move_index[0] = move_index[1] = move_index[2] = move_index[3] = 0;
-  // I don't think 0 moves is possible, but account for it to be safe
-  if (i) {
-    move_index[0] = s->levelup_moves[rand() % i].move;
-    if (i != 1) {
-      do {
-        j = rand() % i;
-      } while (s->levelup_moves[j].move == move_index[0]);
-      move_index[1] = s->levelup_moves[j].move;
+    //Find total move set
+    int i;
+    for(i = 0; i < NUM_POKE_MOVES; i++) {
+        if((poke_species_id == pokemon_moves[i].pokemon_id) && (pokemon_moves[i].pokemon_move_method_id == 1)) {
+            total_moves.push_back({pokemon_moves[i].level, pokemon_moves[i].move_id});
+        }
     }
-  }
+    //randomly select first move
+    int random_move;
+    do {
+        random_move = rand() % total_moves.size();
+        moves[0].id = total_moves[random_move].move_id;
+    } while(!(total_moves[random_move].level <= level));
 
-  // Calculate IVs
-  for (i = 0; i < 6; i++) {
-    IV[i] = rand() & 0xf;
-    effective_stat[i] = 5 + ((s->base_stat[i] + IV[i]) * 2 * level) / 100;
-    if (i == 0) { // HP
-      effective_stat[i] += 5 + level;
+    //randomly select second move that isn't first move
+    do {
+        random_move = rand() % total_moves.size();
+        moves[1].id = total_moves[rand() % total_moves.size()].move_id;
+    } while((!(total_moves[random_move].level <= level)) && (moves[0].id != moves[1].id));
+
+    //get basic stats
+    for(i = 0; i < NUM_POKE_STATS; i++) {
+        if(poke_species_id == pokemon_stats[i].pokemon_id) {
+            stats[pokemon_stats[i].stat_id -1] = pokemon_stats[i].base_stat;
+        }
     }
-  }
 
-  shiny = (((rand() & 0x1fff) == 0x1fff) ? true : false);
-  gender = ((rand() & 0x1) ? gender_female : gender_male);
+    //IV's
+    for(i = 0; i < 6; i++) {
+        iv[i] = rand() % 16;
+    }
+
+    //gender
+    if(rand() % 2 == 0) {
+        poke_gender = female;
+    }
+    else{
+        poke_gender = male;
+    }
+
+    //is shiny
+    if(rand() % 8192 == 0) {
+        shiny = true;
+    }
+    else{
+        shiny = false;
+    }
 }
 
-const char *pokemon::get_species() const
-{
-  return species[pokemon_species_index].identifier;
+/**
+ * Function used to level up the stats of a pokemon, given its current level
+*/
+void Pokemon::levelup(){
+    stats[hp] = ((((stats[hp] + iv[hp]) * 2) * level)/100) + level + 10;
+    int i;
+    for(i = 1; i < 6; i++){
+        stats[i] = ((((stats[i] + iv[i]) * 2) * level)/100) + 5;
+    }
 }
 
-int pokemon::get_hp() const
+/**
+ * Function to determin if a pokemon is spawned,
+ * called from io.cpp in function io_handle_input
+ * after every return from move_pc_dir.
+ * 
+ * If a pokemon is spawned, then calls constructor
+ * 
+*/
+void gen_pokemon()
 {
-  return effective_stat[stat_hp];
-}
+    int new_poke_id;
+    terrain_type_t cur_terrain;
+    cur_terrain = world.cur_map->map[world.pc.pos[dim_y]][world.pc.pos[dim_x]];
 
-int pokemon::get_atk() const
-{
-  return effective_stat[stat_atk];
-}
+    //if in tall grass, 10% chance that pokemon spawns
+    if(cur_terrain == ter_grass) {
+        if(rand() % 10 == 1) {
+            //if one spawns, then grab random number 0-1091
+            new_poke_id = rand() % 1092;
 
-int pokemon::get_def() const
-{
-  return effective_stat[stat_def];
-}
+            Pokemon new_poke(pokemon[new_poke_id]);
+            new_poke.levelup();
+            io_battle_wild_pokemon(new_poke);
+            return;
+        }
+    }
 
-int pokemon::get_spatk() const
-{
-  return effective_stat[stat_spatk];
-}
-
-int pokemon::get_spdef() const
-{
-  return effective_stat[stat_spdef];
-}
-
-int pokemon::get_speed() const
-{
-  return effective_stat[stat_speed];
-}
-
-const char *pokemon::get_gender_string() const
-{
-  return gender == gender_female ? "female" : "male";
-}
-
-bool pokemon::is_shiny() const
-{
-  return shiny;
-}
-
-const char *pokemon::get_move(int i) const
-{
-  if (i < 4 && move_index[i]) {
-    return moves[move_index[i]].identifier;
-  } else {
-    return "";
-  }
+    return;
 }

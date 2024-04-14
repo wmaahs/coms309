@@ -3,12 +3,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <string>
 
 #include "io.h"
 #include "character.h"
-#include "poke327.h"
 #include "pokemon.h"
+#include "poke327.h"
 
 #define TRAINER_LIST_FIELD_WIDTH 46
 
@@ -386,27 +385,28 @@ void io_pokemon_center()
 
 void io_battle(character *aggressor, character *defender)
 {
-  std::string s;
   npc *n = (npc *) ((aggressor == &world.pc) ? defender : aggressor);
   int i;
 
-  if (!n->buddy[1]) {
-    s = "My pokemon is " + std::string(n->buddy[0]->get_species());
-  } else {
-    s = "My pokemon are " + std::string(n->buddy[0]->get_species());
-  }
+  //placeholder with trainer pokemon data
+  clear();
+  mvprintw(0, 0, "Hey Kid, Want to see my Pokemon?");
+  mvprintw(2, 2, "This Trainer has %ld Pokemon :", n->roster.size());
 
-  for (i = 1; i < 6 && n->buddy[i]; i++) {
-    s += ", ";
-    if (i == 4 || !n->buddy[i + 1]) {
-      s += "and ";
-    }
-    s += n->buddy[i]->get_species();
+  for(i = 0; i < (int) n->roster.size(); i++) {
+    mvprintw(i*4 + 3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i].name.c_str(), n->roster[i].level);
+    mvprintw(i*4 + 4, 15, "HP: %d", n->roster[i].get_hp());
+    mvprintw(i*4 + 5, 15, "Attack: %d", n->roster[i].get_attack());
+    mvprintw(i*4 + 6, 15, "Defense: %d", n->roster[i].get_defense());
   }
-    
-  s += ".";
+  refresh();
+  getch();
 
-  io_queue_message("%s", s.c_str());
+  //defeated message
+  io_display();
+  mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
+  refresh();
+  getch();
 
   n->defeated = 1;
   if (n->ctype == char_hiker || n->ctype == char_rival) {
@@ -416,6 +416,7 @@ void io_battle(character *aggressor, character *defender)
 
 uint32_t move_pc_dir(uint32_t input, pair_t dest)
 {
+  // TODO: Change the call to spawn_pokemon() to outside this function
   dest[dim_y] = world.pc.pos[dim_y];
   dest[dim_x] = world.pc.pos[dim_x];
 
@@ -481,8 +482,34 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
     return 1;
   }
 
+  //potentially spawn a pokemon
+  gen_pokemon();
+
   return 0;
 }
+
+/**
+ * For now is void, eventually will probably return a bool
+ * true if pc has won, false otherwise
+ * 
+ * right now just a place holder for when a pokemon is spawned in the grass
+ * 
+*/
+void io_battle_wild_pokemon(Pokemon wild_pokemon)
+{
+  clear();
+  mvprintw(0, 0, "you have encountered a wild %s", wild_pokemon.name.c_str());
+  mvprintw(3, 10, "HP: %d", wild_pokemon.get_hp());
+  mvprintw(4, 10, "Attack: %d", wild_pokemon.get_attack());
+  mvprintw(5, 10, "Defense: %d", wild_pokemon.get_defense());
+  mvprintw(6, 10, "Speed: %d", wild_pokemon.get_speed());
+  mvprintw(7, 10, "Special Attack: %d", wild_pokemon.get_special_attk());
+  mvprintw(8, 10, "Special Defese: %d", wild_pokemon.get_special_def());
+  refresh();
+
+  getch();
+}
+
 
 void io_teleport_world(pair_t dest)
 {
@@ -519,6 +546,137 @@ void io_teleport_world(pair_t dest)
 
   new_map(1);
   io_teleport_pc(dest);
+}
+
+void io_select_starter()
+{
+
+  int user_input;
+  int confirmation = 0;
+  int poke_selected = 0;
+  std::vector<Pokemon> starters;
+  int i;
+  for(i = 0; i < 3; i++) {
+    Pokemon new_poke(pokemon[((rand() % 1092) + 1)]);
+    starters.push_back(new_poke);
+  }
+
+  mvprintw(0, 0, "Welcome to the Poke-Universe! First things first, you need pick your first Pokemon.");
+  mvprintw(1, 0, "You have three options to select from. Choose wisely.");
+
+  attron(COLOR_PAIR(COLOR_BLUE));
+  mvprintw(3, 10, "Option 1: %s", starters[0].name.c_str());
+  mvprintw(4, 15, "Base HP: %d", starters[0].stats[hp]);
+  mvprintw(5, 15, "Base Attack: %d", starters[0].stats[attack]);
+  mvprintw(6, 15, "Base Defense: %d", starters[0].stats[defense]);
+  mvprintw(7, 15, "Base Speed: %d", starters[0].stats[speed]);
+  mvprintw(8, 15, "Base Special Attack: %d", starters[0].stats[special_attk]);
+  mvprintw(9, 15, "Base Special Defense: %d", starters[0].stats[special_def]);
+  attroff(COLOR_PAIR(COLOR_BLUE));
+  
+  attron(COLOR_PAIR(COLOR_MAGENTA));
+  mvprintw(10, 10, "Option 2: %s",            starters[1].name.c_str());
+  mvprintw(11, 15, "Base HP: %d",             starters[1].stats[hp]);
+  mvprintw(12, 15, "Base Attack: %d",         starters[1].stats[attack]);
+  mvprintw(13, 15, "Base Defense: %d",        starters[1].stats[defense]);
+  mvprintw(14, 15, "Base Speed: %d",          starters[1].stats[speed]);
+  mvprintw(15, 15, "Base Special Attack: %d", starters[1].stats[special_attk]);
+  mvprintw(16, 15, "Base Special Defense: %d",starters[1].stats[special_def]);
+  attroff(COLOR_PAIR(COLOR_MAGENTA));
+
+  attron(COLOR_PAIR(COLOR_GREEN));
+  mvprintw(17, 10, "Option 3: %s",              starters[2].name.c_str());
+  mvprintw(18, 15, "Base HP: %d",               starters[2].stats[hp]);
+  mvprintw(19, 15, "Base Attack: %d",           starters[2].stats[attack]);
+  mvprintw(20, 15, "Base Defense: %d",          starters[2].stats[defense]);
+  mvprintw(21, 15, "Base Speed: %d",            starters[2].stats[speed]);
+  mvprintw(22, 15, "Base Special Attack: %d",   starters[2].stats[special_attk]);
+  mvprintw(23, 15, "Base Special Defense: %d",  starters[2].stats[special_def]);
+  attroff(COLOR_PAIR(COLOR_GREEN));
+
+  refresh();
+
+  while(!(poke_selected))
+  {
+    user_input = getch();
+    switch(user_input){
+      case '1':
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[0].name.c_str());
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        confirmation = getch();
+        if(confirmation == 'y'){
+          world.pc.roster.push_back(starters[0]);
+          poke_selected = 1;
+        }
+        else if(confirmation == 'n') {
+          poke_selected = 0;
+        }
+        else{
+          move(0, 0);
+          clrtoeol();
+          mvprintw(0, 0, "y/n not selected, Cancelling..");
+          refresh();
+        }
+        break;
+      case '2':
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[1].name.c_str());
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        confirmation = getch();
+        if(confirmation == 'y'){
+          world.pc.roster.push_back(starters[1]);
+          poke_selected = 1;
+        }
+        else if(confirmation == 'n') {
+          poke_selected = 0;
+        }
+        else{
+          move(0, 0);
+          clrtoeol();
+          mvprintw(0, 0, "y/n not selected, Cancelling..");
+          refresh();
+        }
+        break;
+      case '3':
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[2].name.c_str());
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        confirmation = getch();
+        if(confirmation == 'y'){
+          world.pc.roster.push_back(starters[2]);
+          poke_selected = 1;
+        }
+        else if(confirmation == 'n') {
+          poke_selected = 0;
+        }
+        else{
+          move(0, 0);
+          clrtoeol();
+          mvprintw(0, 0, "y/n not selected, Cancelling..");
+          refresh();
+        }
+        break;
+      default:
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "Enter 1, 2, or 3 to select a pokemon");
+        move(1, 0);
+        clrtoeol();
+        refresh();
+        break;
+    }
+  }
+
 }
 
 void io_handle_input(pair_t dest)
@@ -640,59 +798,4 @@ void io_handle_input(pair_t dest)
     }
     refresh();
   } while (turn_not_consumed);
-}
-
-void io_encounter_pokemon()
-{
-  pokemon *p;
-
-  p = new pokemon();
-
-  io_queue_message("%s%s%s: HP:%d ATK:%d DEF:%d SPATK:%d SPDEF:%d SPEED:%d %s",
-                   p->is_shiny() ? "*" : "", p->get_species(),
-                   p->is_shiny() ? "*" : "", p->get_hp(), p->get_atk(),
-                   p->get_def(), p->get_spatk(), p->get_spdef(),
-                   p->get_speed(), p->get_gender_string());
-  io_queue_message("%s's moves: %s %s", p->get_species(),
-                   p->get_move(0), p->get_move(1));
-
-  // Later on, don't delete if captured
-  delete p;
-}
-
-void io_choose_starter()
-{
-  class pokemon *choice[3];
-  int i;
-  bool again = true;
-  
-  choice[0] = new class pokemon();
-  choice[1] = new class pokemon();
-  choice[2] = new class pokemon();
-
-  echo();
-  curs_set(1);
-  do {
-    mvprintw( 4, 20, "Before you are three Pokemon, each of");
-    mvprintw( 5, 20, "which wants absolutely nothing more");
-    mvprintw( 6, 20, "than to be your best buddy forever.");
-    mvprintw( 8, 20, "Unfortunately for them, you may only");
-    mvprintw( 9, 20, "pick one.  Choose wisely.");
-    mvprintw(11, 20, "   1) %s", choice[0]->get_species());
-    mvprintw(12, 20, "   2) %s", choice[1]->get_species());
-    mvprintw(13, 20, "   3) %s", choice[2]->get_species());
-    mvprintw(15, 20, "Enter 1, 2, or 3: ");
-
-    refresh();
-    i = getch();
-
-    if (i == '1' || i == '2' || i == '3') {
-      world.pc.buddy[0] = choice[(i - '0') - 1];
-      delete choice[(i - '0') % 3];
-      delete choice[((i - '0') + 1) % 3];
-      again = false;
-    }
-  } while (again);
-  noecho();
-  curs_set(0);
 }

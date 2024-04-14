@@ -2,13 +2,13 @@
 # define CHARACTER_H
 
 # include <cstdint>
+#include <vector>
 
 # include "pair.h"
+# include "pokemon.h"
 
 #define DIJKSTRA_PATH_MAX (INT_MAX / 2)
 #define NO_NPCS 50
-
-class pokemon;
 
 typedef enum __attribute__ ((__packed__)) movement_type {
   move_hiker,
@@ -35,12 +35,12 @@ extern const char *char_type_name[num_character_types];
 
 class character {
  public:
-  virtual ~character();
+  virtual ~character() {}
   pair_t pos;
   char symbol;
   int next_turn;
   int seq_num;
-  class pokemon *buddy[6];
+  std::vector<Pokemon> roster;
 };
 
 class npc : public character {
@@ -49,12 +49,9 @@ class npc : public character {
   movement_type_t mtype;
   int defeated;
   pair_t dir;
-  virtual ~npc() {}
 };
 
 class pc : public character {
- public:
-  virtual ~pc() {}
 };
 
 /* character is defined in poke327.h to allow an instance of character

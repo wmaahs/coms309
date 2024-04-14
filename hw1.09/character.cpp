@@ -3,7 +3,6 @@
 #include "character.h"
 #include "poke327.h"
 #include "io.h"
-#include "pokemon.h"
 
 /* Just to make the following table fit in 80 columns */
 #define PM DIJKSTRA_PATH_MAX
@@ -437,17 +436,6 @@ int32_t cmp_char_turns(const void *key, const void *with)
            ((character *) with)->seq_num)    :
           (((character *) key)->next_turn -
            ((character *) with)->next_turn));
-}
-
-character::~character()
-{
-  int i;
-
-  for (i = 0; i < 6; i++) {
-    if (buddy[i]) {
-      delete buddy[i];
-    }
-  }
 }
 
 void delete_character(void *v)

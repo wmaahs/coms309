@@ -1,0 +1,107 @@
+commit 610cfdb2657817256d0a6d28f9bc61b6bd80477f
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 11 00:57:02 2024 -0500
+
+    added changelog and readme
+
+commit bd7d44e9752a93e903155f6543ee466e9ca35686
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 11 00:39:31 2024 -0500
+
+    fixing some bugs.
+
+commit f3105fe3cfd7afc21c83dcdd010412297c2c487f
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 11 00:37:01 2024 -0500
+
+    added calls to levelup method.
+
+commit 8a1340520259fde645e20dc066ca804ad44a9d55
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Thu Apr 11 00:34:38 2024 -0500
+
+    Cleaning up. Added getters to class, added level up method.
+
+commit 63a83d1d997c0df18f4dbc5321d05578fda8484e
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 20:09:07 2024 -0500
+
+    I think everything is working now. Just need to clean it up.
+
+commit 92eca122b16297d4a720707b13d0b9d2fbb41ba3
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 19:44:44 2024 -0500
+
+    fixed compile warnings.
+
+commit 5b15cc00a33da9b93661f01fee1e68bc47ca4311
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 19:41:53 2024 -0500
+
+    testing new trainer battles.
+
+commit 4ecb801355244e532c39e6cc8f0babcecc950a53
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 19:06:59 2024 -0500
+
+    checking that starting pokemon is added to pc.
+
+commit 743c426425d38ddece9f034b27b55025502d5c47
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 19:02:16 2024 -0500
+
+    idk why I can't select a starter anymore?
+
+commit b547624a146081dcd7f3fbae4ec6d72759e40d8c
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 18:59:41 2024 -0500
+
+    fixing accidental delete.
+
+commit f3bd66597e15ec309e13fb91b4d6e3d126fb0166
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 18:41:45 2024 -0500
+
+    fixing include?
+
+commit 771179cb02dab7e57e9018a3a9c43296c994aaee
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 18:39:21 2024 -0500
+
+    working on battling wild pokemon.
+
+commit 8cb8d9f96b351dfb44166fe9d3aa511a6b53e507
+Author: wmaahs <wmaahs@pyrite-n4.cs.iastate.edu>
+Date:   Wed Apr 10 17:52:02 2024 -0500
+
+    everything working smoothly, so far
+
+commit 686cadf902aa0bc2bd84719b2f0680b991f6e353
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 16:17:45 2024 -0500
+
+    Finished constructor. First attempt at selecting random pokemon.
+
+commit 2240afe9e9339ced6739d16a5997318142c3a755
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Wed Apr 10 14:11:21 2024 -0500
+
+    Pokemon constructor is almost done.
+
+commit d3d84b193a726a18265d070d956e7368b67529cd
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 9 13:58:43 2024 -0500
+
+    Made class for new pokemon, calculated level for new pokemon. Working on getting moveset.
+
+commit 6771a60eb5986110823bc25e0950cb1f511b1f4a
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 9 00:40:37 2024 -0500
+
+    started working on spawning pokemon
+
+commit 1bb7e13dafaa018e393e1a6aead993529be248f2
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 8 23:26:09 2024 -0500
+
+    added previous solution, getting seg fault when run on my mac?

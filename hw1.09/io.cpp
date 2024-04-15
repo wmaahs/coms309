@@ -517,9 +517,12 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
 
     mvprintw(0, 1, "%s", wild_pokemon.get_name().c_str());
     mvprintw(1, 6, ":L%d", wild_pokemon.get_level());
+    mvprintw(2, 0, "HP:%d/%d", wild_pokemon.get_curr_hp(), wild_pokemon.get_hp());
 
     mvprintw(10, 35, "%s", world.pc.roster.at(0).get_name().c_str());
     mvprintw(11, 40, ":L%d", world.pc.roster.at(0).get_level());
+    mvprintw(12, 0, "HP:%d/%d", world.pc.roster.at(0).get_curr_hp(), world.pc.roster.at(0).get_hp());
+
 
     mvprintw(15, 5, "1. Fight");
     mvprintw(17, 5, "2. Bag");
@@ -530,6 +533,8 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
 
     switch(key){
       case '1':
+        //fight
+        
         break;
       case '2':
         break;

@@ -8,6 +8,7 @@
 #include "character.h"
 #include "pokemon.h"
 #include "poke327.h"
+#include "battle.h"
 
 #define TRAINER_LIST_FIELD_WIDTH 46
 
@@ -499,6 +500,9 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
 {
   bool battle_over = false;
   int key;
+
+  Pokemon cur_pokemon;
+  cur_pokemon = world.pc.roster[0];
   clear();
   mvprintw(0, 0, "You have encountered a wild %s (Level %d)", wild_pokemon.get_name().c_str(), wild_pokemon.get_level());
   mvprintw(3, 10, "HP: %d", wild_pokemon.get_hp());
@@ -519,9 +523,9 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
     mvprintw(1, 6, ":L%d", wild_pokemon.get_level());
     mvprintw(2, 0, "HP:%d/%d", wild_pokemon.get_curr_hp(), wild_pokemon.get_hp());
 
-    mvprintw(10, 35, "%s", world.pc.roster.at(0).get_name().c_str());
-    mvprintw(11, 40, ":L%d", world.pc.roster.at(0).get_level());
-    mvprintw(12, 0, "HP:%d/%d", world.pc.roster.at(0).get_curr_hp(), world.pc.roster.at(0).get_hp());
+    mvprintw(10, 35, "%s", cur_pokemon.get_name().c_str());
+    mvprintw(11, 40, ":L%d", cur_pokemon.get_level());
+    mvprintw(12, 0, "HP:%d/%d", cur_pokemon.get_curr_hp(), cur_pokemon.get_hp());
 
 
     mvprintw(15, 5, "1. Fight");
@@ -534,7 +538,8 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
     switch(key){
       case '1':
         //fight
-        
+        battle_fight(wild_pokemon, cur_pokemon);
+        battle_over = 1;
         break;
       case '2':
         break;
@@ -545,7 +550,7 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
     }
     
   }
-  
+  return;
 }
 
 

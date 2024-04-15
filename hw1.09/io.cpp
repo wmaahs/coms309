@@ -394,7 +394,7 @@ void io_battle(character *aggressor, character *defender)
   mvprintw(2, 2, "This Trainer has %ld Pokemon :", n->roster.size());
 
   for(i = 0; i < (int) n->roster.size(); i++) {
-    mvprintw(i*4 + 3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i].name.c_str(), n->roster[i].level);
+    mvprintw(i*4 + 3, 10, "Pokemon %d: %s (Level %d)", i, n->roster[i].get_name().c_str(), n->roster[i].get_level());
     mvprintw(i*4 + 4, 15, "HP: %d", n->roster[i].get_hp());
     mvprintw(i*4 + 5, 15, "Attack: %d", n->roster[i].get_attack());
     mvprintw(i*4 + 6, 15, "Defense: %d", n->roster[i].get_defense());
@@ -497,8 +497,9 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
 */
 void io_battle_wild_pokemon(Pokemon wild_pokemon)
 {
+
   clear();
-  mvprintw(0, 0, "you have encountered a wild %s", wild_pokemon.name.c_str());
+  mvprintw(0, 0, "You have encountered a wild %s (Level %d)", wild_pokemon.get_name().c_str(), wild_pokemon.get_level());
   mvprintw(3, 10, "HP: %d", wild_pokemon.get_hp());
   mvprintw(4, 10, "Attack: %d", wild_pokemon.get_attack());
   mvprintw(5, 10, "Defense: %d", wild_pokemon.get_defense());
@@ -508,6 +509,23 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
   refresh();
 
   getch();
+
+  //Initial battle screen
+  clear();
+
+  mvprintw(0, 1, "%s", wild_pokemon.get_name().c_str());
+  mvprintw(1, 6, ":L%d", wild_pokemon.get_level());
+
+  mvprintw(10, 35, "%s", world.pc.roster.at(0).get_name().c_str());
+  mvprintw(11, 40, ":L%d", world.pc.roster.at(0).get_level());
+
+  mvprintw(15, 5, "1. Fight");
+  mvprintw(17, 5, "2. Bag");
+  mvprintw(19, 5, "3. Run");
+  mvprintw(21, 5, "4. Pokemon");
+
+  
+  
 }
 
 
@@ -565,33 +583,33 @@ void io_select_starter()
   mvprintw(1, 0, "You have three options to select from. Choose wisely.");
 
   attron(COLOR_PAIR(COLOR_BLUE));
-  mvprintw(3, 10, "Option 1: %s", starters[0].name.c_str());
-  mvprintw(4, 15, "Base HP: %d", starters[0].stats[hp]);
-  mvprintw(5, 15, "Base Attack: %d", starters[0].stats[attack]);
-  mvprintw(6, 15, "Base Defense: %d", starters[0].stats[defense]);
-  mvprintw(7, 15, "Base Speed: %d", starters[0].stats[speed]);
-  mvprintw(8, 15, "Base Special Attack: %d", starters[0].stats[special_attk]);
-  mvprintw(9, 15, "Base Special Defense: %d", starters[0].stats[special_def]);
+  mvprintw(3, 10, "Option 1: %s", starters[0].get_name().c_str());
+  mvprintw(4, 15, "Base HP: %d", starters[0].get_hp());
+  mvprintw(5, 15, "Base Attack: %d", starters[0].get_attack());
+  mvprintw(6, 15, "Base Defense: %d", starters[0].get_defense());
+  mvprintw(7, 15, "Base Speed: %d", starters[0].get_speed());
+  mvprintw(8, 15, "Base Special Attack: %d", starters[0].get_special_attk());
+  mvprintw(9, 15, "Base Special Defense: %d", starters[0].get_special_def());
   attroff(COLOR_PAIR(COLOR_BLUE));
   
   attron(COLOR_PAIR(COLOR_MAGENTA));
-  mvprintw(10, 10, "Option 2: %s",            starters[1].name.c_str());
-  mvprintw(11, 15, "Base HP: %d",             starters[1].stats[hp]);
-  mvprintw(12, 15, "Base Attack: %d",         starters[1].stats[attack]);
-  mvprintw(13, 15, "Base Defense: %d",        starters[1].stats[defense]);
-  mvprintw(14, 15, "Base Speed: %d",          starters[1].stats[speed]);
-  mvprintw(15, 15, "Base Special Attack: %d", starters[1].stats[special_attk]);
-  mvprintw(16, 15, "Base Special Defense: %d",starters[1].stats[special_def]);
+  mvprintw(10, 10, "Option 2: %s",            starters[1].get_name().c_str());
+  mvprintw(11, 15, "Base HP: %d",             starters[1].get_hp());
+  mvprintw(12, 15, "Base Attack: %d",         starters[1].get_attack());
+  mvprintw(13, 15, "Base Defense: %d",        starters[1].get_defense());
+  mvprintw(14, 15, "Base Speed: %d",          starters[1].get_speed());
+  mvprintw(15, 15, "Base Special Attack: %d", starters[1].get_special_attk());
+  mvprintw(16, 15, "Base Special Defense: %d",starters[1].get_special_def());
   attroff(COLOR_PAIR(COLOR_MAGENTA));
 
   attron(COLOR_PAIR(COLOR_GREEN));
-  mvprintw(17, 10, "Option 3: %s",              starters[2].name.c_str());
-  mvprintw(18, 15, "Base HP: %d",               starters[2].stats[hp]);
-  mvprintw(19, 15, "Base Attack: %d",           starters[2].stats[attack]);
-  mvprintw(20, 15, "Base Defense: %d",          starters[2].stats[defense]);
-  mvprintw(21, 15, "Base Speed: %d",            starters[2].stats[speed]);
-  mvprintw(22, 15, "Base Special Attack: %d",   starters[2].stats[special_attk]);
-  mvprintw(23, 15, "Base Special Defense: %d",  starters[2].stats[special_def]);
+  mvprintw(17, 10, "Option 3: %s",              starters[2].get_name().c_str());
+  mvprintw(18, 15, "Base HP: %d",               starters[2].get_hp());
+  mvprintw(19, 15, "Base Attack: %d",           starters[2].get_attack());
+  mvprintw(20, 15, "Base Defense: %d",          starters[2].get_defense());
+  mvprintw(21, 15, "Base Speed: %d",            starters[2].get_speed());
+  mvprintw(22, 15, "Base Special Attack: %d",   starters[2].get_special_attk());
+  mvprintw(23, 15, "Base Special Defense: %d",  starters[2].get_special_def());
   attroff(COLOR_PAIR(COLOR_GREEN));
 
   refresh();
@@ -603,7 +621,7 @@ void io_select_starter()
       case '1':
         move(0, 0);
         clrtoeol();
-        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[0].name.c_str());
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[0].get_name().c_str());
         move(1, 0);
         clrtoeol();
         refresh();
@@ -625,7 +643,7 @@ void io_select_starter()
       case '2':
         move(0, 0);
         clrtoeol();
-        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[1].name.c_str());
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[1].get_name().c_str());
         move(1, 0);
         clrtoeol();
         refresh();
@@ -647,7 +665,7 @@ void io_select_starter()
       case '3':
         move(0, 0);
         clrtoeol();
-        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[2].name.c_str());
+        mvprintw(0, 0, "You have selected %s, are you sure you want to continue (y/n)", starters[2].get_name().c_str());
         move(1, 0);
         clrtoeol();
         refresh();

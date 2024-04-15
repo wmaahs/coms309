@@ -28,7 +28,7 @@ typedef enum gender {
 } gender_t;
 
 class Pokemon {
-public:
+private:
     std::string name; 
     int poke_id;
     int poke_species_id;
@@ -39,6 +39,8 @@ public:
     move_db moves[2];
     std::vector<simple_move_t> total_moves;
     gender_t poke_gender;
+
+public:
     Pokemon(){};
     Pokemon(pokemon_db new_poke);
 
@@ -52,6 +54,7 @@ public:
     int get_speed(){return stats[speed];}
     int get_special_attk(){return stats[special_attk];}
     int get_special_def(){return stats[special_def];}
+    std::string get_name(){return name;}
     std::vector<simple_move_t> get_all_moves(){return total_moves;}
     gender_t get_gender(){return poke_gender;}
     bool is_shiny(){return shiny;}

@@ -496,21 +496,21 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
  * right now just a place holder for when a pokemon is spawned in the grass
  * 
 */
-void io_battle_wild_pokemon(Pokemon wild_pokemon)
+void io_battle_wild_pokemon(Pokemon *wild_pokemon)
 {
   bool battle_over = false;
   int key;
 
-  Pokemon cur_pokemon;
-  cur_pokemon = world.pc.roster[0];
+  Pokemon *cur_pokemon;
+  cur_pokemon = &world.pc.roster[0];
   clear();
-  mvprintw(0, 0, "You have encountered a wild %s (Level %d)", wild_pokemon.get_name().c_str(), wild_pokemon.get_level());
-  mvprintw(3, 10, "HP: %d", wild_pokemon.get_hp());
-  mvprintw(4, 10, "Attack: %d", wild_pokemon.get_attack());
-  mvprintw(5, 10, "Defense: %d", wild_pokemon.get_defense());
-  mvprintw(6, 10, "Speed: %d", wild_pokemon.get_speed());
-  mvprintw(7, 10, "Special Attack: %d", wild_pokemon.get_special_attk());
-  mvprintw(8, 10, "Special Defese: %d", wild_pokemon.get_special_def());
+  mvprintw(0, 0, "You have encountered a wild %s (Level %d)", wild_pokemon->get_name().c_str(), wild_pokemon->get_level());
+  mvprintw(3, 10, "HP: %d", wild_pokemon->get_hp());
+  mvprintw(4, 10, "Attack: %d", wild_pokemon->get_attack());
+  mvprintw(5, 10, "Defense: %d", wild_pokemon->get_defense());
+  mvprintw(6, 10, "Speed: %d", wild_pokemon->get_speed());
+  mvprintw(7, 10, "Special Attack: %d", wild_pokemon->get_special_attk());
+  mvprintw(8, 10, "Special Defese: %d", wild_pokemon->get_special_def());
   refresh();
 
   getch();
@@ -519,13 +519,13 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
   while(!(battle_over)){
     clear();
 
-    mvprintw(0, 1, "%s", wild_pokemon.get_name().c_str());
-    mvprintw(1, 6, ":L%d", wild_pokemon.get_level());
-    mvprintw(2, 0, "HP:%d/%d", wild_pokemon.get_curr_hp(), wild_pokemon.get_hp());
+    mvprintw(0, 1, "%s", wild_pokemon->get_name().c_str());
+    mvprintw(1, 6, ":L%d", wild_pokemon->get_level());
+    mvprintw(2, 0, "HP:%d/%d", wild_pokemon->get_curr_hp(), wild_pokemon->get_hp());
 
-    mvprintw(10, 35, "%s", cur_pokemon.get_name().c_str());
-    mvprintw(11, 40, ":L%d", cur_pokemon.get_level());
-    mvprintw(12, 0, "HP:%d/%d", cur_pokemon.get_curr_hp(), cur_pokemon.get_hp());
+    mvprintw(10, 35, "%s", cur_pokemon->get_name().c_str());
+    mvprintw(11, 40, ":L%d", cur_pokemon->get_level());
+    mvprintw(12, 0, "HP:%d/%d", cur_pokemon->get_curr_hp(), cur_pokemon->get_hp());
 
 
     mvprintw(15, 5, "1. Fight");

@@ -33,6 +33,7 @@ private:
     int poke_id;
     int poke_species_id;
     int level;
+    int base_stats[6];
     int stats[6];
     int iv[6];
     bool shiny;

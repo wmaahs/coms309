@@ -131,7 +131,7 @@ void gen_pokemon()
 
             Pokemon new_poke(pokemon[new_poke_id]);
             new_poke.levelup();
-            io_battle_wild_pokemon(new_poke);
+            io_battle_wild_pokemon(&new_poke);
             return;
         }
     }

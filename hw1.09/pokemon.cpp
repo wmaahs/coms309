@@ -73,6 +73,9 @@ Pokemon::Pokemon(pokemon_db new_poke)
         }
     }
 
+    //assign curr hp
+    curr_hp = stats[hp];
+
     //IV's
     for(i = 0; i < 6; i++) {
         iv[i] = rand() % 16;

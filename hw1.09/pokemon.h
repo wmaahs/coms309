@@ -36,6 +36,7 @@ private:
     int stats[6];
     int iv[6];
     bool shiny;
+    int curr_hp;
     move_db moves[2];
     std::vector<simple_move_t> total_moves;
     gender_t poke_gender;
@@ -49,6 +50,7 @@ public:
     int get_species_id(){return poke_species_id;}
     int get_level(){return level;}
     int get_hp(){return stats[hp];}
+    int get_curr_hp(){return curr_hp;}
     int get_attack(){return stats[attack];}
     int get_defense(){return stats[defense];}
     int get_speed(){return stats[speed];}

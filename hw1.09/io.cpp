@@ -497,7 +497,8 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
 */
 void io_battle_wild_pokemon(Pokemon wild_pokemon)
 {
-
+  bool battle_over = false;
+  int key;
   clear();
   mvprintw(0, 0, "You have encountered a wild %s (Level %d)", wild_pokemon.get_name().c_str(), wild_pokemon.get_level());
   mvprintw(3, 10, "HP: %d", wild_pokemon.get_hp());
@@ -511,20 +512,34 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
   getch();
 
   //Initial battle screen
-  clear();
+  while(!(battle_over)){
+    clear();
 
-  mvprintw(0, 1, "%s", wild_pokemon.get_name().c_str());
-  mvprintw(1, 6, ":L%d", wild_pokemon.get_level());
+    mvprintw(0, 1, "%s", wild_pokemon.get_name().c_str());
+    mvprintw(1, 6, ":L%d", wild_pokemon.get_level());
 
-  mvprintw(10, 35, "%s", world.pc.roster.at(0).get_name().c_str());
-  mvprintw(11, 40, ":L%d", world.pc.roster.at(0).get_level());
+    mvprintw(10, 35, "%s", world.pc.roster.at(0).get_name().c_str());
+    mvprintw(11, 40, ":L%d", world.pc.roster.at(0).get_level());
 
-  mvprintw(15, 5, "1. Fight");
-  mvprintw(17, 5, "2. Bag");
-  mvprintw(19, 5, "3. Run");
-  mvprintw(21, 5, "4. Pokemon");
+    mvprintw(15, 5, "1. Fight");
+    mvprintw(17, 5, "2. Bag");
+    mvprintw(19, 5, "3. Run");
+    mvprintw(21, 5, "4. Pokemon");
+    refresh();
+    key = getch();
 
-  
+    switch(key){
+      case '1':
+        break;
+      case '2':
+        break;
+      case '3':
+        break;
+      case '4':
+        break;
+    }
+    
+  }
   
 }
 

@@ -80,7 +80,7 @@ Pokemon::Pokemon(pokemon_db new_poke)
     stats[3] = base_stats[3];
     stats[4] = base_stats[4];
     stats[5] = base_stats[5];
-    
+
     //assign curr hp
     curr_hp = stats[hp];
 
@@ -110,11 +110,13 @@ Pokemon::Pokemon(pokemon_db new_poke)
  * Function used to level up the stats of a pokemon, given its current level
 */
 void Pokemon::levelup(){
-    stats[hp] = ((((stats[hp] + iv[hp]) * 2) * level)/100) + level + 10;
+    stats[hp] = ((((base_stats[hp] + iv[hp]) * 2) * level)/100) + level + 10;
     int i;
     for(i = 1; i < 6; i++){
-        stats[i] = ((((stats[i] + iv[i]) * 2) * level)/100) + 5;
+        stats[i] = ((((base_stats[i] + iv[i]) * 2) * level)/100) + 5;
     }
+
+    curr_hp = stats[hp];
 }
 
 /**

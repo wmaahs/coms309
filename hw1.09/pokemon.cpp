@@ -67,12 +67,20 @@ Pokemon::Pokemon(pokemon_db new_poke)
     } while((!(total_moves[random_move].level <= level)) && (moves[0].id != moves[1].id));
 
     //get basic stats
-    for(i = 0; i < NUM_POKE_STATS; i++) {
-        if(poke_species_id == pokemon_stats[i].pokemon_id) {
-            stats[pokemon_stats[i].stat_id -1] = pokemon_stats[i].base_stat;
-        }
-    }
+    base_stats[0] = pokemon_stats[poke_species_id * 6 - 5].base_stat;
+    base_stats[1] = pokemon_stats[poke_species_id * 6 - 4].base_stat;
+    base_stats[2] = pokemon_stats[poke_species_id * 6 - 3].base_stat;
+    base_stats[3] = pokemon_stats[poke_species_id * 6 - 2].base_stat;
+    base_stats[4] = pokemon_stats[poke_species_id * 6 - 1].base_stat;
+    base_stats[5] = pokemon_stats[poke_species_id * 6 - 0].base_stat;
 
+    stats[0] = base_stats[0];
+    stats[1] = base_stats[1];
+    stats[2] = base_stats[2];
+    stats[3] = base_stats[3];
+    stats[4] = base_stats[4];
+    stats[5] = base_stats[5];
+    
     //assign curr hp
     curr_hp = stats[hp];
 

@@ -722,6 +722,12 @@ void io_select_starter()
 
 }
 
+/* Add this function to display the bag (check if bag class works) */
+// void io_display_bag(){
+
+
+// }
+
 void io_handle_input(pair_t dest)
 {
   uint32_t turn_not_consumed;
@@ -801,6 +807,11 @@ void io_handle_input(pair_t dest)
       io_teleport_world(dest);
       turn_not_consumed = 0;
       break;    
+    case 'B':
+      /* View the pc's bag */
+
+      turn_not_consumed = 1;
+      break;
     case 'q':
       /* Demonstrate use of the message queue.  You can use this for *
        * printf()-style debugging (though gdb is probably a better   *

@@ -3,7 +3,7 @@
 #include <ncurses.h>
 
 
-int battle_fight(Pokemon enemy, Pokemon pc_pokemon)
+void battle_fight(Pokemon enemy, Pokemon pc_pokemon)
 {
     int enemy_move;
     int key;
@@ -18,8 +18,8 @@ int battle_fight(Pokemon enemy, Pokemon pc_pokemon)
     move(21, 0);
     clrtoeol();
 
-    mvprintw(17, 0, "1. %s", pc_pokemon.get_all_moves().at(0));
-    mvprintw(19, 0, "2. %s", pc_pokemon.get_all_moves().at(1));
+    mvprintw(17, 0, "1. %s", pc_pokemon.get_move(0).identifier);
+    mvprintw(19, 0, "2. %s", pc_pokemon.get_move(1).identifier);
     refresh();
 
     key = getch();
@@ -37,12 +37,6 @@ int battle_fight(Pokemon enemy, Pokemon pc_pokemon)
         
     }
 
-    if(pc_pokemon.get_curr_hp() < 1){
-        return 1;
-    }
-    if(enemy.get_curr_hp() < 1) {
-        return 0;
-    }
-
+    return;
 }
 

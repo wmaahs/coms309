@@ -3,6 +3,6 @@
 
 #include "pokemon.h"
 
-int battle_fight(Pokemon enemy, Pokemon pc_pokemon);
+void battle_fight(Pokemon enemy, Pokemon pc_pokemon);
 
 #endif

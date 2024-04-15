@@ -57,6 +57,7 @@ public:
     int get_special_attk(){return stats[special_attk];}
     int get_special_def(){return stats[special_def];}
     std::string get_name(){return name;}
+    move_db get_move(int ind){return moves[ind];}
     std::vector<simple_move_t> get_all_moves(){return total_moves;}
     gender_t get_gender(){return poke_gender;}
     bool is_shiny(){return shiny;}

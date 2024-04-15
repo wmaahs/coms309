@@ -38,7 +38,7 @@ private:
     std::vector<revive_t> revives;
     std::vector<potion_t> potions;
 public:
-    Bag() {};
+    Bag();
 
     std::vector<pokeball_t> get_pokeballs(){return pokeballs;}
     std::vector<revive_t> get_revives(){return revives;}

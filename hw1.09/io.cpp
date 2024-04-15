@@ -539,7 +539,7 @@ void io_battle_wild_pokemon(Pokemon wild_pokemon)
       case '1':
         //fight
         battle_fight(wild_pokemon, cur_pokemon);
-        battle_over = 1;
+        battle_over = true;
         break;
       case '2':
         break;

@@ -911,7 +911,7 @@ void init_pc()
 {
   int x, y;
 
-  Bag pc_bag();
+  Bag pc_bag;
   do {
     x = rand() % (MAP_X - 2) + 1;
     y = rand() % (MAP_Y - 2) + 1;
@@ -926,7 +926,7 @@ void init_pc()
 
   world.pc.seq_num = world.char_seq_num++;
 
-  world.pc.trainer_bag = &pc_bag();
+  world.pc.trainer_bag = &pc_bag;
   
   heap_insert(&world.cur_map->turn, &world.pc);
 }

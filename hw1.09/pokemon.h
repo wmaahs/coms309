@@ -65,7 +65,7 @@ public:
     gender_t get_gender(){return poke_gender;}
     bool is_shiny(){return shiny;}
 
-    void set_curr_hp(int new_hp){curr_hp = new_hp;}
+    void set_curr_hp(int new_hp){curr_hp = (new_hp<0)? 0 :new_hp;}
 };
 
 

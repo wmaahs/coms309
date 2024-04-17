@@ -83,6 +83,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                         pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
                         if(pc_pokemon->get_curr_hp() <= 0)
                         {
+                            move(12, 0);
+                            clrtoeol();
                             mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
                             move(23, 0);
                             clrtoeol();
@@ -91,6 +93,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                             getch();
                             return;
                         }
+                        move(12, 0);
+                        clrtoeol();
                         mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
                         refresh();
                         getch();
@@ -114,6 +118,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                         enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
                         if(enemy->get_curr_hp() <= 0)
                         {
+                            move(2, 0);
+                            clrtoeol();
                             mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
                             move(23, 0);
                             clrtoeol();
@@ -122,6 +128,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                             getch();
                             return;
                         }
+                        move(2, 0);
+                        clrtoeol();
                         mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
                         refresh();
                         getch();
@@ -148,6 +156,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                         enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
                         if(enemy->get_curr_hp() <= 0)
                         {
+                            move(2, 0);
+                            clrtoeol();
                             mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
                             move(23, 0);
                             clrtoeol();
@@ -156,6 +166,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                             getch();
                             return;
                         }
+                        move(2, 0);
+                        clrtoeol();
                         mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
                         refresh();
                         getch();
@@ -179,6 +191,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                         pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
                         if(pc_pokemon->get_curr_hp() <= 0)
                         {
+                            move(12, 0);
+                            clrtoeol();
                             mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
                             move(23, 0);
                             clrtoeol();
@@ -187,6 +201,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                             getch();
                             return;
                         }
+                        move(12, 0);
+                        clrtoeol();
                         mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
                         refresh();
                         getch();

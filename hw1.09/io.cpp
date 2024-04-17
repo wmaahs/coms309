@@ -545,6 +545,8 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         }
         if(cur_pokemon->get_curr_hp() <= 0)
         {
+          move(23, 0);
+          clrtoeol();
           mvprintw(23, 0, "Your pokemon has fainted; revive it, select a new one, or run");
           refresh();
           getch();
@@ -582,7 +584,7 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         break;
       case '4':
         //switch pokemon
-        
+
         break;
     }
     

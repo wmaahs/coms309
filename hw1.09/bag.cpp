@@ -44,7 +44,7 @@ void Bag::open_bag()
     attron(COLOR_PAIR(COLOR_YELLOW));
     mvprintw(0, 37, "BAG");
     attroff(COLOR_PAIR(COLOR_YELLOW));
-    
+
     attron(COLOR_PAIR(COLOR_CYAN));
     mvprintw(1, 0, "1. Pokeballs (%d)", (int) pokeballs.size());
     attroff(COLOR_PAIR(COLOR_CYAN));
@@ -159,21 +159,24 @@ void Bag::open_revives()
     mvprintw(0, 33, "REVIVES (%d)",(int) revives.size());
     attroff(COLOR_PAIR(COLOR_GREEN));
 
-    for(i = 0; i <(int) revives.size(); i++)
+    for(i = 0; i < (int) revives.size(); i++)
     {
         curr_revive = revives.at(i);
         if(curr_revive.type == common)
         {
-
             mvprintw(i, 5, "%d - Common", i);
         }
-        if(curr_revive.type == rare)
+        else if(curr_revive.type == rare)
         {
             mvprintw(i, 5, "%d - Rare", i);
         }
-        if(curr_revive.type == ultra)
+        else if(curr_revive.type == ultra)
         {
             mvprintw(i, 5, "%d - Ultra", i);
+        }
+        else
+        {
+            mvprintw(i, 5, "oops");
         }
     }
     refresh();

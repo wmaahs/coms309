@@ -417,7 +417,7 @@ void io_battle(character *aggressor, character *defender)
 
 uint32_t move_pc_dir(uint32_t input, pair_t dest)
 {
-  // TODO: Change the call to spawn_pokemon() to outside this function
+
   dest[dim_y] = world.pc.pos[dim_y];
   dest[dim_x] = world.pc.pos[dim_x];
 
@@ -542,10 +542,16 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         battle_over = true;
         break;
       case '2':
+        //open bag
+        world.pc.trainer_bag->open_bag();
         break;
       case '3':
+        //attempt to run
+
         break;
       case '4':
+        //switch pokemon
+
         break;
     }
     
@@ -601,6 +607,7 @@ void io_select_starter()
   int i;
   for(i = 0; i < 3; i++) {
     Pokemon new_poke(pokemon[((rand() % 1092) + 1)]);
+    new_poke.levelup();
     starters.push_back(new_poke);
   }
 
@@ -809,7 +816,7 @@ void io_handle_input(pair_t dest)
       break;    
     case 'B':
       /* View the pc's bag */
-
+      world.pc.trainer_bag->open_bag();
       turn_not_consumed = 1;
       break;
     case 'q':

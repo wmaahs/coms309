@@ -66,6 +66,8 @@ Pokemon::Pokemon(pokemon_db new_poke)
         moves[1].id = total_moves[rand() % total_moves.size()].move_id;
     } while((!(total_moves[random_move].level <= level)) && (moves[0].id != moves[1].id));
 
+    /* add the rest of the move info to the move */
+
     //get basic stats
     base_stats[0] = pokemon_stats[poke_species_id * 6 - 5].base_stat;
     base_stats[1] = pokemon_stats[poke_species_id * 6 - 4].base_stat;

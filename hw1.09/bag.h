@@ -47,6 +47,14 @@ public:
     void add_pokeball(pokeball_t pokeball) {pokeballs.push_back(pokeball);}
     void add_revive(revive_t revive) {revives.push_back(revive);}
     void add_potion(potion_t potion) {potions.push_back(potion);}
+    pokeball_t use_pokeball(int index);
+    revive_t use_revive(int index);
+    potion_t use_potion(int index);
+
+    void open_bag();
+    void open_pokeballs();
+    void open_revives();
+    void open_potions();
 };
 
 #endif /* BAG_H */

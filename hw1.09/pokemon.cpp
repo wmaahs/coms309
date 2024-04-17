@@ -71,7 +71,7 @@ Pokemon::Pokemon(pokemon_db new_poke)
         {
             learned_moves[0] = moves[i];
         }
-        if(learned_moves[1].id == moves[i].id)
+        else if(learned_moves[1].id == moves[i].id)
         {
             learned_moves[1] = moves[i];
         }

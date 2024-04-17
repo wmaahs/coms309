@@ -57,17 +57,26 @@ Pokemon::Pokemon(pokemon_db new_poke)
     int random_move;
     do {
         random_move = rand() % total_moves.size();
-        moves[0].id = total_moves[random_move].move_id;
+        learned_moves[0].id = total_moves[random_move].move_id;
     } while(!(total_moves[random_move].level <= level));
 
     //randomly select second move that isn't first move
     do {
         random_move = rand() % total_moves.size();
-        moves[1].id = total_moves[rand() % total_moves.size()].move_id;
+        learned_moves[1].id = total_moves[rand() % total_moves.size()].move_id;
     } while((!(total_moves[random_move].level <= level)) && (moves[0].id != moves[1].id));
 
+    for(i = 0; i < NUM_MOVES; i++) {
+        if(learned_moves[0].id == moves[i].id)
+        {
+            learned_moves[0] = moves[i];
+        }
+        if(learned_moves[1].id == moves[i].id)
+        {
+            learned_moves[1] = moves[i];
+        }
+    }
     /* add the rest of the move info to the move */
-
     //get basic stats
     base_stats[0] = pokemon_stats[poke_species_id * 6 - 5].base_stat;
     base_stats[1] = pokemon_stats[poke_species_id * 6 - 4].base_stat;

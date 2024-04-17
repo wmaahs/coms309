@@ -543,7 +543,7 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         break;
       case '2':
         //open bag
-        world.pc.trainer_bag->open_bag();
+        world.pc.trainer_bag.open_bag();
         break;
       case '3':
         //attempt to run
@@ -816,7 +816,7 @@ void io_handle_input(pair_t dest)
       break;    
     case 'B':
       /* View the pc's bag */
-      world.pc.trainer_bag->open_bag();
+      world.pc.trainer_bag.open_bag();
       turn_not_consumed = 1;
       break;
     case 'q':

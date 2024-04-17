@@ -38,7 +38,7 @@ private:
     int iv[6];
     bool shiny;
     int curr_hp;
-    move_db moves[2];
+    move_db learned_moves[2];
     std::vector<simple_move_t> total_moves;
     gender_t poke_gender;
 

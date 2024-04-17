@@ -92,10 +92,10 @@ void Bag::open_pokeballs()
     }
     
     attron(COLOR_PAIR(COLOR_CYAN));
-    mvprintw(0, 33, "POKEBALLS (%d)", pokeballs.size());
+    mvprintw(0, 33, "POKEBALLS (%d)",(int) pokeballs.size());
     attroff(COLOR_PAIR(COLOR_CYAN));
 
-    for(i = 0; i < pokeballs.size(); i++)
+    for(i = 0; i < (int) pokeballs.size(); i++)
     {
         curr_pokeball = pokeballs.at(i);
         if(curr_pokeball.type == common)
@@ -129,10 +129,10 @@ void Bag::open_revives()
     }
 
     attron(COLOR_PAIR(COLOR_GREEN));
-    mvprintw(0, 33, "REVIVES (%d)", revives.size());
+    mvprintw(0, 33, "REVIVES (%d)",(int) revives.size());
     attroff(COLOR_PAIR(COLOR_GREEN));
 
-    for(i = 0; i < revives.size(); i++)
+    for(i = 0; i <(int) revives.size(); i++)
     {
         curr_revive = revives.at(i);
         if(curr_revive.type == common)
@@ -166,10 +166,10 @@ void Bag::open_potions()
     }
 
     attron(COLOR_PAIR(COLOR_RED));
-    mvprintw(0, 33, "POTIONS (%d)", potions.size());
+    mvprintw(0, 33, "POTIONS (%d)",(int) potions.size());
     attroff(COLOR_PAIR(COLOR_RED));
 
-    for(i = 0; i < potions.size(); i++)
+    for(i = 0; i < (int) potions.size(); i++)
     {
         curr_potion = potions.at(i);
         if(curr_potion.type == common)

@@ -38,24 +38,51 @@ Bag::Bag()
 void Bag::open_bag()
 {
     int key;
+    bool option_selected = false;
     clear();
+
+    attron(COLOR_PAIR(COLOR_YELLOW));
+    mvprintw(0, 37, "BAG");
+    attroff(COLOR_PAIR(COLOR_YELLOW));
+    
+    attron(COLOR_PAIR(COLOR_CYAN));
     mvprintw(1, 0, "1. Pokeballs (%d)", (int) pokeballs.size());
+    attroff(COLOR_PAIR(COLOR_CYAN));
+
+    attron(COLOR_PAIR(COLOR_GREEN));
     mvprintw(3, 0, "2. Revives (%d)", (int) revives.size());
+    attroff(COLOR_PAIR(COLOR_GREEN));
+
+    attron(COLOR_PAIR(COLOR_RED));
     mvprintw(5, 0, "3. Potions (%d)", (int) potions.size());
+    attroff(COLOR_PAIR(COLOR_RED));
+
     refresh();
 
-    key = getch();
-    switch (key)
+    while(!option_selected)
     {
-    case '1':
-        
-        break;
-    case '2':
-        break;
-    case '3':
-        break;
-    default:
-        break;
+        key = getch();
+        switch (key)
+        {
+        case '1':
+            this->open_pokeballs();
+            option_selected = true;
+            break;
+        case '2':
+            this->open_revives();
+            option_selected = true;
+            break;
+        case '3':
+            this->open_potions();
+            option_selected = true;
+            break;
+        case '4':
+            return;
+        default:
+            mvprintw(0, 1, "Select 1, 2, 3, or 4");
+            refresh();
+            break;
+        }
     }
 }
 

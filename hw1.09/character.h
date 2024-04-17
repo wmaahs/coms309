@@ -42,7 +42,7 @@ class character {
   int next_turn;
   int seq_num;
   std::vector<Pokemon> roster;
-  Bag *trainer_bag;
+  Bag trainer_bag;
 };
 
 class npc : public character {
@@ -55,6 +55,7 @@ class npc : public character {
 
 class pc : public character {
 public:
+
 };
 
 /* character is defined in poke327.h to allow an instance of character

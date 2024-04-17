@@ -38,6 +38,7 @@ private:
     int iv[6];
     bool shiny;
     int curr_hp;
+    int type_id;
     move_db learned_moves[2];
     std::vector<simple_move_t> total_moves;
     gender_t poke_gender;
@@ -57,11 +58,14 @@ public:
     int get_speed(){return stats[speed];}
     int get_special_attk(){return stats[special_attk];}
     int get_special_def(){return stats[special_def];}
+    int get_type(){return type_id;}
     std::string get_name(){return name;}
     move_db get_move(int ind){return learned_moves[ind];}
     std::vector<simple_move_t> get_all_moves(){return total_moves;}
     gender_t get_gender(){return poke_gender;}
     bool is_shiny(){return shiny;}
+
+    void set_curr_hp(int new_hp){curr_hp = new_hp;}
 };
 
 

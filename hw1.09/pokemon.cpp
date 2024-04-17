@@ -95,6 +95,13 @@ Pokemon::Pokemon(pokemon_db new_poke)
     //assign curr hp
     curr_hp = stats[hp];
 
+    //type_id
+    for(i = 0; i < NUM_POKE_TYPES; i++)
+    {
+        if(poke_species_id == pokemon_types[i].pokemon_id){
+            type_id = pokemon_types[i].type_id;
+        }
+    }
     //IV's
     for(i = 0; i < 6; i++) {
         iv[i] = rand() % 16;

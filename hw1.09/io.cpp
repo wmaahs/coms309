@@ -539,7 +539,16 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
       case '1':
         //fight
         battle_fight(wild_pokemon, cur_pokemon);
-        battle_over = true;
+        if(wild_pokemon->get_curr_hp() <= 0)
+        {
+          battle_over = 1;
+        }
+        if(cur_pokemon->get_curr_hp() <= 0)
+        {
+          mvprintw(23, 0, "Your pokemon has fainted; revive it, select a new one, or run");
+          refresh();
+          getch();
+        }
         break;
       case '2':
         //open bag
@@ -547,11 +556,33 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         break;
       case '3':
         //attempt to run
-
+        move(23, 0);
+        clrtoeol();
+        mvprintw(23, 0, "You are attempting to flee...");
+        refresh();
+        getch();
+        if(rand() % 100 <= 33)
+        {
+          move(23, 0);
+          clrtoeol();
+          mvprintw(23, 0, "You got away");
+          refresh();
+          getch();
+          battle_over = 1;
+        }
+        /* TODO: enemy gets to attack if failed to flee */
+        else
+        {
+          move(23, 0);
+          clrtoeol();
+          mvprintw(23, 0, "Your attempt to flee was unsuccesful...");
+          refresh();
+          getch();
+        }
         break;
       case '4':
         //switch pokemon
-
+        
         break;
     }
     

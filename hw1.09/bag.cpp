@@ -188,7 +188,7 @@ void Bag::open_revives()
     revive_t curr_revive;
     revive_t selected_revive;
     bool revive_selected = false;
-    bool pokemon_selected
+    bool pokemon_selected = false;
     clear();
     if(revives.empty()){
         mvprintw(0, 1, "You do not have any Revives left!");
@@ -678,7 +678,7 @@ void Bag::open_potions()
                 switch(key)
                 {
                     case '1':
-                        world.pc.roster[0].set_curr_hp(world.pc.roster[0].get_curr_hp() + selected_revive.heal);
+                        world.pc.roster[0].set_curr_hp(world.pc.roster[0].get_curr_hp() + selected_potion.heal);
                         move(21, 0);
                         clrtoeol();
                         mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[0].get_name().c_str(), world.pc.roster[0].get_curr_hp());
@@ -690,7 +690,7 @@ void Bag::open_potions()
                     case '2':
                         if((int) world.pc.roster.size() > 1)
                         {
-                            world.pc.roster[1].set_curr_hp(world.pc.roster[1].get_curr_hp() + selected_revive.heal);
+                            world.pc.roster[1].set_curr_hp(world.pc.roster[1].get_curr_hp() + selected_potion.heal);
                             move(21, 0);
                             clrtoeol();
                             mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[1].get_name().c_str(), world.pc.roster[1].get_curr_hp());
@@ -712,7 +712,7 @@ void Bag::open_potions()
                     case '3':
                         if((int) world.pc.roster.size() > 2)
                         {
-                            world.pc.roster[2].set_curr_hp(world.pc.roster[2].get_curr_hp() + selected_revive.heal);
+                            world.pc.roster[2].set_curr_hp(world.pc.roster[2].get_curr_hp() + selected_potion.heal);
                             move(21, 0);
                             clrtoeol();
                             mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[2].get_name().c_str(), world.pc.roster[2].get_curr_hp());
@@ -734,7 +734,7 @@ void Bag::open_potions()
                     case '4':
                         if((int) world.pc.roster.size() > 3)
                         {
-                            world.pc.roster[3].set_curr_hp(world.pc.roster[3].get_curr_hp() + selected_revive.heal);
+                            world.pc.roster[3].set_curr_hp(world.pc.roster[3].get_curr_hp() + selected_potion.heal);
                             move(21, 0);
                             clrtoeol();
                             mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[3].get_name().c_str(), world.pc.roster[3].get_curr_hp());
@@ -756,7 +756,7 @@ void Bag::open_potions()
                     case '5':
                         if((int) world.pc.roster.size() > 4)
                         {
-                            world.pc.roster[4].set_curr_hp(world.pc.roster[4].get_curr_hp() + selected_revive.heal);
+                            world.pc.roster[4].set_curr_hp(world.pc.roster[4].get_curr_hp() + selected_potion.heal);
                             move(21, 0);
                             clrtoeol();
                             mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[4].get_name().c_str(), world.pc.roster[4].get_curr_hp());
@@ -778,7 +778,7 @@ void Bag::open_potions()
                     case '6':
                         if((int) world.pc.roster.size() > 5)
                         {
-                            world.pc.roster[5].set_curr_hp(world.pc.roster[5].get_curr_hp() + selected_revive.heal);
+                            world.pc.roster[5].set_curr_hp(world.pc.roster[5].get_curr_hp() + selected_potion.heal);
                             move(21, 0);
                             clrtoeol();
                             mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[5].get_name().c_str(), world.pc.roster[5].get_curr_hp());

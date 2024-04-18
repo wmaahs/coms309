@@ -557,7 +557,7 @@ void io_battle(character *aggressor, character *defender)
         break;
       case '2':
         //open bag
-        world.pc.trainer_bag.open_bag(true, active_enemy_pokemon);
+        battle_over = world.pc.trainer_bag.open_bag(true, active_enemy_pokemon);
         break;
       case '3':
         //attempt to run
@@ -732,7 +732,7 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         break;
       case '2':
         //open bag
-        world.pc.trainer_bag.open_bag(false, wild_pokemon);
+        battle_over = world.pc.trainer_bag.open_bag(false, wild_pokemon);
         break;
       case '3':
         //attempt to run
@@ -951,6 +951,7 @@ void io_select_starter()
 void io_handle_input(pair_t dest)
 {
   uint32_t turn_not_consumed;
+  bool turn_con;
   int key;
 
   do {
@@ -1029,8 +1030,16 @@ void io_handle_input(pair_t dest)
       break;    
     case 'B':
       /* View the pc's bag */
-      world.pc.trainer_bag.open_bag(true, &world.pc.roster[0]);
-      turn_not_consumed = 1;
+      turn_con = world.pc.trainer_bag.open_bag(true, &world.pc.roster[0]);
+      if(turn_con)
+      {
+
+        turn_not_consumed = 1;
+      }
+      else
+      {
+        turn_not_consumed = 0;
+      }
       break;
     case 'q':
       /* Demonstrate use of the message queue.  You can use this for *

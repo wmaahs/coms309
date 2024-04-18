@@ -74,7 +74,7 @@ Bag::Bag()
     }
 }
 
-void Bag::open_bag(bool trainer_battle, Pokemon *enemy)
+bool Bag::open_bag(bool trainer_battle, Pokemon *enemy)
 {
     int key;
     bool option_selected = false;
@@ -108,6 +108,7 @@ void Bag::open_bag(bool trainer_battle, Pokemon *enemy)
             {
                 this->open_pokeballs(enemy);
                 option_selected = true;
+                return true;
             }
             else
             {
@@ -137,6 +138,7 @@ void Bag::open_bag(bool trainer_battle, Pokemon *enemy)
             break;
         }
     }
+    return false;
 }
 
 pokeball_t Bag::use_pokeball(int index)

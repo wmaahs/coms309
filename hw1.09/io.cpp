@@ -631,13 +631,13 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         }
         if(cur_pokemon->get_curr_hp() <= 0)
         {
-          for(i = 0; i < world.pc.roster.size(); i++)
+          for(i = 0; i < (int) world.pc.roster.size(); i++)
           {
             if(world.pc.roster[i].get_curr_hp() >= 0)
             {
               break;
             }
-            if(i == world.pc.roster.size() -1)
+            if(i == (int) world.pc.roster.size() -1)
             {
               move(23, 0);
               clrtoeol();

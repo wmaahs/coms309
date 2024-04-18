@@ -657,10 +657,10 @@ void Bag::open_potions()
     {
         mvprintw(22, 0, "You have selected to use potion %d", key);
         if((int) world.pc.roster.size() == 1){
-            world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_potion.heal);
+            world.pc.roster[0].set_curr_hp(world.pc.roster[0].get_curr_hp() + selected_potion.heal);
             move(21, 0);
             clrtoeol();
-            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[key].get_name().c_str(), world.pc.roster[key].get_curr_hp());
+            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[0].get_name().c_str(), world.pc.roster[0].get_curr_hp());
             move(22, 0);
             clrtoeol();
             refresh();

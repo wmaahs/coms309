@@ -413,7 +413,7 @@ void io_battle(character *aggressor, character *defender)
     {
       for(i = 0; i < (int) n->roster.size(); i++)
       {
-        if(n->roster[i].get_curr_hp() >= 0)
+        if(n->roster[i].get_curr_hp() > 0)
         {
           active_enemy_pokemon = &n->roster[i];
           break;
@@ -494,7 +494,8 @@ void io_battle(character *aggressor, character *defender)
         break;
       case '4':
         //switch pokemon
-
+        *active_pokemon = select_pokemon();
+        enemy_free_attack(active_enemy_pokemon, active_pokemon);
         break;
     }
     
@@ -682,11 +683,13 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
           mvprintw(23, 0, "Your attempt to flee was unsuccesful...");
           refresh();
           getch();
+          enemy_free_attack(wild_pokemon, cur_pokemon);
         }
         break;
       case '4':
         //switch pokemon
-
+        *cur_pokemon = select_pokemon();
+        enemy_free_attack(wild_pokemon, cur_pokemon);
         break;
     }
     

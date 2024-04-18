@@ -1,4 +1,4 @@
-
+#include "poke327.h"
 #include "battle.h"
 #include <ncurses.h>
 
@@ -22,12 +22,12 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
     else{
         stab = 1.0;
     }
-    if(rand() % 2 == 0)
+    if(rand() % 255 < (attacker.get_speed()/2))
     {
-        critical_hit = 1;
+        critical_hit = 1.5;
     }
     else{
-        critical_hit = 1.5;
+        critical_hit = 1;
     }
     damage = (((((2.0*attacker.get_level()) / 5.0) + 2.0) *
     move.power * (attacker.get_attack()/defender.get_defense())/50.0) + 2.0) * 
@@ -385,4 +385,173 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
 
     return;
 }
+
+/**
+ * This is called whenever the PC tries to run, use an item, or switch pokemon.
+ * Therefore the PC is using its action to do one of the previously mentioned actions,
+ * so the enemy gets to attack the PC for free
+*/
+void enemy_free_attack(Pokemon *enemy, Pokemon *pc_pokemon)
+{
+    int enemy_move = rand() % 2;
+
+    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
+    {
+        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
+        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
+        refresh();
+        getch();
+        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
+        if(pc_pokemon->get_curr_hp() <= 0)
+        {
+            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
+            move(23, 0);
+            clrtoeol();
+            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
+            refresh();
+            getch();
+            return;
+        }
+        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
+        refresh();
+        getch();
+    }
+    //enemy miss
+    else
+    {
+        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
+        refresh();
+        getch();
+    }
+}
+
+Pokemon select_pokemon()
+{
+    int i, key;
+    bool pokemon_selected = false;
+    Pokemon new_pokemon;
+    clear();
+
+    attron(COLOR_PAIR(COLOR_CYAN));
+    mvprintw(0, 33, "POKEMON");
+    attroff(COLOR_PAIR(COLOR_CYAN));
+
+    for(i = 0; i < world.pc.roster.size(); i++)
+    {
+        mvprintw(i+3, 5, "%d, -- %s", i+1, world.pc.roster[i].get_name().c_str());
+    }
+    mvprintw(0, 0, "Select a pokemon from your roster");
+    refresh();
+
+    while(!pokemon_selected)
+    {
+        key = getch();
+        switch(key)
+        {
+           case '1':
+                if(world.pc.roster[0].get_curr_hp() > 0)
+                {
+                    new_pokemon = world.pc.roster[0];
+                    pokemon_selected = true;
+                }
+                else
+                {
+                    mvprintw(22, 0, "This pokemon has fainted");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '2':
+                if(((int) world.pc.roster.size() > 1) && (world.pc.roster[1].get_curr_hp()))
+                {
+                    new_pokemon = world.pc.roster[0];
+                    pokemon_selected = true;
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 1 Pokemon, or this pokemon has fainted");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '3':
+                if(((int) world.pc.roster.size() > 2) && (world.pc.roster[2].get_curr_hp()))
+                {
+                    new_pokemon = world.pc.roster[2];
+                    pokemon_selected = true;
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 2 Pokemon, or this pokemon has fainted");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '4':
+                if(((int) world.pc.roster.size() > 3) && (world.pc.roster[3].get_curr_hp() > 0))
+                {
+                    new_pokemon = world.pc.roster[3];
+                    pokemon_selected = true;
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 3 Pokemon, or this pokemon has fainted");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '5':
+                if(((int) world.pc.roster.size() > 4) && (world.pc.roster[4].get_curr_hp() > 0))
+                {
+                    new_pokemon = world.pc.roster[4];
+                    pokemon_selected = true;
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 4 Pokemon, or this pokemon has fainted");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '6':
+                if(((int) world.pc.roster.size() > 5) && (world.pc.roster[5].get_curr_hp() > 0))
+                {
+                    new_pokemon = world.pc.roster[5];
+                    pokemon_selected = true;
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 5 Pokemon, or this pokemon has fainted");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            default:
+                mvprintw(21, 0, "Use the number keys to select a pokemon");
+                refresh();
+                break; 
+        }
+    }
+    return new_pokemon;
+}
+
+
 

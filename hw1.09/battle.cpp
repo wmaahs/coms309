@@ -402,11 +402,11 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
 void enemy_free_attack(Pokemon *enemy, Pokemon *pc_pokemon)
 {
     int enemy_move = rand() % 2;
-
+    double enemy_damage;
     if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
     {
         enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
+        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, (int) enemy_damage);
         refresh();
         getch();
         pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
@@ -444,7 +444,7 @@ Pokemon select_pokemon()
     mvprintw(0, 33, "POKEMON");
     attroff(COLOR_PAIR(COLOR_CYAN));
 
-    for(i = 0; i < world.pc.roster.size(); i++)
+    for(i = 0; i < (int) world.pc.roster.size(); i++)
     {
         mvprintw(i+3, 5, "%d, -- %s", i+1, world.pc.roster[i].get_name().c_str());
     }

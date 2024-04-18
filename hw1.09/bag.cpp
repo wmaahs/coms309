@@ -224,9 +224,8 @@ void Bag::open_revives()
     refresh();
 
 
-    while((key != 27) || (!revive_selected))
+    while((key != 27) && (!revive_selected))
     {
-        key = getch();
         key = getch();
         //'1' = int 50, not 1..
         switch(key)
@@ -509,7 +508,7 @@ void Bag::open_potions()
     }
     refresh();
 
-    while((key != 27) || (!potion_selected))
+    while((key != 27) && (!potion_selected))
     {
         key = getch();
         switch(key)

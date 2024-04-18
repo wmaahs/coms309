@@ -14,6 +14,14 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
     double random;
     double critical_hit;
     double stab;
+    int power;
+    if(move.power == INT32_MAX)
+    {
+        power = 1;
+    }
+    else{
+        power = move.power;
+    }
     random = random_in_range(0.85, 1.00);
     if(attacker.get_type() == move.type_id)
     {
@@ -30,7 +38,7 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
         critical_hit = 1;
     }
     damage = (((((2.0*attacker.get_level()) / 5.0) + 2.0) *
-    move.power * (attacker.get_attack()/defender.get_defense())/50.0) + 2.0) * 
+    power * (attacker.get_attack()/defender.get_defense())/50.0) + 2.0) * 
     critical_hit * random * stab;
 
     return damage;

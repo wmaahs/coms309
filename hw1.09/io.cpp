@@ -438,7 +438,7 @@ void io_battle(character *aggressor, character *defender)
     {
       for(i = 0; i < (int) world.pc.roster.size(); i++)
       {
-        if(world.pc.roster[i].get_curr_hp() >= 0)
+        if((world.pc.roster[i].get_curr_hp() > 0))
         {
           break;
         }

@@ -112,6 +112,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     if(rand() % 100 <= pc_pokemon->get_move(0).accuracy)
                     {
                         pc_damage = calculate_damage(pc_pokemon->get_move(0), *pc_pokemon, *enemy);
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(0).identifier, pc_damage);
                         refresh();
                         getch();
@@ -150,6 +152,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     if(rand() % 100 <= pc_pokemon->get_move(0).accuracy)
                     {
                         pc_damage = calculate_damage(pc_pokemon->get_move(0), *pc_pokemon, *enemy);
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(0).identifier, pc_damage);
                         refresh();
                         getch();
@@ -175,6 +179,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     //pc miss
                     else
                     {
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(0).identifier);
                         refresh();
                         getch();
@@ -185,6 +191,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
                     {
                         enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
                         refresh();
                         getch();
@@ -210,6 +218,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     //enemy miss
                     else
                     {
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
                         refresh();
                         getch();
@@ -229,6 +239,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
                     {
                         enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
                         refresh();
                         getch();
@@ -250,6 +262,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     //enemy miss
                     else
                     {
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
                         refresh();
                         getch();
@@ -260,6 +274,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     if(rand() % 100 <= pc_pokemon->get_move(1).accuracy)
                     {
                         pc_damage = calculate_damage(pc_pokemon->get_move(1), *pc_pokemon, *enemy);
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(1).identifier, pc_damage);
                         refresh();
                         getch();
@@ -281,6 +297,8 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     //pc miss
                     else
                     {
+                        move(23, 0);
+                        clrtoeol();
                         mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(1).identifier);
                         refresh();
                         getch();

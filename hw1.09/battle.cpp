@@ -215,6 +215,7 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                         getch();
                     }
                 }
+                move_selected = true;
                 break;
             /* Move 2 */
             case '2':
@@ -350,11 +351,15 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                         getch();
                     }
                 }
+                move_selected = true;
                 break;
             case '3':
+                move_selected = true;
                 return;
             default:
-                mvprintw(23, 0, "Pick move one or two");
+                move(23, 0);
+                clrtoeol();
+                mvprintw(23, 0, "Pick move one or two, or select '3' to go back");
                 break;
             
         }

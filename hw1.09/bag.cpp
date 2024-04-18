@@ -1,4 +1,5 @@
 
+#include "poke327.h"
 #include "bag.h"
 #include <cstdio>
 #include <cstdlib>
@@ -17,8 +18,15 @@ Bag::Bag()
 
     //starter balls
     for(i = 0; i < DEFAULT_POKEBALLS; i++) {
-        curr_pokeball.type = common;
-        curr_pokeball.boost = 1;
+        if(i == DEFAULT_POKEBALLS -1){
+            curr_pokeball.type = ultra;
+            curr_pokeball.boost = 5;
+        }
+        else
+        {
+            curr_pokeball.type = common;
+            curr_pokeball.boost = 1;
+        }
         pokeballs.push_back(curr_pokeball);
     }
     //starter revives
@@ -29,9 +37,16 @@ Bag::Bag()
     }
     //starter potions
     for(i = 0; i < DEFAULT_POTIONS; i++){
-        curr_potion.type = common;
-        curr_potion.heal = 10;
-        potions.push_back(curr_potion);
+        if(i == 5 || i == 6){
+            curr_potion.type = ultra;
+            curr_potion.heal = 20;
+        }
+        else
+        {
+            curr_potion.type = common;
+            curr_potion.heal = 10;
+        }
+            potions.push_back(curr_potion);
     }
 }
 
@@ -145,8 +160,10 @@ void Bag::open_pokeballs()
 
 void Bag::open_revives()
 {
-    int i;
+    int i, key;
     revive_t curr_revive;
+    revive_t selected_revive;
+    bool revive_selected = false;
     clear();
     if(revives.empty()){
         mvprintw(0, 1, "You do not have any Revives left!");
@@ -180,13 +197,68 @@ void Bag::open_revives()
         }
     }
     refresh();
-    getch();
+
+
+    while((key != 27) || (!revive_selected))
+    {
+        key = getch();
+        if(key < potions.size())
+        {
+            selected_revive = use_revive(key);
+            revive_selected = true;
+            move(21, 0);
+            clrtoeol();
+        }
+        else{
+            mvprintw(21, 0, "use the number keys to select a revive (esc to exit)");
+            refresh();
+        }
+    }
+    if(revive_selected)
+    {
+        mvprintw(22, 0, "You have selected to use revive %d");
+        if(world.pc.roster.size() == 1){
+
+        }
+        else
+        {
+
+            mvprintw(23, 0, "Select a pokemon that you would like to use it on: ");
+            for(i = 0; i < world.pc.roster.size(); i++){
+                mvprintw(3, 35, "%d - %s", i, world.pc.roster[i].get_name().c_str());
+            }
+            refresh();
+            while(!revive_selected)
+            {
+                key = getch();
+                if(key < world.pc.roster.size())
+                {
+                    world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_revive.heal);
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[key].get_name().c_str(), world.pc.roster[key].get_curr_hp());
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                    revive_selected = true;
+                }
+                else{
+                    mvprintw(21, 0, "Use the number keys to select a pokemon");
+                    refresh();
+                }
+            }
+        }
+    }
     return;
 }
 void Bag::open_potions()
 {
     int i;
+    int key;
     potion_t curr_potion;
+    potion_t selected_potion;
+    bool potion_selected;
+    bool pokemon_selected;
     clear();
     if(potions.empty()){
         mvprintw(0, 1, "You do not have any Potions left!");
@@ -204,18 +276,75 @@ void Bag::open_potions()
         curr_potion = potions.at(i);
         if(curr_potion.type == common)
         {
-            mvprintw(i, 5, "%d - Common", i);
+            attron(COLOR_PAIR(COLOR_GREEN));
+            mvprintw(i+1, 5, "%d - Common", i);
+            attroff(COLOR_PAIR(COLOR_GREEN));
         }
         if(curr_potion.type == rare)
         {
-            mvprintw(i, 5, "%d - Rare", i);
+            attron(COLOR_PAIR(COLOR_BLUE));
+            mvprintw(i+1, 5, "%d - Rare", i);
+            attroff(COLOR_PAIR(COLOR_BLUE));
         }
         if(curr_potion.type == ultra)
         {
-            mvprintw(i, 5, "%d - Ultra", i);
+            attron(COLOR_PAIR(COLOR_MAGENTA));
+            mvprintw(i+1, 5, "%d - Ultra", i);
+            attroff(COLOR_PAIR(COLOR_MAGENTA));
         }
     }
     refresh();
-    getch();
+
+    while((key != 27) || (!potion_selected))
+    {
+        key = getch();
+        if(key < potions.size())
+        {
+            selected_potion = use_potion(key);
+            potion_selected = true;
+            move(21, 0);
+            clrtoeol();
+        }
+        else{
+            mvprintw(21, 0, "use the number keys to select a potion (esc to exit)");
+            refresh();
+        }
+    }
+    if(potion_selected)
+    {
+        mvprintw(22, 0, "You have selected to use potion %d");
+        if(world.pc.roster.size() == 1){
+
+        }
+        else
+        {
+
+            mvprintw(23, 0, "Select a pokemon that you would like to use it on: ");
+            for(i = 0; i < world.pc.roster.size(); i++){
+                mvprintw(3, 35, "%d - %s", i, world.pc.roster[i].get_name().c_str());
+            }
+            refresh();
+            while(!pokemon_selected)
+            {
+                key = getch();
+                if(key < world.pc.roster.size())
+                {
+                    world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_potion.heal);
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[key].get_name().c_str(), world.pc.roster[key].get_curr_hp());
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                    pokemon_selected = true;
+                }
+                else{
+                    mvprintw(21, 0, "Use the number keys to select a pokemon");
+                    refresh();
+                }
+            }
+        }
+    }
+
     return;
 }

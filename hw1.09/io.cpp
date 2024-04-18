@@ -387,8 +387,10 @@ void io_pokemon_center()
 void io_battle(character *aggressor, character *defender)
 {
   npc *n = (npc *) ((aggressor == &world.pc) ? defender : aggressor);
-  int i;
-
+  int i, key;
+  bool battle_over = false;
+  Pokemon *active_pokemon = &world.pc.roster[0];
+  Pokemon *active_enemy_pokemon = &n->roster[0];
   //placeholder with trainer pokemon data
   clear();
   mvprintw(0, 0, "Hey Kid, Want to see my Pokemon?");
@@ -403,11 +405,95 @@ void io_battle(character *aggressor, character *defender)
   refresh();
   getch();
 
-  //defeated message
-  io_display();
-  mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
-  refresh();
-  getch();
+  //battle
+  while(!battle_over)
+  {
+    clear();
+
+    mvprintw(0, 1, "%s", active_enemy_pokemon->get_name().c_str());
+    mvprintw(1, 6, ":L%d", active_enemy_pokemon->get_level());
+    mvprintw(2, 0, "HP:%d/%d", active_enemy_pokemon->get_curr_hp(), active_enemy_pokemon->get_hp());
+
+    mvprintw(10, 35, "%s", active_pokemon->get_name().c_str());
+    mvprintw(11, 40, ":L%d", active_pokemon->get_level());
+    mvprintw(12, 0, "HP:%d/%d", active_pokemon->get_curr_hp(), active_pokemon->get_hp());
+
+
+    mvprintw(15, 5, "1. Fight");
+    mvprintw(17, 5, "2. Bag");
+    mvprintw(19, 5, "3. Run");
+    mvprintw(21, 5, "4. Pokemon");
+    refresh();
+    key = getch();
+
+    switch(key){
+      case '1':
+        //fight
+        battle_fight(active_enemy_pokemon, active_pokemon);
+        if(active_enemy_pokemon->get_curr_hp() <= 0)
+        {
+          for(i = 0; i < n->roster.size(); i++)
+          {
+            if(n->roster[i].get_curr_hp() >= 0)
+            {
+              active_enemy_pokemon = &n->roster[i];
+              break;
+            }
+            if(i == n->roster.size() - 1)
+            {
+              //defeated message
+              io_display();
+              mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
+              battle_over = true;
+              refresh();
+              getch();
+            }
+          }
+        }
+        if(active_pokemon->get_curr_hp() <= 0)
+        {
+          for(i = 0; i < world.pc.roster.size(); i++)
+          {
+            if(world.pc.roster[i].get_curr_hp() >= 0)
+            {
+              break;
+            }
+            if(i == world.pc.roster.size() -1)
+            {
+              move(23, 0);
+              clrtoeol();
+              mvprintw(23, 0, "All your pokemon have fainted, better head to a PokeCenter");
+              battle_over = true;
+              refresh();
+              getch();
+            }
+          }
+          move(23, 0);
+          clrtoeol();
+          mvprintw(23, 0, "Your pokemon has fainted; revive it, or select a new one");
+          refresh();
+          getch();
+        }
+        break;
+      case '2':
+        //open bag
+        world.pc.trainer_bag.open_bag();
+        break;
+      case '3':
+        //attempt to run
+        move(23, 0);
+        clrtoeol();
+        mvprintw(23, 0, "You can't flee from trainer battles ");
+        refresh();
+        getch();
+        break;
+      case '4':
+        //switch pokemon
+
+        break;
+    }
+    
+  }
 
   n->defeated = 1;
   if (n->ctype == char_hiker || n->ctype == char_rival) {
@@ -499,7 +585,7 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
 void io_battle_wild_pokemon(Pokemon *wild_pokemon)
 {
   bool battle_over = false;
-  int key;
+  int key, i;
 
   Pokemon *cur_pokemon;
   cur_pokemon = &world.pc.roster[0];
@@ -545,6 +631,22 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         }
         if(cur_pokemon->get_curr_hp() <= 0)
         {
+          for(i = 0; i < world.pc.roster.size(); i++)
+          {
+            if(world.pc.roster[i].get_curr_hp() >= 0)
+            {
+              break;
+            }
+            if(i == world.pc.roster.size() -1)
+            {
+              move(23, 0);
+              clrtoeol();
+              mvprintw(23, 0, "All your pokemon have fainted, better head to a PokeCenter");
+              refresh();
+              getch();
+              return;
+            }
+          }
           move(23, 0);
           clrtoeol();
           mvprintw(23, 0, "Your pokemon has fainted; revive it, select a new one, or run");

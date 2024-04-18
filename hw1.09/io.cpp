@@ -372,14 +372,89 @@ static void io_list_trainers()
 
 void io_pokemart()
 {
+  int i;
+  pokeball_t curr_pokeball;
+  revive_t curr_revive;
+  potion_t curr_potion;
   mvprintw(0, 0, "Welcome to the Pokemart.  Could I interest you in some Pokeballs?");
+  refresh();
+  getch();
+  //starter balls
+  for(i = 0; i < DEFAULT_POKEBALLS; i++) {
+      if(i == DEFAULT_POKEBALLS -1){
+          curr_pokeball.type = ultra;
+          curr_pokeball.boost = 5;
+      }
+      else if(i == DEFAULT_POKEBALLS -2){
+          curr_pokeball.type = rare;
+          curr_pokeball.boost = 3;
+      }
+      else
+      {
+          curr_pokeball.type = common;
+          curr_pokeball.boost = 1;
+      }
+      world.pc.trainer_bag.add_pokeball(curr_pokeball);
+  }
+  //starter revives
+  for(i = 0; i < DEFAULT_REVIVES; i++){
+      if(i == DEFAULT_REVIVES -2)
+      {
+          curr_revive.type = rare;
+          curr_revive.heal = 15;
+      }
+      else if(i == DEFAULT_REVIVES -1)
+      {
+          curr_revive.type = ultra;
+          curr_revive.heal = 20;
+      }
+      else
+      {
+          curr_revive.type = rare;
+          curr_revive.heal = 15;
+          
+      }
+
+          world.pc.trainer_bag.add_revive(curr_revive);
+  }
+  //starter potions
+  for(i = 0; i < DEFAULT_POTIONS; i++){
+      if(i == 6 || i == 7){
+          curr_potion.type = ultra;
+          curr_potion.heal = 20;
+      }
+      else if(i == 5)
+      {
+          curr_potion.type = rare;
+          curr_potion.heal = 15;
+      }
+      else
+      {
+          curr_potion.type = common;
+          curr_potion.heal = 10;
+      }
+          world.pc.trainer_bag.add_potion(curr_potion);
+  }
+  move(0,0);
+  clrtoeol();
+  mvprintw(0, 0, "All your supplies have been fully restocked! Have a good Day!");
   refresh();
   getch();
 }
 
 void io_pokemon_center()
 {
+  int i;
   mvprintw(0, 0, "Welcome to the Pokemon Center.  How can Nurse Joy assist you?");
+  refresh();
+  getch();
+  for(i = 0; i < world.pc.roster.size(); i++)
+  {
+    world.pc.roster[i].set_curr_hp(world.pc.roster[i].get_hp());
+  }
+  move(0,0);
+  clrtoeol();
+  mvprintw(0, 0, "All your pokemon have been restored to full health! Have a good Day!");
   refresh();
   getch();
 }
@@ -482,7 +557,7 @@ void io_battle(character *aggressor, character *defender)
         break;
       case '2':
         //open bag
-        world.pc.trainer_bag.open_bag();
+        world.pc.trainer_bag.open_bag(true, active_enemy_pokemon);
         break;
       case '3':
         //attempt to run
@@ -657,7 +732,7 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
         break;
       case '2':
         //open bag
-        world.pc.trainer_bag.open_bag();
+        world.pc.trainer_bag.open_bag(false, wild_pokemon);
         break;
       case '3':
         //attempt to run
@@ -954,7 +1029,7 @@ void io_handle_input(pair_t dest)
       break;    
     case 'B':
       /* View the pc's bag */
-      world.pc.trainer_bag.open_bag();
+      world.pc.trainer_bag.open_bag(true, &world.pc.roster[0]);
       turn_not_consumed = 1;
       break;
     case 'q':

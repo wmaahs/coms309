@@ -60,7 +60,7 @@ Bag::Bag()
             curr_potion.type = ultra;
             curr_potion.heal = 20;
         }
-        if(i == 5)
+        else if(i == 5)
         {
             curr_potion.type = rare;
             curr_potion.heal = 15;
@@ -74,7 +74,7 @@ Bag::Bag()
     }
 }
 
-void Bag::open_bag()
+void Bag::open_bag(bool trainer_battle, Pokemon *enemy)
 {
     int key;
     bool option_selected = false;
@@ -104,8 +104,22 @@ void Bag::open_bag()
         switch (key)
         {
         case '1':
-            this->open_pokeballs();
-            option_selected = true;
+            if(trainer_battle == false)
+            {
+                this->open_pokeballs(enemy);
+                option_selected = true;
+            }
+            else
+            {
+                move(21, 0);
+                clrtoeol();
+                mvprintw(21, 0, "You can only use pokeballs in battles against wild pokemon");
+                refresh();
+                getch();
+                move(21, 0);
+                clrtoeol();
+                refresh();
+            }
             break;
         case '2':
             this->open_revives();
@@ -144,10 +158,12 @@ potion_t Bag::use_potion(int index)
     return selected_potion;
 }
 
-void Bag::open_pokeballs()
+void Bag::open_pokeballs(Pokemon *enemy)
 {
-    int i;
+    int i, key;
     pokeball_t curr_pokeball;
+    pokeball_t selected_pokeball;
+    bool pokeball_selected = false;
     clear();
 
     if(pokeballs.empty()){
@@ -177,8 +193,158 @@ void Bag::open_pokeballs()
             mvprintw(i+2, 5, "%d - Ultra", i);
         }
     }
+    mvprintw(10, 5, "8 - Back");
     refresh();
-    getch();
+    
+    while(!pokeball_selected)
+    {
+        key = getch();
+        switch(key)
+        {
+            case '1':
+                if((int) pokeballs.size() > 0)
+                {
+                    selected_pokeball = use_pokeball(0);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '2':
+                if((int) pokeballs.size() > 1)
+                {
+                    selected_pokeball = use_pokeball(1);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '3':
+                if((int) pokeballs.size() > 2)
+                {
+                    selected_pokeball = use_pokeball(2);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '4':
+                if((int) pokeballs.size() > 3)
+                {
+                    selected_pokeball = use_pokeball(3);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '5':
+                if((int) pokeballs.size() > 4)
+                {
+                    selected_pokeball = use_pokeball(4);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '6':
+                if((int) pokeballs.size() > 5)
+                {
+                    selected_pokeball = use_pokeball(5);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '7':
+                if((int) pokeballs.size() > 6)
+                {
+                    selected_pokeball = use_pokeball(6);
+                    pokeball_selected = true;
+                }
+                else{
+                    move(21, 0);
+                    clrtoeol();
+                    mvprintw(21, 0, "You dont have that many pokeballs");
+                    refresh();
+                    getch();
+                    move(21, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '8':
+                return;
+                break;
+            default:
+                mvprintw(21, 0, "Use the number keys to select a pokeball (8 to go back)");
+                refresh();
+                getch();
+                move(21, 0);
+                clrtoeol();
+                refresh();
+                break;
+        }
+    }
+    if(pokeball_selected)
+    {
+        if(world.pc.roster.size() < 7)
+        {
+            world.pc.roster.push_back(*enemy);
+        }
+        else
+        {
+            world.pc.roster.erase(world.pc.roster.end()-1);
+            world.pc.roster.push_back(*enemy);
+        }
+    }
     return;
 }
 

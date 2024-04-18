@@ -51,8 +51,8 @@ public:
     revive_t use_revive(int index);
     potion_t use_potion(int index);
 
-    void open_bag();
-    void open_pokeballs();
+    void open_bag(bool trainer_battle, Pokemon *enemy);
+    void open_pokeballs(Pokemon *enemy);
     void open_revives();
     void open_potions();
 };

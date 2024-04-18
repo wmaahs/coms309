@@ -432,14 +432,14 @@ void io_battle(character *aggressor, character *defender)
         battle_fight(active_enemy_pokemon, active_pokemon);
         if(active_enemy_pokemon->get_curr_hp() <= 0)
         {
-          for(i = 0; i < n->roster.size(); i++)
+          for(i = 0; i < (int) n->roster.size(); i++)
           {
             if(n->roster[i].get_curr_hp() >= 0)
             {
               active_enemy_pokemon = &n->roster[i];
               break;
             }
-            if(i == n->roster.size() - 1)
+            if(i == (int) n->roster.size() - 1)
             {
               //defeated message
               io_display();
@@ -452,13 +452,13 @@ void io_battle(character *aggressor, character *defender)
         }
         if(active_pokemon->get_curr_hp() <= 0)
         {
-          for(i = 0; i < world.pc.roster.size(); i++)
+          for(i = 0; i < (int) world.pc.roster.size(); i++)
           {
             if(world.pc.roster[i].get_curr_hp() >= 0)
             {
               break;
             }
-            if(i == world.pc.roster.size() -1)
+            if(i == (int) world.pc.roster.size() -1)
             {
               move(23, 0);
               clrtoeol();

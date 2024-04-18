@@ -202,7 +202,7 @@ void Bag::open_revives()
     while((key != 27) || (!revive_selected))
     {
         key = getch();
-        if(key < potions.size())
+        if(key < (int) potions.size())
         {
             selected_revive = use_revive(key);
             revive_selected = true;
@@ -216,7 +216,7 @@ void Bag::open_revives()
     }
     if(revive_selected)
     {
-        mvprintw(22, 0, "You have selected to use revive %d");
+        mvprintw(22, 0, "You have selected to use revive %d", key);
         if(world.pc.roster.size() == 1){
 
         }
@@ -224,14 +224,14 @@ void Bag::open_revives()
         {
 
             mvprintw(23, 0, "Select a pokemon that you would like to use it on: ");
-            for(i = 0; i < world.pc.roster.size(); i++){
+            for(i = 0; i < (int) world.pc.roster.size(); i++){
                 mvprintw(3, 35, "%d - %s", i, world.pc.roster[i].get_name().c_str());
             }
             refresh();
             while(!revive_selected)
             {
                 key = getch();
-                if(key < world.pc.roster.size())
+                if(key < (int) world.pc.roster.size())
                 {
                     world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_revive.heal);
                     move(21, 0);
@@ -298,7 +298,7 @@ void Bag::open_potions()
     while((key != 27) || (!potion_selected))
     {
         key = getch();
-        if(key < potions.size())
+        if(key < (int) potions.size())
         {
             selected_potion = use_potion(key);
             potion_selected = true;
@@ -312,22 +312,28 @@ void Bag::open_potions()
     }
     if(potion_selected)
     {
-        mvprintw(22, 0, "You have selected to use potion %d");
-        if(world.pc.roster.size() == 1){
-
+        mvprintw(22, 0, "You have selected to use potion %d", key);
+        if((int) world.pc.roster.size() == 1){
+            world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_potion.heal);
+            move(21, 0);
+            clrtoeol();
+            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[key].get_name().c_str(), world.pc.roster[key].get_curr_hp());
+            move(22, 0);
+            clrtoeol();
+            refresh();
         }
         else
         {
 
             mvprintw(23, 0, "Select a pokemon that you would like to use it on: ");
-            for(i = 0; i < world.pc.roster.size(); i++){
+            for(i = 0; i < (int) world.pc.roster.size(); i++){
                 mvprintw(3, 35, "%d - %s", i, world.pc.roster[i].get_name().c_str());
             }
             refresh();
             while(!pokemon_selected)
             {
                 key = getch();
-                if(key < world.pc.roster.size())
+                if(key < (int) world.pc.roster.size())
                 {
                     world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_potion.heal);
                     move(21, 0);

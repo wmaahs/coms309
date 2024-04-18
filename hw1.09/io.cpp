@@ -409,6 +409,55 @@ void io_battle(character *aggressor, character *defender)
   while(!battle_over)
   {
     clear();
+    if(active_enemy_pokemon->get_curr_hp() <= 0)
+    {
+      for(i = 0; i < (int) n->roster.size(); i++)
+      {
+        if(n->roster[i].get_curr_hp() >= 0)
+        {
+          active_enemy_pokemon = &n->roster[i];
+          break;
+        }
+        if(i == (int) n->roster.size() - 1)
+        {
+          //defeated message
+          io_display();
+          mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
+          battle_over = true;
+          n->defeated = 1;
+          if (n->ctype == char_hiker || n->ctype == char_rival) {
+            n->mtype = move_wander;
+          }
+          refresh();
+          getch();
+          return;
+        }
+      }
+    }
+    if(active_pokemon->get_curr_hp() <= 0)
+    {
+      for(i = 0; i < (int) world.pc.roster.size(); i++)
+      {
+        if(world.pc.roster[i].get_curr_hp() >= 0)
+        {
+          break;
+        }
+        if(i == (int) world.pc.roster.size() -1)
+        {
+          io_display();
+          mvprintw(0, 0, "All your pokemon have fainted, better head to a PokeCenter");
+          battle_over = true;
+          refresh();
+          getch();
+          return;
+        }
+      }
+      move(23, 0);
+      clrtoeol();
+      mvprintw(23, 0, "Your pokemon has fainted; revive it, or select a new one");
+      refresh();
+      getch();
+    }
 
     mvprintw(0, 1, "%s", active_enemy_pokemon->get_name().c_str());
     mvprintw(1, 6, ":L%d", active_enemy_pokemon->get_level());
@@ -430,50 +479,6 @@ void io_battle(character *aggressor, character *defender)
       case '1':
         //fight
         battle_fight(active_enemy_pokemon, active_pokemon);
-        if(active_enemy_pokemon->get_curr_hp() <= 0)
-        {
-          for(i = 0; i < (int) n->roster.size(); i++)
-          {
-            if(n->roster[i].get_curr_hp() >= 0)
-            {
-              active_enemy_pokemon = &n->roster[i];
-              break;
-            }
-            if(i == (int) n->roster.size() - 1)
-            {
-              //defeated message
-              io_display();
-              mvprintw(0, 0, "Aww, how'd you get so strong?  You and your pokemon must share a special bond!");
-              battle_over = true;
-              refresh();
-              getch();
-            }
-          }
-        }
-        if(active_pokemon->get_curr_hp() <= 0)
-        {
-          for(i = 0; i < (int) world.pc.roster.size(); i++)
-          {
-            if(world.pc.roster[i].get_curr_hp() >= 0)
-            {
-              break;
-            }
-            if(i == (int) world.pc.roster.size() -1)
-            {
-              move(23, 0);
-              clrtoeol();
-              mvprintw(23, 0, "All your pokemon have fainted, better head to a PokeCenter");
-              battle_over = true;
-              refresh();
-              getch();
-            }
-          }
-          move(23, 0);
-          clrtoeol();
-          mvprintw(23, 0, "Your pokemon has fainted; revive it, or select a new one");
-          refresh();
-          getch();
-        }
         break;
       case '2':
         //open bag
@@ -493,11 +498,6 @@ void io_battle(character *aggressor, character *defender)
         break;
     }
     
-  }
-
-  n->defeated = 1;
-  if (n->ctype == char_hiker || n->ctype == char_rival) {
-    n->mtype = move_wander;
   }
 }
 

@@ -7,9 +7,9 @@
 #include <iostream>
 #include <vector>
 
-#define DEFAULT_POKEBALLS 5
-#define DEFAULT_POTIONS 7
-#define DEFAULT_REVIVES 2
+#define DEFAULT_POKEBALLS 7
+#define DEFAULT_POTIONS 8
+#define DEFAULT_REVIVES 5
 
 typedef enum item_types{
     common,

@@ -22,6 +22,10 @@ Bag::Bag()
             curr_pokeball.type = ultra;
             curr_pokeball.boost = 5;
         }
+        else if(i == DEFAULT_POKEBALLS -2){
+            curr_pokeball.type = rare;
+            curr_pokeball.boost = 3;
+        }
         else
         {
             curr_pokeball.type = common;
@@ -31,15 +35,35 @@ Bag::Bag()
     }
     //starter revives
     for(i = 0; i < DEFAULT_REVIVES; i++){
-        curr_revive.type = common;
-        curr_revive.heal = 10;
-        revives.push_back(curr_revive);
+        if(i == DEFAULT_REVIVES -2)
+        {
+            curr_revive.type = rare;
+            curr_revive.heal = 15;
+        }
+        else if(i == DEFAULT_REVIVES -1)
+        {
+            curr_revive.type = ultra;
+            curr_revive.heal = 20;
+        }
+        else
+        {
+            curr_revive.type = rare;
+            curr_revive.heal = 15;
+            
+        }
+
+            revives.push_back(curr_revive);
     }
     //starter potions
     for(i = 0; i < DEFAULT_POTIONS; i++){
-        if(i == 5 || i == 6){
+        if(i == 6 || i == 7){
             curr_potion.type = ultra;
             curr_potion.heal = 20;
+        }
+        if(i == 5)
+        {
+            curr_potion.type = rare;
+            curr_potion.heal = 15;
         }
         else
         {
@@ -164,6 +188,7 @@ void Bag::open_revives()
     revive_t curr_revive;
     revive_t selected_revive;
     bool revive_selected = false;
+    bool pokemon_selected
     clear();
     if(revives.empty()){
         mvprintw(0, 1, "You do not have any Revives left!");
@@ -202,16 +227,93 @@ void Bag::open_revives()
     while((key != 27) || (!revive_selected))
     {
         key = getch();
-        if(key < (int) potions.size())
+        key = getch();
+        //'1' = int 50, not 1..
+        switch(key)
         {
-            selected_revive = use_revive(key);
-            revive_selected = true;
-            move(21, 0);
-            clrtoeol();
-        }
-        else{
-            mvprintw(21, 0, "use the number keys to select a revive (esc to exit)");
-            refresh();
+            case '0':
+                selected_revive = use_revive(0);
+                revive_selected = true;
+                move(21, 0);
+                clrtoeol();
+                break;
+            case '1':
+                if((int) revives.size() > 1)
+                {
+                    selected_revive = use_revive(1);
+                    revive_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 1 revive");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '2':
+                if((int) revives.size() > 2)
+                {
+                    selected_revive = use_revive(2);
+                    revive_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 2 revives");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '3':
+                if((int) revives.size() > 3)
+                {
+                    selected_revive = use_revive(3);
+                    revive_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 3 revives");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                
+                break;
+            case '4':
+                if((int) revives.size() > 4)
+                {
+                    selected_revive = use_revive(4);
+                    revive_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 4 revives");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            default:
+                mvprintw(21, 0, "use the number keys to select a revive (esc to exit)");
+                refresh();
+                break;
         }
     }
     if(revive_selected)
@@ -225,26 +327,138 @@ void Bag::open_revives()
 
             mvprintw(23, 0, "Select a pokemon that you would like to use it on: ");
             for(i = 0; i < (int) world.pc.roster.size(); i++){
-                mvprintw(3, 35, "%d - %s", i, world.pc.roster[i].get_name().c_str());
+                mvprintw(i+3, 35, "%d - %s", i+1, world.pc.roster[i].get_name().c_str());
             }
             refresh();
-            while(!revive_selected)
+            while(!pokemon_selected)
             {
                 key = getch();
-                if(key < (int) world.pc.roster.size())
+                switch(key)
                 {
-                    world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_revive.heal);
-                    move(21, 0);
-                    clrtoeol();
-                    mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[key].get_name().c_str(), world.pc.roster[key].get_curr_hp());
-                    move(22, 0);
-                    clrtoeol();
-                    refresh();
-                    revive_selected = true;
-                }
-                else{
-                    mvprintw(21, 0, "Use the number keys to select a pokemon");
-                    refresh();
+                    case '1':
+                        world.pc.roster[0].set_curr_hp(world.pc.roster[0].get_curr_hp() + selected_revive.heal);
+                        move(21, 0);
+                        clrtoeol();
+                        mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[0].get_name().c_str(), world.pc.roster[0].get_curr_hp());
+                        move(22, 0);
+                        clrtoeol();
+                        refresh();
+                        pokemon_selected = true;
+                        break;
+                    case '2':
+                        if((int) world.pc.roster.size() > 1)
+                        {
+                            world.pc.roster[1].set_curr_hp(world.pc.roster[1].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[1].get_name().c_str(), world.pc.roster[1].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 1 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '3':
+                        if((int) world.pc.roster.size() > 2)
+                        {
+                            world.pc.roster[2].set_curr_hp(world.pc.roster[2].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[2].get_name().c_str(), world.pc.roster[2].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 2 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '4':
+                        if((int) world.pc.roster.size() > 3)
+                        {
+                            world.pc.roster[3].set_curr_hp(world.pc.roster[3].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[3].get_name().c_str(), world.pc.roster[3].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 3 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '5':
+                        if((int) world.pc.roster.size() > 4)
+                        {
+                            world.pc.roster[4].set_curr_hp(world.pc.roster[4].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[4].get_name().c_str(), world.pc.roster[4].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 4 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '6':
+                        if((int) world.pc.roster.size() > 5)
+                        {
+                            world.pc.roster[5].set_curr_hp(world.pc.roster[5].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You revived %s to %d HP", world.pc.roster[5].get_name().c_str(), world.pc.roster[5].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 5 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    default:
+                        mvprintw(21, 0, "Use the number keys to select a pokemon");
+                        refresh();
+                        break;
                 }
             }
         }
@@ -298,16 +512,146 @@ void Bag::open_potions()
     while((key != 27) || (!potion_selected))
     {
         key = getch();
-        if(key < (int) potions.size())
+        switch(key)
         {
-            selected_potion = use_potion(key);
-            potion_selected = true;
-            move(21, 0);
-            clrtoeol();
-        }
-        else{
-            mvprintw(21, 0, "use the number keys to select a potion (esc to exit)");
-            refresh();
+            case '0':
+                selected_potion = use_potion(0);
+                potion_selected = true;
+                move(21, 0);
+                clrtoeol();
+                break;
+            case '1':
+                if((int) potions.size() > 1)
+                {
+                    selected_potion = use_potion(1);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 1 potion");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '2':
+                if((int) potions.size() > 2)
+                {
+                    selected_potion = use_potion(2);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 2 potions");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '3':
+                if((int) potions.size() > 3)
+                {
+                    selected_potion = use_potion(3);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 3 potions");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                
+                break;
+            case '4':
+                if((int) potions.size() > 4)
+                {
+                    selected_potion = use_potion(4);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 4 potions");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '5':
+            if((int) potions.size() > 5)
+                {
+                    selected_potion = use_potion(5);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 5 potions");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+
+                break;
+            case '6':
+                if((int) potions.size() > 6)
+                {
+                    selected_potion = use_potion(6);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 6 potions");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            case '7':
+                if((int) potions.size() > 7)
+                {
+                    selected_potion = use_potion(7);
+                    potion_selected = true;
+                    move(21, 0);
+                    clrtoeol();
+                }
+                else
+                {
+                    mvprintw(22, 0, "You only have 7 potions");
+                    refresh();
+                    getch();
+                    move(22, 0);
+                    clrtoeol();
+                    refresh();
+                }
+                break;
+            default:
+                mvprintw(21, 0, "use the number keys to select a potion (esc to exit)");
+                refresh();
+                break;
         }
     }
     if(potion_selected)
@@ -324,7 +668,6 @@ void Bag::open_potions()
         }
         else
         {
-
             mvprintw(23, 0, "Select a pokemon that you would like to use it on: ");
             for(i = 0; i < (int) world.pc.roster.size(); i++){
                 mvprintw(3, 35, "%d - %s", i, world.pc.roster[i].get_name().c_str());
@@ -332,21 +675,132 @@ void Bag::open_potions()
             refresh();
             while(!pokemon_selected)
             {
-                key = getch();
-                if(key < (int) world.pc.roster.size())
+                switch(key)
                 {
-                    world.pc.roster[key].set_curr_hp(world.pc.roster[key].get_curr_hp() + selected_potion.heal);
-                    move(21, 0);
-                    clrtoeol();
-                    mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[key].get_name().c_str(), world.pc.roster[key].get_curr_hp());
-                    move(22, 0);
-                    clrtoeol();
-                    refresh();
-                    pokemon_selected = true;
-                }
-                else{
-                    mvprintw(21, 0, "Use the number keys to select a pokemon");
-                    refresh();
+                    case '1':
+                        world.pc.roster[0].set_curr_hp(world.pc.roster[0].get_curr_hp() + selected_revive.heal);
+                        move(21, 0);
+                        clrtoeol();
+                        mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[0].get_name().c_str(), world.pc.roster[0].get_curr_hp());
+                        move(22, 0);
+                        clrtoeol();
+                        refresh();
+                        pokemon_selected = true;
+                        break;
+                    case '2':
+                        if((int) world.pc.roster.size() > 1)
+                        {
+                            world.pc.roster[1].set_curr_hp(world.pc.roster[1].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[1].get_name().c_str(), world.pc.roster[1].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 1 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '3':
+                        if((int) world.pc.roster.size() > 2)
+                        {
+                            world.pc.roster[2].set_curr_hp(world.pc.roster[2].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[2].get_name().c_str(), world.pc.roster[2].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 2 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '4':
+                        if((int) world.pc.roster.size() > 3)
+                        {
+                            world.pc.roster[3].set_curr_hp(world.pc.roster[3].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[3].get_name().c_str(), world.pc.roster[3].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 3 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '5':
+                        if((int) world.pc.roster.size() > 4)
+                        {
+                            world.pc.roster[4].set_curr_hp(world.pc.roster[4].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[4].get_name().c_str(), world.pc.roster[4].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 4 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    case '6':
+                        if((int) world.pc.roster.size() > 5)
+                        {
+                            world.pc.roster[5].set_curr_hp(world.pc.roster[5].get_curr_hp() + selected_revive.heal);
+                            move(21, 0);
+                            clrtoeol();
+                            mvprintw(21, 0, "You healed %s to %d HP", world.pc.roster[5].get_name().c_str(), world.pc.roster[5].get_curr_hp());
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                            pokemon_selected = true;
+                        }
+                        else
+                        {
+                            mvprintw(22, 0, "You only have 5 Pokemon");
+                            refresh();
+                            getch();
+                            move(22, 0);
+                            clrtoeol();
+                            refresh();
+                        }
+                        break;
+                    default:
+                        mvprintw(21, 0, "Use the number keys to select a pokemon");
+                        refresh();
+                        break;
                 }
             }
         }

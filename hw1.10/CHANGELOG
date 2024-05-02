@@ -1,0 +1,198 @@
+commit 2f563fc5d2d7a266a1b4b02d7b084912d680ca8f
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 18 01:36:09 2024 -0500
+
+    fixing pokeballs
+
+commit 22bf4fad9932028c0af5937e64fbfa6cab902ff7
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 18 01:18:16 2024 -0500
+
+    added resupply from poke stores, and added capturing pokemon.
+
+commit 9398dfdd55166012544568851512274d9eb1f80f
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 18 00:32:45 2024 -0500
+
+    add bounds checking to set_hp
+
+commit 50196349c9a217a3164408db57c283e204b46bec
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 18 00:27:39 2024 -0500
+
+    finally fixed items ?
+
+commit 3ca0dc2c16dcbc4ee1c143fcc5205fe2af3bf7f9
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 18 00:18:41 2024 -0500
+
+    fixing stupid mistakes (cast to int)
+
+commit fad45b8bc48a3d8e34ba18ac30de5e20a91e0ff7
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Thu Apr 18 00:15:40 2024 -0500
+
+    items can be used now??
+
+commit 7fb04e3d2df39784d519e761d100f949a1e53439
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 23:42:25 2024 -0500
+
+    added switching pokemon while in battle.
+
+commit a09581ac3fb39115ae3da260c44c0638c982cf0c
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 22:49:09 2024 -0500
+
+    hopefully fixed that trainers now actually switch their pokemon
+
+commit c096da7d0e565e57e3828361ac578ebb9e9d9068
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 22:35:32 2024 -0500
+
+    fixed some quick mistakes
+
+commit 5288bcd58fe3b4538b06645345bf093b57d3ead1
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 22:30:13 2024 -0500
+
+    fixed item menus, need to test that enemy trainers actually switch pokemon.
+
+commit cf06c3eca7cfbc37dd97305d83e05f508e41e971
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 19:31:57 2024 -0500
+
+    trainers don't select their next pokemon correctly. Also bag items aren't selectable?
+
+commit 23c40fc582433f4e7d26c6f524fe0eaa71a76b2a
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 19:25:20 2024 -0500
+
+    fixed type casting compile warnings.
+
+commit db390ef88288a6a9b00c6c12387121be6ce3e616
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 19:17:15 2024 -0500
+
+    added trainer battles, and revives and potions should actually do something now.
+
+commit 2a401f363d07db11099e9a468fc8a96702b5b50f
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 13:45:05 2024 -0500
+
+    cleaning up some stuff.
+
+commit 54cd3687a03c0b0ab98747f4e7b8bddf7cfc340d
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 13:27:53 2024 -0500
+
+    fixing compile errors
+
+commit 85c9b9ad3e95044a597224953bda03610bd173d0
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 13:22:09 2024 -0500
+
+    testing wild pokemon battles.
+
+commit 2aa17cce30cb75cf57098257585ffd9b0616aff7
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Wed Apr 17 11:05:35 2024 -0500
+
+    moves are showing up properly now
+
+commit 67544b3f780d49b1393566cbc8e226e001df6fa7
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 16 21:42:49 2024 -0500
+
+    hopefully I can see my moves now.
+
+commit 2b399ee0c700afadd5d6834ec50f98626fc1d4ad
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 16 21:13:55 2024 -0500
+
+    hopefully fixed bag
+
+commit 36e91d5bc07620e983590c0f6ebbc8a867812c30
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 16 20:14:52 2024 -0500
+
+    trying to fix bag
+
+commit 2b9c0f373a4f2bb344bb7c9f4fc803d6eaa3d71f
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 16 20:01:49 2024 -0500
+
+    updated bag so that options are selectable.
+
+commit 7e4d748c6a883aa7654fef17e34b8ebaebd39356
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Tue Apr 16 19:51:36 2024 -0500
+
+    fixing some compile errors in bag
+
+commit 4fe70f5fd30892b59f3acd375fe950e9526f3f0b
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Tue Apr 16 19:40:21 2024 -0500
+
+    Created Bag class.
+
+commit 3f09cdb15f67873adce74eaf14ef240f6de573db
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 10:31:07 2024 -0500
+
+    still trying to fix hp
+
+commit 4c3c2acec45326533e5ab92659388185973aa89e
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 10:26:46 2024 -0500
+
+    changed the way you fetch stats
+
+commit a30991c5bdf51200370ba5d09ee6a2381d723534
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 10:14:04 2024 -0500
+
+    switched some functions to pass by address
+
+commit 90681fe4f5a94dbfc48f2883712da4547f3ff433
+Author: Will Maahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 00:36:12 2024 -0500
+
+    Runs, but not correctly
+
+commit 58abdacf63470cae85bb0fcc74a5a8efa83dc0a7
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 00:11:18 2024 -0500
+
+    add 'B' key to check bag
+
+commit ca52f63ffcaaa03d4e59eeca7f8b5963d93307ba
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 00:08:38 2024 -0500
+
+    fixing infinite loop.
+
+commit 325c58f030d4e49c99b4b7183a9734e2c9b74d7d
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Mon Apr 15 00:00:03 2024 -0500
+
+    battling wild pokemon, selecting fighting.
+
+commit 08a387323b9bb5ab2b8a4928cb966c422874deb8
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sun Apr 14 20:24:36 2024 -0500
+
+    working on initial battle screen.
+
+commit a5bbee89000736ccf5803e8e47659fe7443ba686
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sun Apr 14 20:18:26 2024 -0500
+
+    added bag class
+
+commit 1ddf8c951f5b081657d8f68bfe1ddb829bed907a
+Author: wmaahs <wmaahs@iastate.edu>
+Date:   Sun Apr 14 16:22:14 2024 -0500
+
+    switched back to my solution
+

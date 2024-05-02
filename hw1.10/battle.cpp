@@ -44,13 +44,97 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
     return damage;
 }
 
+void enemy_attack(Pokemon *enemy, Pokemon *pc_pokemon)
+{
+    int enemy_move = rand() % 2;
+    int enemy_damage;
+
+    // enemy hit
+    if (rand() % 100 <= enemy->get_move(enemy_move).accuracy)
+    {
+        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
+        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
+        refresh();
+        getch();
+        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
+        if (pc_pokemon->get_curr_hp() <= 0)
+        {
+            move(12, 0);
+            clrtoeol();
+            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
+            move(23, 0);
+            clrtoeol();
+            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
+            refresh();
+            getch();
+            return;
+        }
+        move(12, 0);
+        clrtoeol();
+        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
+        refresh();
+        getch();
+    }
+    // enemy miss
+    else
+    {
+        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
+        refresh();
+        getch();
+    }
+
+    return;
+}
+
+void pc_attack(Pokemon *enemy, int selected_move, Pokemon *pc_pokemon)
+{
+    int pc_damage;
+    if (rand() % 100 <= pc_pokemon->get_move(selected_move).accuracy)
+    {
+        pc_damage = calculate_damage(pc_pokemon->get_move(selected_move), *pc_pokemon, *enemy);
+        move(23, 0);
+        clrtoeol();
+        mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(selected_move).identifier, pc_damage);
+        refresh();
+        getch();
+        enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
+        if (enemy->get_curr_hp() <= 0)
+        {
+            move(2, 0);
+            clrtoeol();
+            mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
+            move(23, 0);
+            clrtoeol();
+            mvprintw(23, 0, "%s has fainted", enemy->get_name().c_str());
+            refresh();
+            getch();
+            return;
+        }
+        move(2, 0);
+        clrtoeol();
+        mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
+        refresh();
+        getch();
+    }
+    // pc miss
+    else
+    {
+        move(23, 0);
+        clrtoeol();
+        mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(selected_move).identifier);
+        refresh();
+        getch();
+    }
+    return;
+}
+
 void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
 {
-    int enemy_move;
     int key;
     bool move_selected = false;
     int pc_damage;
-    int enemy_damage;
+    int enemy_move;
+    
     
     //clear battle options
     move(15, 0);
@@ -75,163 +159,22 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
         switch(key){
             /* Move 1 */
             case '1':
-                enemy_move = rand() % 2;
                 //determine who attacks first
                 if(enemy->get_move(enemy_move).priority > pc_pokemon->get_move(0).priority)
                 //enemy first
                 {
                     /* ENEMY */
-                    //enemy hit
-                    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
-                    {
-                        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-                        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
-                        refresh();
-                        getch();
-                        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
-                        if(pc_pokemon->get_curr_hp() <= 0)
-                        {
-                            move(12, 0);
-                            clrtoeol();
-                            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        move(12, 0);
-                        clrtoeol();
-                        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //enemy miss
-                    else
-                    {
-                        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
-                        refresh();
-                        getch();
-                    }
-
+                    enemy_attack(enemy, pc_pokemon);
                     /* PC */
-                    //pc hit
-                    if(rand() % 100 <= pc_pokemon->get_move(0).accuracy)
-                    {
-                        pc_damage = calculate_damage(pc_pokemon->get_move(0), *pc_pokemon, *enemy);
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(0).identifier, pc_damage);
-                        refresh();
-                        getch();
-                        enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
-                        if(enemy->get_curr_hp() <= 0)
-                        {
-                            move(2, 0);
-                            clrtoeol();
-                            mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", enemy->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        move(2, 0);
-                        clrtoeol();
-                        mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //pc miss
-                    else
-                    {
-                        mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(0).identifier);
-                        refresh();
-                        getch();
-                    }
+                    pc_attack(enemy, 0, pc_pokemon);
                 }
                 else
                 // pc first
                 {
                     /* PC */
-                    //pc hit
-                    if(rand() % 100 <= pc_pokemon->get_move(0).accuracy)
-                    {
-                        pc_damage = calculate_damage(pc_pokemon->get_move(0), *pc_pokemon, *enemy);
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(0).identifier, pc_damage);
-                        refresh();
-                        getch();
-                        enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
-                        if(enemy->get_curr_hp() <= 0)
-                        {
-                            move(2, 0);
-                            clrtoeol();
-                            mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", enemy->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        move(2, 0);
-                        clrtoeol();
-                        mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //pc miss
-                    else
-                    {
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(0).identifier);
-                        refresh();
-                        getch();
-                    }
-
+                    pc_attack(enemy, 0, pc_pokemon);
                     /* ENEMY */
-                    //enemy hit
-                    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
-                    {
-                        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
-                        refresh();
-                        getch();
-                        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
-                        if(pc_pokemon->get_curr_hp() <= 0)
-                        {
-                            move(12, 0);
-                            clrtoeol();
-                            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        move(12, 0);
-                        clrtoeol();
-                        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //enemy miss
-                    else
-                    {
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
-                        refresh();
-                        getch();
-                    }
+                    enemy_attack(enemy, pc_pokemon);
                 }
                 move_selected = true;
                 break;
@@ -243,139 +186,17 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                 //enemy first
                 {
                     /* ENEMY */
-                    //enemy hit
-                    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
-                    {
-                        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
-                        refresh();
-                        getch();
-                        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
-                        if(pc_pokemon->get_curr_hp() <= 0)
-                        {
-                            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //enemy miss
-                    else
-                    {
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
-                        refresh();
-                        getch();
-                    }
-
+                    enemy_attack(enemy, pc_pokemon);
                     /* PC */
-                    //pc hit
-                    if(rand() % 100 <= pc_pokemon->get_move(1).accuracy)
-                    {
-                        pc_damage = calculate_damage(pc_pokemon->get_move(1), *pc_pokemon, *enemy);
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(1).identifier, pc_damage);
-                        refresh();
-                        getch();
-                        enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
-                        if(enemy->get_curr_hp() <= 0)
-                        {
-                            mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", enemy->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //pc miss
-                    else
-                    {
-                        move(23, 0);
-                        clrtoeol();
-                        mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(1).identifier);
-                        refresh();
-                        getch();
-                    }
+                    pc_attack(enemy, 1, pc_pokemon);
                 }
                 else
                 // pc first
                 {
                     /* PC */
-                    //pc hit
-                    if(rand() % 100 <= pc_pokemon->get_move(1).accuracy)
-                    {
-                        pc_damage = calculate_damage(pc_pokemon->get_move(1), *pc_pokemon, *enemy);
-                        mvprintw(23, 0, "You have selected %s, it hit for %d", pc_pokemon->get_move(1).identifier, pc_damage);
-                        refresh();
-                        getch();
-                        enemy->set_curr_hp(enemy->get_curr_hp() - pc_damage);
-                        if(enemy->get_curr_hp() <= 0)
-                        {
-                            mvprintw(2, 0, "HP:0/%d", enemy->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", enemy->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        mvprintw(2, 0, "HP:%d/%d", enemy->get_curr_hp(), enemy->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //pc miss
-                    else
-                    {
-                        mvprintw(23, 0, "You have selected %s, but it missed...", pc_pokemon->get_move(1).identifier);
-                        refresh();
-                        getch();
-                    }
-
+                    pc_attack(enemy, 1, pc_pokemon);
                     /* ENEMY */
-                    //enemy hit
-                    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
-                    {
-                        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-                        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, enemy_damage);
-                        refresh();
-                        getch();
-                        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
-                        if(pc_pokemon->get_curr_hp() <= 0)
-                        {
-                            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
-                            move(23, 0);
-                            clrtoeol();
-                            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
-                            refresh();
-                            getch();
-                            return;
-                        }
-                        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
-                        refresh();
-                        getch();
-                    }
-                    //enemy miss
-                    else
-                    {
-                        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
-                        refresh();
-                        getch();
-                    }
+                    enemy_attack(enemy, pc_pokemon);
                 }
                 move_selected = true;
                 break;
@@ -392,45 +213,6 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
     }
 
     return;
-}
-
-/**
- * This is called whenever the PC tries to run, use an item, or switch pokemon.
- * Therefore the PC is using its action to do one of the previously mentioned actions,
- * so the enemy gets to attack the PC for free
-*/
-void enemy_free_attack(Pokemon *enemy, Pokemon *pc_pokemon)
-{
-    int enemy_move = rand() % 2;
-    double enemy_damage;
-    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
-    {
-        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, (int) enemy_damage);
-        refresh();
-        getch();
-        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
-        if(pc_pokemon->get_curr_hp() <= 0)
-        {
-            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
-            move(23, 0);
-            clrtoeol();
-            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
-            refresh();
-            getch();
-            return;
-        }
-        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
-        refresh();
-        getch();
-    }
-    //enemy miss
-    else
-    {
-        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
-        refresh();
-        getch();
-    }
 }
 
 Pokemon select_pokemon()

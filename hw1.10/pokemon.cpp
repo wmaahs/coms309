@@ -43,8 +43,12 @@ Pokemon::Pokemon(pokemon_db new_poke)
     name = new_poke.identifier;
     poke_species_id = new_poke.species_id;
     poke_id = new_poke.id;
+    base_xp = new_poke.base_experience;
 
     level = set_pokemon_level();
+
+    max_xp = (base_xp * level) / 6;
+    curr_xp = 0;
 
     //Find total move set
     int i;
@@ -128,14 +132,41 @@ Pokemon::Pokemon(pokemon_db new_poke)
  * Function used to level up the stats of a pokemon, given its current level
 */
 void Pokemon::levelup(){
+
+    //update stats
     stats[hp] = ((((base_stats[hp] + iv[hp]) * 2) * level)/100) + level + 10;
     int i;
     for(i = 1; i < 6; i++){
         stats[i] = ((((base_stats[i] + iv[i]) * 2) * level)/100) + 5;
     }
-
     curr_hp = stats[hp];
+
+    //udate xp
+    max_xp = (base_xp * level) / 6;
+    curr_xp = 0;
+
+    //learn new moves
+    // for(i = 0; i < total_moves.size(); i++)
+    // {
+    //     if(total_moves[i].level <= level)
+    //     {
+
+    //     }
+    // }
+
+    //evolve
+    
 }
+
+void Pokemon::add_xp(int xp_earned){
+    curr_xp = curr_xp + xp_earned;
+    if(curr_xp >= max_xp)
+    {
+        level++;
+        this->levelup();
+    }
+}
+
 
 /**
  * Function to determin if a pokemon is spawned,
@@ -166,3 +197,4 @@ void gen_pokemon()
 
     return;
 }
+

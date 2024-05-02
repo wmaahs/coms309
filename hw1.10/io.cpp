@@ -570,7 +570,7 @@ void io_battle(character *aggressor, character *defender)
       case '4':
         //switch pokemon
         *active_pokemon = select_pokemon();
-        enemy_free_attack(active_enemy_pokemon, active_pokemon);
+        enemy_attack(active_enemy_pokemon, active_pokemon);
         break;
     }
     
@@ -758,13 +758,13 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
           mvprintw(23, 0, "Your attempt to flee was unsuccesful...");
           refresh();
           getch();
-          enemy_free_attack(wild_pokemon, cur_pokemon);
+          enemy_attack(wild_pokemon, cur_pokemon);
         }
         break;
       case '4':
         //switch pokemon
         *cur_pokemon = select_pokemon();
-        enemy_free_attack(wild_pokemon, cur_pokemon);
+        enemy_attack(wild_pokemon, cur_pokemon);
         break;
     }
     

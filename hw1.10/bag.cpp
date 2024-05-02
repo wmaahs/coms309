@@ -96,6 +96,8 @@ bool Bag::open_bag(bool trainer_battle, Pokemon *enemy)
     mvprintw(5, 0, "3. Potions (%d)", (int) potions.size());
     attroff(COLOR_PAIR(COLOR_RED));
 
+    mvprintw(7, 0, "4. Back ");
+
     refresh();
 
     while(!option_selected)

@@ -1041,6 +1041,8 @@ void io_handle_input(pair_t dest)
         turn_not_consumed = 0;
       }
       break;
+    // case 'P':
+    //   break;
     case 'q':
       /* Demonstrate use of the message queue.  You can use this for *
        * printf()-style debugging (though gdb is probably a better   *

@@ -5,6 +5,8 @@
 
 void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon);
 void enemy_free_attack(Pokemon *enemy, Pokemon *pc_pokemon);
+void enemy_attack(Pokemon *enemy, Pokemon *pc_pokemon);
+void pc_attack(Pokemon *enemy, int selected_move, Pokemon *pc_pokemon);
 Pokemon select_pokemon();
 
 #endif

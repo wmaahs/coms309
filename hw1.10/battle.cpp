@@ -44,9 +44,9 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
     return damage;
 }
 
-void enemy_attack(Pokemon *enemy, Pokemon *pc_pokemon)
+void enemy_attack(Pokemon *enemy, int enemy_move, Pokemon *pc_pokemon)
 {
-    int enemy_move = rand() % 2;
+    
     int enemy_damage;
 
     // enemy hit
@@ -159,12 +159,13 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
         switch(key){
             /* Move 1 */
             case '1':
+                enemy_move = rand() % 2;
                 //determine who attacks first
                 if(enemy->get_move(enemy_move).priority > pc_pokemon->get_move(0).priority)
                 //enemy first
                 {
                     /* ENEMY */
-                    enemy_attack(enemy, pc_pokemon);
+                    enemy_attack(enemy, enemy_move, pc_pokemon);
                     /* PC */
                     pc_attack(enemy, 0, pc_pokemon);
                 }
@@ -174,7 +175,7 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     /* PC */
                     pc_attack(enemy, 0, pc_pokemon);
                     /* ENEMY */
-                    enemy_attack(enemy, pc_pokemon);
+                    enemy_attack(enemy, enemy_move, pc_pokemon);
                 }
                 move_selected = true;
                 break;
@@ -186,7 +187,7 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                 //enemy first
                 {
                     /* ENEMY */
-                    enemy_attack(enemy, pc_pokemon);
+                    enemy_attack(enemy, enemy_move, pc_pokemon);
                     /* PC */
                     pc_attack(enemy, 1, pc_pokemon);
                 }
@@ -196,7 +197,7 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                     /* PC */
                     pc_attack(enemy, 1, pc_pokemon);
                     /* ENEMY */
-                    enemy_attack(enemy, pc_pokemon);
+                    enemy_attack(enemy, enemy_move, pc_pokemon);
                 }
                 move_selected = true;
                 break;
@@ -213,6 +214,45 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
     }
 
     return;
+}
+
+/**
+ * This is called whenever the PC tries to run, use an item, or switch pokemon.
+ * Therefore the PC is using its action to do one of the previously mentioned actions,
+ * so the enemy gets to attack the PC for free
+*/
+void enemy_free_attack(Pokemon *enemy, Pokemon *pc_pokemon)
+{
+    int enemy_move = rand() % 2;
+    double enemy_damage;
+    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
+    {
+        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
+        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, (int) enemy_damage);
+        refresh();
+        getch();
+        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
+        if(pc_pokemon->get_curr_hp() <= 0)
+        {
+            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
+            move(23, 0);
+            clrtoeol();
+            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
+            refresh();
+            getch();
+            return;
+        }
+        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
+        refresh();
+        getch();
+    }
+    //enemy miss
+    else
+    {
+        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
+        refresh();
+        getch();
+    }
 }
 
 Pokemon select_pokemon()

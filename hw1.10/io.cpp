@@ -3,6 +3,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <fstream>
+#include <iostream>
+#include <cstdio>
 
 #include "io.h"
 #include "character.h"
@@ -36,6 +39,30 @@ void io_init_terminal(void)
   init_pair(COLOR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
   init_pair(COLOR_CYAN, COLOR_CYAN, COLOR_BLACK);
   init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
+}
+
+void save_game()
+{
+  int i;
+  std::ofstream saved_game_file(("/home/wmaahs/327/com-s-327/hw1.10/saved_games/saved_game.txt", std::ios::app));
+  if(!saved_game_file)
+  {
+    move(0, 0);
+    clrtoeol();
+    mvprintw(0, 0, "Uh oh, file could not be opened");
+    refresh();
+    getch();
+    return;
+  }
+  saved_game_file << "Roster: " << std::eol;
+  for(i = 0; i < world.pc.roster.size(); i++)
+  {
+    saved_game_file << world.pc.roster[i].get_name().c_str << ", "
+    << world.pc.roster[i].get_id() << ", "
+    << world.pc.roster[i].get_level() << ", "
+    << world.pc.roster[i].get_move(0).id << ", " << world.pc.roster[i].get_move(1).id << std::endl;
+  }
+  saved_game_file.close();
 }
 
 void io_reset_terminal(void)
@@ -372,91 +399,218 @@ static void io_list_trainers()
 
 void io_pokemart()
 {
-  int i;
   pokeball_t curr_pokeball;
   revive_t curr_revive;
   potion_t curr_potion;
-  mvprintw(0, 0, "Welcome to the Pokemart.  Could I interest you in some Pokeballs?");
-  refresh();
-  getch();
-  //starter balls
-  for(i = 0; i < DEFAULT_POKEBALLS; i++) {
-      if(i == DEFAULT_POKEBALLS -1){
-          curr_pokeball.type = ultra;
-          curr_pokeball.boost = 5;
-      }
-      else if(i == DEFAULT_POKEBALLS -2){
-          curr_pokeball.type = rare;
-          curr_pokeball.boost = 3;
-      }
-      else
-      {
-          curr_pokeball.type = common;
-          curr_pokeball.boost = 1;
-      }
-      world.pc.trainer_bag.add_pokeball(curr_pokeball);
+  int i, key;
+  key = 0;
+  clear();
+  mvprintw(0, 0, "Welcome to the PokeMart. What can I sell you?");
+
+  for(i = 4; i < 30; i++)
+  {
+    mvaddch(3, i, ACS_HLINE);
   }
-  //starter revives
-  for(i = 0; i < DEFAULT_REVIVES; i++){
-      if(i == DEFAULT_REVIVES -2)
-      {
-          curr_revive.type = rare;
-          curr_revive.heal = 15;
-      }
-      else if(i == DEFAULT_REVIVES -1)
-      {
-          curr_revive.type = ultra;
-          curr_revive.heal = 20;
-      }
-      else
-      {
-          curr_revive.type = rare;
-          curr_revive.heal = 15;
-          
-      }
+  for(i = 4; i < 30; i++)
+  {
+    mvaddch(9, i, ACS_HLINE);
+  }
+  for(i = 3; i < 10; i++)
+  {
+    mvaddch(i, 3, ACS_VLINE);
+  }
+  for(i = 3; i < 10; i++)
+  {
+    mvaddch(i, 30, ACS_VLINE);
+  }
+  //add corners
+  mvaddch(3, 3, ACS_ULCORNER);
+  mvaddch(3, 30, ACS_URCORNER);
+  mvaddch(9, 3, ACS_LLCORNER);
+  mvaddch(9, 30, ACS_RLCORNER);
+
+  mvprintw(4, 4, "1. PokeBalls");
+  mvprintw(5, 4, "2. Revives");
+  mvprintw(6, 4, "3. Potions");
+  mvprintw(7, 4, "4. Save Game");
+  mvprintw(8, 4, "ESC - Leave PokeMart");
+  refresh();
+  while(key != 27)
+  {
+    key = getch();
+    switch(key)
+    {
+      case '1':
+        // starter balls
+        for (i = 0; i < DEFAULT_POKEBALLS; i++)
+        {
+          if (i == DEFAULT_POKEBALLS - 1)
+          {
+            curr_pokeball.type = ultra;
+            curr_pokeball.boost = 5;
+          }
+          else if (i == DEFAULT_POKEBALLS - 2)
+          {
+            curr_pokeball.type = rare;
+            curr_pokeball.boost = 3;
+          }
+          else
+          {
+            curr_pokeball.type = common;
+            curr_pokeball.boost = 1;
+          }
+          world.pc.trainer_bag.add_pokeball(curr_pokeball);
+        }
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "All your pokeballs have been fully restocked! Have a good Day!");
+        refresh();
+        break;
+      case '2':
+        // starter revives
+        for (i = 0; i < DEFAULT_REVIVES; i++)
+        {
+          if (i == DEFAULT_REVIVES - 2)
+          {
+            curr_revive.type = rare;
+            curr_revive.heal = 15;
+          }
+          else if (i == DEFAULT_REVIVES - 1)
+          {
+            curr_revive.type = ultra;
+            curr_revive.heal = 20;
+          }
+          else
+          {
+            curr_revive.type = rare;
+            curr_revive.heal = 15;
+          }
 
           world.pc.trainer_bag.add_revive(curr_revive);
-  }
-  //starter potions
-  for(i = 0; i < DEFAULT_POTIONS; i++){
-      if(i == 6 || i == 7){
-          curr_potion.type = ultra;
-          curr_potion.heal = 20;
-      }
-      else if(i == 5)
-      {
-          curr_potion.type = rare;
-          curr_potion.heal = 15;
-      }
-      else
-      {
-          curr_potion.type = common;
-          curr_potion.heal = 10;
-      }
+        }
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "All your revives have been fully restocked! Have a good Day!");
+        refresh();
+        break;
+      case '3':
+        // starter potions
+        for (i = 0; i < DEFAULT_POTIONS; i++)
+        {
+          if (i == 6 || i == 7)
+          {
+            curr_potion.type = ultra;
+            curr_potion.heal = 20;
+          }
+          else if (i == 5)
+          {
+            curr_potion.type = rare;
+            curr_potion.heal = 15;
+          }
+          else
+          {
+            curr_potion.type = common;
+            curr_potion.heal = 10;
+          }
           world.pc.trainer_bag.add_potion(curr_potion);
+        }
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "All your potions have been fully restocked! Have a good Day!");
+        refresh();
+        break;
+      case '4':
+        save_game();
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "Your game has been saved! Have a good Day!");
+        refresh();
+        break;
+      case '5':
+        return;
+        break;
+      default:
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "1 to fill pokeballs, 2 to fill revives, 3 to fill potions, 4 to save game, 5/esc to exit");
+        refresh();
+        break;
+    }
   }
-  move(0,0);
-  clrtoeol();
-  mvprintw(0, 0, "All your supplies have been fully restocked! Have a good Day!");
-  refresh();
-  getch();
 }
 
 void io_pokemon_center()
 {
-  int i;
+  int i, key;
+  key = 0;
+  clear();
   mvprintw(0, 0, "Welcome to the Pokemon Center.  How can Nurse Joy assist you?");
-  refresh();
-  getch();
-  for(i = 0; i < (int) world.pc.roster.size(); i++)
+
+  for(i = 4; i < 30; i++)
   {
-    world.pc.roster[i].set_curr_hp(world.pc.roster[i].get_hp());
+    mvaddch(3, i, ACS_HLINE);
   }
-  move(0,0);
-  clrtoeol();
-  mvprintw(0, 0, "All your pokemon have been restored to full health! Have a good Day!");
+  for(i = 4; i < 30; i++)
+  {
+    mvaddch(9, i, ACS_HLINE);
+  }
+  for(i = 3; i < 10; i++)
+  {
+    mvaddch(i, 3, ACS_VLINE);
+  }
+  for(i = 3; i < 10; i++)
+  {
+    mvaddch(i, 30, ACS_VLINE);
+  }
+  //add corners
+  mvaddch(3, 3, ACS_ULCORNER);
+  mvaddch(3, 30, ACS_URCORNER);
+  mvaddch(9, 3, ACS_LLCORNER);
+  mvaddch(9, 30, ACS_RLCORNER);
+
+  mvprintw(4, 4, "1. Heal Pokemon");
+  mvprintw(6, 4, "2. Save Game");
+  mvprintw(8, 4, "ESC - Leave Pokemon Center");
   refresh();
+  while(key != 27)
+  {
+    key = getch();
+    switch(key)
+    {
+      case '1':
+        for (i = 0; i < (int)world.pc.roster.size(); i++)
+        {
+          world.pc.roster[i].set_curr_hp(world.pc.roster[i].get_hp());
+        }
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "All your pokemon have been restored to full health! Have a good Day!");
+        refresh();
+        break;
+      case '2':
+        save_game();
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "Your game hase been saved!");
+        refresh();
+        break;
+      case '3':
+        return;
+        break;
+      default:
+        move(0, 0);
+        clrtoeol();
+        mvprintw(0, 0, "1 to heal pokemon, 2 to save the game, 3/esc to exit");
+        refresh();
+        break;
+    }
+  }
   getch();
+  
+
+  io_display();
+  refresh();
+  return;
 }
 
 void io_battle(character *aggressor, character *defender)
@@ -674,10 +828,8 @@ uint32_t move_pc_dir(uint32_t input, pair_t dest)
 }
 
 /**
- * For now is void, eventually will probably return a bool
- * true if pc has won, false otherwise
- * 
- * right now just a place holder for when a pokemon is spawned in the grass
+ * Fucntion used for when you find a wild pokemon in the grass
+ * Entire battle is in this function, until someone dies
  * 
 */
 void io_battle_wild_pokemon(Pokemon *wild_pokemon)
@@ -772,7 +924,6 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
           getch();
           battle_over = 1;
         }
-        /* TODO: enemy gets to attack if failed to flee */
         else
         {
           move(23, 0);

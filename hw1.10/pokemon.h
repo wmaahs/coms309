@@ -49,6 +49,7 @@ private:
 public:
     Pokemon(){};
     Pokemon(pokemon_db new_poke);
+    Pokemon(int poke_id, int level, int move_ids[2]);
 
     /* methods */
     void levelup();

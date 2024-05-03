@@ -1,6 +1,10 @@
 #include "pokemon.h"
 #include "poke327.h"
 #include "io.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
 
 int manhattan_distance(pair_t xy1, pair_t xy2)
 {
@@ -126,6 +130,63 @@ Pokemon::Pokemon(pokemon_db new_poke)
     else{
         shiny = false;
     }
+}
+
+Pokemon::Pokemon(int poke_id, int level, int move_ids[2])
+{
+    int i;
+    pokemon_db saved_poke;
+    for(i = 0; i < NUM_POKEMON; i++)
+    {
+        if(poke_id == pokemon[i].id)
+        {
+            saved_poke = pokemon[i];
+        }
+    }
+    name = saved_poke.identifier;
+    poke_species_id = saved_poke.species_id;
+    this->level = level;
+    base_stats[0] = pokemon_stats[poke_species_id * 6 - 5].base_stat;
+    base_stats[1] = pokemon_stats[poke_species_id * 6 - 4].base_stat;
+    base_stats[2] = pokemon_stats[poke_species_id * 6 - 3].base_stat;
+    base_stats[3] = pokemon_stats[poke_species_id * 6 - 2].base_stat;
+    base_stats[4] = pokemon_stats[poke_species_id * 6 - 1].base_stat;
+    base_stats[5] = pokemon_stats[poke_species_id * 6 - 0].base_stat;
+
+    stats[0] = base_stats[0];
+    stats[1] = base_stats[1];
+    stats[2] = base_stats[2];
+    stats[3] = base_stats[3];
+    stats[4] = base_stats[4];
+    stats[5] = base_stats[5];
+
+    //assign curr hp
+    curr_hp = stats[hp];
+    //IV's
+    for(i = 0; i < 6; i++) {
+        iv[i] = rand() % 16;
+    }
+
+    for(i = 0; i < NUM_MOVES; i++) {
+        if(move_ids[0] == moves[i].id)
+        {
+            learned_moves[0] = moves[i];
+        }
+        else if(move_ids[1] == moves[i].id)
+        {
+            learned_moves[1] = moves[i];
+        }
+    }
+    //is shiny
+    if(rand() % 8192 == 0) {
+        shiny = true;
+    }
+    else{
+        shiny = false;
+    }
+
+    this->levelup();
+
 }
 
 /**

@@ -551,11 +551,11 @@ void io_battle(character *aggressor, character *defender)
     {
       mvaddch(22, i, ACS_HLINE);
     }
-    for(i = 14; i < 23; i++)
+    for(i = 15; i < 22; i++)
     {
       mvaddch(i, 4, ACS_VLINE);
     }
-    for(i = 14; i < 23; i++)
+    for(i = 15; i < 22; i++)
     {
       mvaddch(i, 17, ACS_VLINE);
     }

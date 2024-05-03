@@ -46,8 +46,8 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
 
 int calculate_xp(Pokemon *enemy, Pokemon *pc_pokemon)
 {
-    int gained_xp = (enemy->get_level() * enemy->get_attack) / 8;
-    return gained_xp;
+  int gained_xp = (enemy->get_level() * enemy->get_attack()) / 8;
+  return gained_xp;
 }
 
 void enemy_attack(Pokemon *enemy, int enemy_move, Pokemon *pc_pokemon)
@@ -126,7 +126,7 @@ void pc_attack(Pokemon *enemy, int selected_move, Pokemon *pc_pokemon)
             {
                 move(23, 0);
                 clrtoeol();
-                mvprintw(23, 0, "Your pokemon has leveled up!!")
+                mvprintw(23, 0, "Your pokemon has leveled up!!");
                 refresh();
                 getch();
             }
@@ -155,17 +155,14 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
     int key;
     bool move_selected = false;
     int enemy_move;
+    int i;
     
     
     //clear battle options
-    move(15, 0);
-    clrtoeol();
-    move(17, 0);
-    clrtoeol();
-    move(19, 0);
-    clrtoeol();
-    move(21, 0);
-    clrtoeol();
+    for(i = 15; i < 22; i++){
+      move(i, 0);
+      clrtoeol();
+    }
 
     mvprintw(17, 0, "1. %s", pc_pokemon->get_move(0).identifier);
     mvprintw(19, 0, "2. %s", pc_pokemon->get_move(1).identifier);
@@ -187,16 +184,20 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                 {
                     /* ENEMY */
                     enemy_attack(enemy, enemy_move, pc_pokemon);
-                    /* PC */
-                    pc_attack(enemy, 0, pc_pokemon);
+		    if(pc_pokemon->get_curr_hp() > 0){
+		      /* PC */
+		      pc_attack(enemy, 0, pc_pokemon);
+		    }
                 }
                 else
                 // pc first
                 {
                     /* PC */
                     pc_attack(enemy, 0, pc_pokemon);
-                    /* ENEMY */
-                    enemy_attack(enemy, enemy_move, pc_pokemon);
+                    if(enemy->get_curr_hp() > 0){
+		      /* ENEMY */
+		      enemy_attack(enemy, enemy_move, pc_pokemon);
+		    }
                 }
                 move_selected = true;
                 break;
@@ -209,16 +210,20 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
                 {
                     /* ENEMY */
                     enemy_attack(enemy, enemy_move, pc_pokemon);
-                    /* PC */
-                    pc_attack(enemy, 1, pc_pokemon);
+                    if(pc_pokemon->get_curr_hp() > 0){
+		      /* PC */
+		      pc_attack(enemy, 0, pc_pokemon);
+		    }
                 }
                 else
                 // pc first
                 {
                     /* PC */
                     pc_attack(enemy, 1, pc_pokemon);
-                    /* ENEMY */
-                    enemy_attack(enemy, enemy_move, pc_pokemon);
+                    if(enemy->get_curr_hp() > 0){
+		      /* ENEMY */
+		      enemy_attack(enemy, enemy_move, pc_pokemon);
+		    }
                 }
                 move_selected = true;
                 break;

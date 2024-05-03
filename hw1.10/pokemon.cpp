@@ -142,7 +142,7 @@ void Pokemon::levelup(){
     curr_hp = stats[hp];
 
     //udate xp
-    max_xp = (base_xp * level) / 6;
+    max_xp = (base_xp * level) / 7;
     curr_xp = 0;
 
     //learn new moves

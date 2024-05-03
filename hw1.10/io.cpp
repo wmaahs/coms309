@@ -543,11 +543,11 @@ void io_battle(character *aggressor, character *defender)
     mvprintw(12, 0, "HP:%d/%d", active_pokemon->get_curr_hp(), active_pokemon->get_hp());
 
     //add box
-    for(i = 4; i < 18; i++)
+    for(i = 5; i < 17; i++)
     {
       mvaddch(14, i, ACS_HLINE);
     }
-    for(i = 4; i < 18; i++)
+    for(i = 5; i < 17; i++)
     {
       mvaddch(22, i, ACS_HLINE);
     }
@@ -559,6 +559,12 @@ void io_battle(character *aggressor, character *defender)
     {
       mvaddch(i, 17, ACS_VLINE);
     }
+    //add corners
+    mvaddch(14, 4, ACS_ULCORNER);
+    mvaddch(14, 17, ACS_URCORNER);
+    mvaddch(22, 4, ACS_LLCORNER);
+    mvaddch(22, 17, ACS_LRCORNER);
+
     mvprintw(15, 5, "1. Fight");
     mvprintw(17, 5, "2. Bag");
     mvprintw(19, 5, "3. Run");
@@ -1028,7 +1034,6 @@ void io_handle_input(pair_t dest)
       dest[dim_x] = world.pc.pos[dim_x];
       world.quit = 1;
       turn_not_consumed = 0;
-      break;
       break;
     case 't':
       io_list_trainers();

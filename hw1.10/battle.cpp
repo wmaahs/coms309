@@ -46,7 +46,7 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
 
 int calculate_xp(Pokemon *enemy, Pokemon *pc_pokemon)
 {
-  int gained_xp = (enemy->get_level() * enemy->get_attack()) / 8;
+  int gained_xp = (enemy->get_level() * enemy->get_base_xp()) / 8;
   return gained_xp;
 }
 

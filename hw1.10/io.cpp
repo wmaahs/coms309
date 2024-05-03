@@ -55,6 +55,7 @@ void save_game()
     getch();
     return;
   }
+  saved_game_file.clear();
   saved_game_file << "Roster: " << std::endl;
   for(i = 0; i < (int) world.pc.roster.size(); i++)
   {
@@ -863,7 +864,7 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
     mvprintw(10, 35, "%s", cur_pokemon->get_name().c_str());
     mvprintw(11, 40, ":L%d", cur_pokemon->get_level());
     mvprintw(12, 0, "HP:%d/%d", cur_pokemon->get_curr_hp(), cur_pokemon->get_hp());
-    
+
     //add box
     for(i = 5; i < 17; i++)
     {

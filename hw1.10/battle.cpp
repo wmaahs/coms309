@@ -154,7 +154,6 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
 {
     int key;
     bool move_selected = false;
-    int pc_damage;
     int enemy_move;
     
     

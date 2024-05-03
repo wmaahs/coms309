@@ -44,7 +44,7 @@ void io_init_terminal(void)
 void save_game()
 {
   int i;
-  std::ofstream saved_game_file(("/home/wmaahs/327/com-s-327/hw1.10/saved_games/saved_game.txt", std::ios::app));
+  std::ofstream saved_game_file("/home/wmaahs/327/com-s-327/hw1.10/saved_games/saved_game.txt", std::ios::app);
   if(!saved_game_file)
   {
     move(0, 0);
@@ -54,10 +54,10 @@ void save_game()
     getch();
     return;
   }
-  saved_game_file << "Roster: " << std::eol;
-  for(i = 0; i < world.pc.roster.size(); i++)
+  saved_game_file << "Roster: " << std::endl;
+  for(i = 0; i < (int) world.pc.roster.size(); i++)
   {
-    saved_game_file << world.pc.roster[i].get_name().c_str << ", "
+    saved_game_file << world.pc.roster[i].get_name().c_str() << ", "
     << world.pc.roster[i].get_id() << ", "
     << world.pc.roster[i].get_level() << ", "
     << world.pc.roster[i].get_move(0).id << ", " << world.pc.roster[i].get_move(1).id << std::endl;
@@ -427,7 +427,7 @@ void io_pokemart()
   mvaddch(3, 3, ACS_ULCORNER);
   mvaddch(3, 30, ACS_URCORNER);
   mvaddch(9, 3, ACS_LLCORNER);
-  mvaddch(9, 30, ACS_RLCORNER);
+  mvaddch(9, 30, ACS_LRCORNER);
 
   mvprintw(4, 4, "1. PokeBalls");
   mvprintw(5, 4, "2. Revives");
@@ -566,7 +566,7 @@ void io_pokemon_center()
   mvaddch(3, 3, ACS_ULCORNER);
   mvaddch(3, 30, ACS_URCORNER);
   mvaddch(9, 3, ACS_LLCORNER);
-  mvaddch(9, 30, ACS_RLCORNER);
+  mvaddch(9, 30, ACS_LRCORNER);
 
   mvprintw(4, 4, "1. Heal Pokemon");
   mvprintw(6, 4, "2. Save Game");

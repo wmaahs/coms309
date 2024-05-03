@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdio>
+#include <sstream>
 
 #include "io.h"
 #include "character.h"
@@ -1007,7 +1008,7 @@ void io_select_starter()
     mvprintw(0, 0, "Welcome back! Would you like to load your saved game? (y/n)");
     mvprintw(1, 0, "WARNING: If you choose no, and save the new game, or old progress will be lost.");
     
-    while(load_game = 0)
+    while(load_game == 0)
     {
       key = getch();
       move(2, 0);
@@ -1018,7 +1019,7 @@ void io_select_starter()
         case 'y':
           while(std::getline(saved_game, line))
           {
-            if(std::strcmp(line, "Result: \n"))
+            if(std::strcmp(line.c_str(), "Roster: ") == 0)
             {
               continue;
             }
@@ -1037,6 +1038,7 @@ void io_select_starter()
             world.pc.roster.push_back(saved_pokemon);
           }
           load_game = 1;
+	  return;
           break;
         case 'n':
           load_game = 1;

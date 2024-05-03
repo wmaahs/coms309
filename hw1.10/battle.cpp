@@ -159,14 +159,36 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
     
     
     //clear battle options
-    for(i = 15; i < 22; i++){
+    for(i = 14; i < 23; i++){
       move(i, 0);
       clrtoeol();
     }
+    //add box
+    for(i = 5; i < 17; i++)
+    {
+      mvaddch(14, i, ACS_HLINE);
+    }
+    for(i = 5; i < 17; i++)
+    {
+      mvaddch(22, i, ACS_HLINE);
+    }
+    for(i = 15; i < 22; i++)
+    {
+      mvaddch(i, 4, ACS_VLINE);
+    }
+    for(i = 15; i < 22; i++)
+    {
+      mvaddch(i, 17, ACS_VLINE);
+    }
+    //add corners
+    mvaddch(14, 4, ACS_ULCORNER);
+    mvaddch(14, 17, ACS_URCORNER);
+    mvaddch(22, 4, ACS_LLCORNER);
+    mvaddch(22, 17, ACS_LRCORNER);
 
-    mvprintw(17, 0, "1. %s", pc_pokemon->get_move(0).identifier);
-    mvprintw(19, 0, "2. %s", pc_pokemon->get_move(1).identifier);
-    mvprintw(21, 0, "3. Back");
+    mvprintw(17, 5, "1. %s", pc_pokemon->get_move(0).identifier);
+    mvprintw(19, 5, "2. %s", pc_pokemon->get_move(1).identifier);
+    mvprintw(21, 5, "3. Back");
     refresh();
 
     while(!move_selected)

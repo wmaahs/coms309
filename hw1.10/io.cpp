@@ -863,7 +863,35 @@ void io_battle_wild_pokemon(Pokemon *wild_pokemon)
     mvprintw(10, 35, "%s", cur_pokemon->get_name().c_str());
     mvprintw(11, 40, ":L%d", cur_pokemon->get_level());
     mvprintw(12, 0, "HP:%d/%d", cur_pokemon->get_curr_hp(), cur_pokemon->get_hp());
+    
+    //add box
+    for(i = 5; i < 17; i++)
+    {
+      mvaddch(14, i, ACS_HLINE);
+    }
+    for(i = 5; i < 17; i++)
+    {
+      mvaddch(22, i, ACS_HLINE);
+    }
+    for(i = 15; i < 22; i++)
+    {
+      mvaddch(i, 4, ACS_VLINE);
+    }
+    for(i = 15; i < 22; i++)
+    {
+      mvaddch(i, 17, ACS_VLINE);
+    }
+    //add corners
+    mvaddch(14, 4, ACS_ULCORNER);
+    mvaddch(14, 17, ACS_URCORNER);
+    mvaddch(22, 4, ACS_LLCORNER);
+    mvaddch(22, 17, ACS_LRCORNER);
 
+    mvprintw(15, 5, "1. Fight");
+    mvprintw(17, 5, "2. Bag");
+    mvprintw(19, 5, "3. Run");
+    mvprintw(21, 5, "4. Pokemon");
+    refresh();
 
     mvprintw(15, 5, "1. Fight");
     mvprintw(17, 5, "2. Bag");
@@ -1058,6 +1086,10 @@ void io_select_starter()
     starters.push_back(new_poke);
   }
 
+  move(0, 0);
+  clrtoeol();
+  move(1, 0);
+  clrtoeol();
   mvprintw(0, 0, "Welcome to the Poke-Universe! First things first, you need pick your first Pokemon.");
   mvprintw(1, 0, "You have three options to select from. Choose wisely.");
 

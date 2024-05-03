@@ -1223,7 +1223,7 @@ int main(int argc, char *argv[])
   io_init_terminal();
   
   init_world();
-
+  
   io_select_starter();
 
   game_loop();

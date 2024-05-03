@@ -44,9 +44,15 @@ double calculate_damage(move_db move, Pokemon attacker, Pokemon defender)
     return damage;
 }
 
+int calculate_xp(Pokemon *enemy, Pokemon *pc_pokemon)
+{
+    int gained_xp = (enemy->get_level() * enemy->get_attack) / 8;
+    return gained_xp;
+}
+
 void enemy_attack(Pokemon *enemy, int enemy_move, Pokemon *pc_pokemon)
 {
-    
+
     int enemy_damage;
 
     // enemy hit
@@ -88,7 +94,9 @@ void enemy_attack(Pokemon *enemy, int enemy_move, Pokemon *pc_pokemon)
 
 void pc_attack(Pokemon *enemy, int selected_move, Pokemon *pc_pokemon)
 {
+    int gained_xp;
     int pc_damage;
+
     if (rand() % 100 <= pc_pokemon->get_move(selected_move).accuracy)
     {
         pc_damage = calculate_damage(pc_pokemon->get_move(selected_move), *pc_pokemon, *enemy);
@@ -108,6 +116,20 @@ void pc_attack(Pokemon *enemy, int selected_move, Pokemon *pc_pokemon)
             mvprintw(23, 0, "%s has fainted", enemy->get_name().c_str());
             refresh();
             getch();
+            gained_xp = calculate_xp(enemy, pc_pokemon);
+            move(23, 0);
+            clrtoeol();
+            mvprintw(23, 0, "%s gained %d xp for defeating %s!", pc_pokemon->get_name().c_str(), gained_xp, enemy->get_name().c_str());
+            refresh();
+            getch();
+            if(pc_pokemon->add_xp(gained_xp) == 1)
+            {
+                move(23, 0);
+                clrtoeol();
+                mvprintw(23, 0, "Your pokemon has leveled up!!")
+                refresh();
+                getch();
+            }
             return;
         }
         move(2, 0);
@@ -216,45 +238,6 @@ void battle_fight(Pokemon *enemy, Pokemon *pc_pokemon)
     return;
 }
 
-/**
- * This is called whenever the PC tries to run, use an item, or switch pokemon.
- * Therefore the PC is using its action to do one of the previously mentioned actions,
- * so the enemy gets to attack the PC for free
-*/
-void enemy_free_attack(Pokemon *enemy, Pokemon *pc_pokemon)
-{
-    int enemy_move = rand() % 2;
-    double enemy_damage;
-    if(rand() % 100 <= enemy->get_move(enemy_move).accuracy)
-    {
-        enemy_damage = calculate_damage(enemy->get_move(enemy_move), *enemy, *pc_pokemon);
-        mvprintw(23, 0, "%s attacked with %s, it hit for %d", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier, (int) enemy_damage);
-        refresh();
-        getch();
-        pc_pokemon->set_curr_hp(pc_pokemon->get_curr_hp() - enemy_damage);
-        if(pc_pokemon->get_curr_hp() <= 0)
-        {
-            mvprintw(12, 0, "HP:0/%d", pc_pokemon->get_hp());
-            move(23, 0);
-            clrtoeol();
-            mvprintw(23, 0, "%s has fainted", pc_pokemon->get_name().c_str());
-            refresh();
-            getch();
-            return;
-        }
-        mvprintw(12, 0, "HP:%d/%d", pc_pokemon->get_curr_hp(), pc_pokemon->get_hp());
-        refresh();
-        getch();
-    }
-    //enemy miss
-    else
-    {
-        mvprintw(23, 0, "%s attacked with %s, but it missed...", enemy->get_name().c_str(), enemy->get_move(enemy_move).identifier);
-        refresh();
-        getch();
-    }
-}
-
 Pokemon select_pokemon()
 {
     int i, key;
@@ -268,9 +251,9 @@ Pokemon select_pokemon()
 
     for(i = 0; i < (int) world.pc.roster.size(); i++)
     {
-        mvprintw(i+3, 5, "%d, -- %s", i+1, world.pc.roster[i].get_name().c_str());
+        mvprintw(i+3, 5, "%d, -- %s", i + 1, world.pc.roster[i].get_name().c_str());
     }
-    mvprintw(0, 0, "Select a pokemon from your roster");
+    mvprintw(1, 0, "Select a pokemon from your roster");
     refresh();
 
     while(!pokemon_selected)
@@ -297,7 +280,7 @@ Pokemon select_pokemon()
             case '2':
                 if(((int) world.pc.roster.size() > 1) && (world.pc.roster[1].get_curr_hp()))
                 {
-                    new_pokemon = world.pc.roster[0];
+                    new_pokemon = world.pc.roster[1];
                     pokemon_selected = true;
                 }
                 else

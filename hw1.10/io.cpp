@@ -542,7 +542,23 @@ void io_battle(character *aggressor, character *defender)
     mvprintw(11, 40, ":L%d", active_pokemon->get_level());
     mvprintw(12, 0, "HP:%d/%d", active_pokemon->get_curr_hp(), active_pokemon->get_hp());
 
-
+    //add box
+    for(i = 4; i < 18; i++)
+    {
+      mvaddch(14, i, ACS_HLINE);
+    }
+    for(i = 4; i < 18; i++)
+    {
+      mvaddch(22, i, ACS_HLINE);
+    }
+    for(i = 14; i < 23; i++)
+    {
+      mvaddch(i, 4, ACS_VLINE);
+    }
+    for(i = 14; i < 23; i++)
+    {
+      mvaddch(i, 17, ACS_VLINE);
+    }
     mvprintw(15, 5, "1. Fight");
     mvprintw(17, 5, "2. Bag");
     mvprintw(19, 5, "3. Run");

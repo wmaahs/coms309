@@ -52,7 +52,7 @@ public:
 
     /* methods */
     void levelup();
-    void add_xp(int xp_earned);
+    int add_xp(int xp_earned);
 
     /* getters */
     int get_id(){return poke_id;}

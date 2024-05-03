@@ -155,16 +155,24 @@ void Pokemon::levelup(){
     // }
 
     //evolve
-    
+
 }
 
-void Pokemon::add_xp(int xp_earned){
+/**
+ * Returns 1 if xp caused pokemon to level up
+ * Retruns 0 if xp was added and pokemon did not level up
+*/
+
+int Pokemon::add_xp(int xp_earned){
     curr_xp = curr_xp + xp_earned;
     if(curr_xp >= max_xp)
     {
         level++;
         this->levelup();
+        return 1;
     }
+
+    return 0;
 }
 
 

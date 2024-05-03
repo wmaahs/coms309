@@ -1,3 +1,11 @@
+For assignment 1.10/2, I decided to continue to add on to the pokemon game that we have been working on all semester. I have added more functionality to the pokemarts and pokecenters.
+You now have specific option for what you would like to do in each of these stores. There is also the ability to save your game from each of the buildings. When you save your game,
+the PC's pokemon roster is saved to .txt file within the /saved_games directory. When you quit and re-enter the game, you are then given the option to continue where you left off, or start a new game.
 
+I have also given Pokemon the ability to level up. Everytime your pokemon wins a battle against another pokemon, they are awarded XP. If the Pokemon's XP reaches the required amount of XP to level up,
+then it will. Your pokemons level, and moves are saved when you save your game. If you start a new game, non of your old progress is overwritten until you save again. Unfortunatly you cannot save more
+than one game.
+
+If I had more time, I would like to implement more accurate catch mechanics for catching wild pokemon with pokeballs.
 
 Will Maahs

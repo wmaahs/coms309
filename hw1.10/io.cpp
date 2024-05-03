@@ -989,8 +989,67 @@ void io_select_starter()
   int user_input;
   int confirmation = 0;
   int poke_selected = 0;
+
+  int load_game = 0;
   std::vector<Pokemon> starters;
-  int i;
+  int i, key;
+
+  std::string line;
+  std::string saved_poke_name;
+  int saved_poke_id;
+  int saved_poke_level;
+  int saved_poke_moves[2];
+
+  /* Saved Game */
+  std::ifstream saved_game("/home/wmaahs/327/com-s-327/hw1.10/saved_games/saved_game.txt");
+  if(saved_game.good())
+  {
+    mvprintw(0, 0, "Welcome back! Would you like to load your saved game? (y/n)");
+    mvprintw(1, 0, "WARNING: If you choose no, and save the new game, or old progress will be lost.");
+    
+    while(load_game = 0)
+    {
+      key = getch();
+      move(2, 0);
+      clrtoeol();
+      refresh();
+      switch(key)
+      {
+        case 'y':
+          while(std::getline(saved_game, line))
+          {
+            if(std::strcmp(line, "Result: \n"))
+            {
+              continue;
+            }
+            std::istringstream iss(line);
+            std::vector<std::string> tokens;
+            std::string token;
+            while(std::getline(iss, token, ','))
+            {
+              tokens.push_back(token);
+            }
+            saved_poke_id = std::stoi(tokens[1]);
+            saved_poke_level = std::stoi(tokens[2]);
+            saved_poke_moves[0] = std::stoi(tokens[3]);
+            saved_poke_moves[1] = std::stoi(tokens[4]);
+            Pokemon saved_pokemon(saved_poke_id, saved_poke_level, saved_poke_moves);
+            world.pc.roster.push_back(saved_pokemon);
+          }
+          load_game = 1;
+          break;
+        case 'n':
+          load_game = 1;
+          break;
+        default:
+          mvprintw(2, 0, "You must select y or n here.");
+          refresh();
+          break;
+      }
+    }
+  }
+
+  /* New Game */
   for(i = 0; i < 3; i++) {
     Pokemon new_poke(pokemon[((rand() % 1092) + 1)]);
     new_poke.levelup();

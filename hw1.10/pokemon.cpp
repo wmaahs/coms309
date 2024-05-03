@@ -37,7 +37,7 @@ int set_pokemon_level()
         max_level = 100;
     }
 
-    level = rand() % (max_level - min_level + 1) + min_level;
+    level = rand() % (max_level - min_level + 2) + min_level;
     
     return level;
 }

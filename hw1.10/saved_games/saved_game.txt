@@ -1,2 +1,4 @@
 Roster: 
 wishiwashi-solo, 746, 1, 45, 283
+Roster: 
+darmanitan-galar-zen, 10178, 2, 33, 29
